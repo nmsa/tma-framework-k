@@ -1,0 +1,24 @@
+{
+    "title": "tma-m_schema_0_1",
+
+    "$id": "http://atmosphere-eubrazil.eu/tma-k_schema_v0.1.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "actuatorId": {
+            "$id": "/properties/actuatorId",
+            "type": "integer",
+            "default": -1,
+            "minimum": 0
+        },
+        "credentials": {
+            "$id": "/properties/credentials",
+            "type": "string",
+            "default": "measurement" 
+        }
+    },
+    "required": [
+        "actuatorId",
+        "credentials"
+    ]
+}

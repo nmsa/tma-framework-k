@@ -7,3 +7,8 @@ The `TMA_Knowledge` component provides an interface to the administrator of the 
 Each administrator needs to register each actuator through an authentication synchronous message, in which he/she will receive both the credentials and the public key. All communication is performed over REST services. 
 
 The administrator also needs to register all actions that can be performed by an actuator. This will allow TMA to decide what to do based on the list of available operations.
+
+## TMA Knowledge Message Format
+
+
+![Knowledge Register Schema](tma-k_register.png)Format of the data to be provided to the knowledge component.
