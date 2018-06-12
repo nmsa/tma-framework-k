@@ -11,4 +11,4 @@ The administrator also needs to register all actions that can be performed by an
 ## TMA Knowledge Message Format
 
 
-![Knowledge Register Schema](tma-k_register.png)Format of the data to be provided to the knowledge component.
+![Knowledge Register Schema](interface/tma-k_register.png)Format of the data to be provided to the knowledge component.
