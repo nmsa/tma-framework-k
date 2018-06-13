@@ -1,24 +1,30 @@
 {
-    "title": "tma-m_schema_0_1",
+    "title": "tma-k_schema_0_1",
 
     "$id": "http://atmosphere-eubrazil.eu/tma-k_schema_v0.1.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "actuatorId": {
-            "$id": "/properties/actuatorId",
-            "type": "integer",
-            "default": -1,
-            "minimum": 0
+        "address": {
+            "$id": "/properties/address",
+            "type": "object",
+            "properties": {
+		"baseUrl": {
+		    "$id": "/properties/address/properties",
+		    "type": "string"
+		}
+	    },
+	    "required": [
+		"baseUrl"
+	    ]
         },
-        "credentials": {
+        "pubKey": {
             "$id": "/properties/credentials",
-            "type": "string",
-            "default": "measurement" 
+            "type": "string"
         }
     },
     "required": [
-        "actuatorId",
-        "credentials"
+        "address",
+        "pubKey"
     ]
 }
