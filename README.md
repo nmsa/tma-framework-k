@@ -12,7 +12,7 @@ The administrator needs to register all actions that can be performed by an actu
 
 ## TMA Knowledge Message Format
 
-The messages to be submitted to the `TMA_Knowledge` follow the `JSON` schema specified in [tma-k_schema](interface/atmosphere_tma-k_schema.json), which is currently in the version `0.1`.
+The message to be submitted to the `TMA_Knowledge` follow the `JSON` schema specified in [tma-k_schema](interface/atmosphere_tma-k_schema.json), which is currently in the version `0.1`. This should be used to notify TMA about the existence of the Actuator.
 
 The figure below presents a representation of this schema, which is also explained below.
 
@@ -24,3 +24,19 @@ Each message includes:
 	* `baseUrl` --- the base URL of where the operations are available
 * `PubKey` -- generated once by the ActuatorAPI
 
+-
+
+Additional, the following message should be sent to `TMA_Knowledge` to store all the possible actions. It follows the `JSON` schema specified in [tma-k_schema-actions](interface/atmosphere_tma-k_schema-actions.json), which is currently in the version `0.1`.
+
+The figure below presents a representation of this schema, which is also explained below.
+
+*![Knowledge Register Schema](interface/tma-k_actions.png)Format of the data to be provided to the knowledge component to add the actions.*
+
+Each message includes:
+
+* `actions` -- a list of actions provided by the Actuator
+	* `action` -- name of the action to be performed
+	* `path` -- path of the service to execute the operation
+	* `configuration` -- list of expected attributes to execute the operation
+
+TBD: Configuration attributes!
