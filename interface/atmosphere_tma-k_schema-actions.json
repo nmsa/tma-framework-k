@@ -27,7 +27,17 @@
 			"minItems": 0,
 			"items": {
 		            "$id": "/properties/actions/items/properties/configuration/items",
-        	            "type": "object"
+        	            "type": "object",
+			    "properties": {
+		                "key": {
+                      		    "$id": "/properties/actions/items/properties/configuration/items/key",
+                        	    "type": "string"
+                    		},
+				"value": {
+                                    "$id": "/properties/actions/items/properties/configuration/items/value",
+                                    "type": "string"
+                                }
+			    }
 			}
                     }
                 },

@@ -38,5 +38,5 @@ Each message includes:
 	* `action` -- name of the action to be performed
 	* `path` -- path of the service to execute the operation
 	* `configuration` -- list of expected attributes to execute the operation
-
-TBD: Configuration attributes!
+		* `key` -- name of the configuration attribute
+		* `value` -- value of the configuration attribute
