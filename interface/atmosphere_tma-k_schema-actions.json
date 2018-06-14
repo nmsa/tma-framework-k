@@ -1,7 +1,7 @@
 {
-    "title": "tma-k_schema-actions_0_1",
+    "title": "tma-k_schema-actions_0_2",
 
-    "$id": "http://atmosphere-eubrazil.eu/tma-k_schema-actions_v0.1.json",
+    "$id": "http://atmosphere-eubrazil.eu/tma-k_schema-actions_v0.2.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
@@ -21,6 +21,12 @@
                         "$id": "/properties/actions/items/properties/path",
                         "type": "string"
                     },
+		    "resourceId": {
+            		"$id": "/properties/actions/items/properties/resourceId",
+		        "type": "integer",
+            		"default": -1,
+            		"minimum": 0
+        	    },
 		    "configuration": {
                         "$id": "/properties/actions/items/properties/configuration",
                         "type": "array",
@@ -43,7 +49,8 @@
                 },
 		"required": [
 		    "action",
-		    "path"
+		    "path",
+		    "resourceId"
 		]
             }
         }

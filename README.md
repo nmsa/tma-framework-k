@@ -26,7 +26,7 @@ Each message includes:
 
 -
 
-Additional, the following message should be sent to `TMA_Knowledge` to store all the possible actions. It follows the `JSON` schema specified in [tma-k_schema-actions](interface/atmosphere_tma-k_schema-actions.json), which is currently in the version `0.1`.
+Additional, the following message should be sent to `TMA_Knowledge` to store all the possible actions. It follows the `JSON` schema specified in [tma-k_schema-actions](interface/atmosphere_tma-k_schema-actions.json), which is currently in the version `0.2`.
 
 The figure below presents a representation of this schema, which is also explained below.
 
@@ -37,6 +37,7 @@ Each message includes:
 * `actions` -- a list of actions provided by the Actuator
 	* `action` -- name of the action to be performed
 	* `path` -- path of the service to execute the operation
+	* `resourceId` -- identifies the resource to which the adaptation is targeted
 	* `configuration` -- list of expected attributes to execute the operation
 		* `key` -- name of the configuration attribute
 		* `value` -- value of the configuration attribute
