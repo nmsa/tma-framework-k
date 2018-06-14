@@ -2,7 +2,7 @@
 
 The `TMA_Knowledge` component provides an interface to the administrator of the system to add a new actuator. It will allow the TMA Framework to know which actuators can actuate on the system. Additionally, the administrator can also register all the possible actions through a different interface.
 
-![Knowledge Usage Sequence Diagram](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-E/TMA-E_Registration.png)
+![Knowledge Usage Sequence Diagram](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-E/TMA-E_Registration.jpg)
 
 Initially, the administrator has to generate a public key to each actuator that will be used to authenticate when performing the adaptation operations. This has to be done only once, and it will be used to TMA to interact with the system.
 
@@ -37,7 +37,7 @@ Each message includes:
 * `actions` -- a list of actions provided by the Actuator
 	* `action` -- name of the action to be performed
 	* `path` -- path of the service to execute the operation
-	* `resourceId` -- identifies the resource to which the adaptation is targeted
+	* `resourceId` -- identifies the resource in which the adaptation can be performed
 	* `configuration` -- list of expected attributes to execute the operation
 		* `key` -- name of the configuration attribute
 		* `value` -- value of the configuration attribute
