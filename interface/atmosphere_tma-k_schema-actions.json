@@ -8,50 +8,50 @@
         "actions": {
             "$id": "/properties/actions",
             "type": "array",
-	    "minItems": 1,
+            "minItems": 1,
             "items": {
-		"$id": "/properties/actions/items",
-		"type": "object",
+                "$id": "/properties/actions/items",
+                "type": "object",
                 "properties": {
-		    "action": {
-                    	"$id": "/properties/actions/items/properties/action",
-                    	"type": "string"
-		    },
+                    "action": {
+                        "$id": "/properties/actions/items/properties/action",
+                        "type": "string"
+                    },
                     "path": {
                         "$id": "/properties/actions/items/properties/path",
                         "type": "string"
                     },
-		    "resourceId": {
-            		"$id": "/properties/actions/items/properties/resourceId",
-		        "type": "integer",
-            		"default": -1,
-            		"minimum": 0
-        	    },
-		    "configuration": {
+                    "resourceId": {
+                        "$id": "/properties/actions/items/properties/resourceId",
+                        "type": "integer",
+                        "default": -1,
+                        "minimum": 0
+                    },
+                    "configuration": {
                         "$id": "/properties/actions/items/properties/configuration",
                         "type": "array",
-			"minItems": 0,
-			"items": {
-		            "$id": "/properties/actions/items/properties/configuration/items",
-        	            "type": "object",
-			    "properties": {
-		                "key": {
-                      		    "$id": "/properties/actions/items/properties/configuration/items/key",
-                        	    "type": "string"
-                    		},
-				"value": {
+                        "minItems": 0,
+                        "items": {
+                            "$id": "/properties/actions/items/properties/configuration/items",
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "$id": "/properties/actions/items/properties/configuration/items/key",
+                                    "type": "string"
+                                },
+                                "value": {
                                     "$id": "/properties/actions/items/properties/configuration/items/value",
                                     "type": "string"
                                 }
-			    }
-			}
+                            }
+                        }
                     }
                 },
-		"required": [
-		    "action",
-		    "path",
-		    "resourceId"
-		]
+                "required": [
+                    "action",
+                    "path",
+                    "resourceId"
+                ]
             }
         }
     },
