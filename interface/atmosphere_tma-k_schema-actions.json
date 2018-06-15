@@ -17,10 +17,6 @@
                         "$id": "/properties/actions/items/properties/action",
                         "type": "string"
                     },
-                    "path": {
-                        "$id": "/properties/actions/items/properties/path",
-                        "type": "string"
-                    },
                     "resourceId": {
                         "$id": "/properties/actions/items/properties/resourceId",
                         "type": "integer",
@@ -49,7 +45,6 @@
                 },
                 "required": [
                     "action",
-                    "path",
                     "resourceId"
                 ]
             }

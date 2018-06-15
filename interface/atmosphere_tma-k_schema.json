@@ -9,13 +9,13 @@
             "$id": "/properties/address",
             "type": "object",
             "properties": {
-		"baseUrl": {
+		"url": {
 		    "$id": "/properties/address/properties",
 		    "type": "string"
 		}
 	    },
 	    "required": [
-		"baseUrl"
+		"url"
 	    ]
         },
         "pubKey": {

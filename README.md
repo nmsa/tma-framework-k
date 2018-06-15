@@ -21,7 +21,7 @@ The figure below presents a representation of this schema, which is also explain
 Each message includes:
 
 * `address` -- an objet with the information about the ActuatorAPI
-	* `baseUrl` --- the base URL of where the operations are available
+	* `url` --- the URL of where the operations are available. All actions will be available through this URL, which will direct the actuation to the proper operation
 * `PubKey` -- generated once by the ActuatorAPI
 
 -
@@ -35,8 +35,7 @@ The figure below presents a representation of this schema, which is also explain
 Each message includes:
 
 * `actions` -- a list of actions provided by the Actuator
-	* `action` -- name of the action to be performed
-	* `path` -- path of the service to execute the operation
+	* `action` -- name of the action to be performed. This will be used to inform the ActuatorAPI about which action to be performed
 	* `resourceId` -- identifies the resource in which the adaptation can be performed
 	* `configuration` -- list of expected attributes to execute the operation
 		* `key` -- name of the configuration attribute
