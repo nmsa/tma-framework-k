@@ -10,7 +10,7 @@ Each administrator also needs to register each actuator through an authenticatio
 
 The administrator needs to register all actions that can be performed by an actuator. This will allow TMA to decide what to do based on the list of available operations.
 
-## TMA Knowledge Message Format
+## Message Format for Actuator Registration
 
 The message to be submitted to the `TMA_Knowledge` follow the `JSON` schema specified in [tma-k_schema](interface/atmosphere_tma-k_schema.json), which is currently in the version `0.1`. This should be used to notify TMA about the existence of the Actuator.
 
@@ -24,7 +24,7 @@ Each message includes:
 	* `url` --- the URL of where the operations are available. All actions will be available through this URL, which will direct the actuation to the proper operation
 * `PubKey` -- generated once by the ActuatorAPI
 
--
+## Message Format for Actions Registration
 
 Additional, the following message should be sent to `TMA_Knowledge` to store all the possible actions. It follows the `JSON` schema specified in [tma-k_schema-actions](interface/atmosphere_tma-k_schema-actions.json), which is currently in the version `0.2`.
 
