@@ -1,0 +1,30 @@
+{
+    "title": "tma-k_schema_0_1",
+
+    "$id": "http://atmosphere-eubrazil.eu/tma-k_schema_v0.1.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "address": {
+            "$id": "/properties/address",
+            "type": "object",
+            "properties": {
+		"url": {
+		    "$id": "/properties/address/properties",
+		    "type": "string"
+		}
+	    },
+	    "required": [
+		"url"
+	    ]
+        },
+        "pubKey": {
+            "$id": "/properties/credentials",
+            "type": "string"
+        }
+    },
+    "required": [
+        "address",
+        "pubKey"
+    ]
+}
