@@ -8,7 +8,13 @@ import java.security.KeyPair;
 public class AdminConsole {
 	
 	private static final int GENERATE_KEY_PAIR = 1;
-	private static final int EXIT_OPTION = 2;
+	private static final int ENCRYPT_MESSAGE = 2;
+	private static final int DECRYPT_MESSAGE = 3;
+	private static final int EXIT_OPTION = 4;
+
+	private static byte[] encMessage = null;
+	private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
+			+ "As aves que aqui gorgeiam não gorgeiam como lá";
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -42,13 +48,21 @@ public class AdminConsole {
 	private static void performAction(int option) {
 		switch (option) {
 		case GENERATE_KEY_PAIR: 
-			
+
 			KeyPair keyPair = KeyManager.generateKeyPair();
-			//JavaPGP.generateSignature("/home/virt-atm/", keyPair.getPrivate());
 			KeyManager.savePublicKey(keyPair.getPublic());
 			KeyManager.savePrivateKey(keyPair.getPrivate());
 			break;
-			
+
+		case ENCRYPT_MESSAGE:
+			encMessage = KeyManager.encryptMessage(message);
+			System.out.println(encMessage);
+			break;
+
+		case DECRYPT_MESSAGE:
+			System.out.println(KeyManager.decryptMessage(encMessage));
+			break;
+
 		case EXIT_OPTION:
 			System.out.println("Bye!");
 			break;
@@ -64,6 +78,8 @@ public class AdminConsole {
 		System.out.println("---------------------");
 		System.out.println("What do you want to do?");
 		System.out.println(GENERATE_KEY_PAIR + " - Generate key-pair;");
+		System.out.println(ENCRYPT_MESSAGE + " - Encrypt Message;");
+		System.out.println(DECRYPT_MESSAGE + " - Decrypt Message;");
 		System.out.println(EXIT_OPTION + " - Exit");
 	}
 
