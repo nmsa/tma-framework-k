@@ -108,11 +108,24 @@ public class AdminConsole {
 	}
 
 	private static String getPathPublicKey() {
-		return "public";
+		System.out.println("Please, enter the name of the public key: ");
+		return getFilename();
 	}
 
 	private static String getPathPrivateKey() {
-		return "private";
+		System.out.println("Please, enter the name of the private key: ");
+		return getFilename();
+	}
+
+	private static String getFilename() {
+		String line = "";
+		try {
+			line = reader.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return line;
 	}
 
 }
