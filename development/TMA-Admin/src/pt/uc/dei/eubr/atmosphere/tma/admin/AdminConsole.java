@@ -1,6 +1,7 @@
 package pt.uc.dei.eubr.atmosphere.tma.admin;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
@@ -16,12 +17,13 @@ public class AdminConsole {
 	private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
 			+ "As aves que aqui gorgeiam não gorgeiam como lá";
 
+	private static BufferedReader reader;
+
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		reader = new BufferedReader(new InputStreamReader(System.in));
 
 		try {
-			readUserOption(reader);
+			readUserOption();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("[ATMOSPHERE] There was a problem reading your option!");
@@ -30,7 +32,7 @@ public class AdminConsole {
 		
 	}
 
-	private static void readUserOption(BufferedReader reader) throws IOException {
+	private static void readUserOption() throws IOException {
 		int option = 0;
 		do {
 			printMenuOptions();
@@ -49,8 +51,9 @@ public class AdminConsole {
 		switch (option) {
 		case GENERATE_KEY_PAIR: 
 
-			String pathPublicKey = getPathPublicKey();
-			String pathPrivateKey = getPathPrivateKey();
+			String directory = getDirectory();
+			String pathPublicKey = directory + "/" + getPathPublicKey();
+			String pathPrivateKey = directory + "/" + getPathPrivateKey();
 			KeyPair keyPair = KeyManager.generateKeyPair();
 			KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
 			KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
@@ -85,12 +88,31 @@ public class AdminConsole {
 		System.out.println(EXIT_OPTION + " - Exit");
 	}
 
+	private static String getDirectory() {
+		File file = null;
+		do {
+			try {
+				System.out.println("Please, enter a valid directory: ");
+				String line = reader.readLine();
+				file = new File(line);
+				if (file.isDirectory()) {
+					return line;
+				} else {
+					System.err.println("The path is not valid!");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} while (file != null && !file.isDirectory());
+		return "";
+	}
+
 	private static String getPathPublicKey() {
-		return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/public";
+		return "public";
 	}
 
 	private static String getPathPrivateKey() {
-		return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/private";
+		return "private";
 	}
 
 }
