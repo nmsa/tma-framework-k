@@ -11,7 +11,9 @@ public class AdminConsole {
 	private static final int GENERATE_KEY_PAIR = 1;
 	private static final int ENCRYPT_MESSAGE = 2;
 	private static final int DECRYPT_MESSAGE = 3;
-	private static final int EXIT_OPTION = 4;
+	private static final int ADD_ACTUATOR = 4;
+	private static final int CONFIGURE_ACTIONS = 5;
+	private static final int EXIT_OPTION = 6;
 
 	private static byte[] encMessage = null;
 	private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
@@ -68,6 +70,14 @@ public class AdminConsole {
 			System.out.println(KeyManager.decryptMessage(encMessage));
 			break;
 
+		case ADD_ACTUATOR:
+			System.out.println("Not implemented!");
+			break;
+
+		case CONFIGURE_ACTIONS:
+			System.out.println("Not implemented!");
+			break;
+
 		case EXIT_OPTION:
 			System.out.println("Bye!");
 			break;
@@ -85,6 +95,8 @@ public class AdminConsole {
 		System.out.println(GENERATE_KEY_PAIR + " - Generate key-pair;");
 		System.out.println(ENCRYPT_MESSAGE + " - Encrypt Message;");
 		System.out.println(DECRYPT_MESSAGE + " - Decrypt Message;");
+		System.out.println(ADD_ACTUATOR + " - Add new actuator;");
+		System.out.println(CONFIGURE_ACTIONS + " - Configure actions;");
 		System.out.println(EXIT_OPTION + " - Exit");
 	}
 
@@ -122,7 +134,6 @@ public class AdminConsole {
 		try {
 			line = reader.readLine();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return line;
