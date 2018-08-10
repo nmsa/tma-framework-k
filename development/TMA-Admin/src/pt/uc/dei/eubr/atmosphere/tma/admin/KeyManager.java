@@ -14,9 +14,6 @@ import javax.crypto.Cipher;
 
 public class KeyManager {
 
-    public static final String directory =
-            "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/";
-
     static PublicKey pub = null;
     static PrivateKey priv = null;
 
@@ -39,12 +36,12 @@ public class KeyManager {
         return keyPair;
     }
 
-    static void savePrivateKey(PrivateKey privateKey) {
+    static void savePrivateKey(PrivateKey privateKey, String pathPrivateKey) {
         /* save the public key in a file */
         byte[] key = privateKey.getEncoded();
         FileOutputStream keyfos;
         try {
-            keyfos = new FileOutputStream(directory + "my_private_key");
+            keyfos = new FileOutputStream(pathPrivateKey);
             keyfos.write(key);
             priv = privateKey;
             keyfos.close();
@@ -55,12 +52,12 @@ public class KeyManager {
         }
     }
 
-    static void savePublicKey(PublicKey publicKey) {
+    static void savePublicKey(PublicKey publicKey, String pathPublicKey) {
         /* save the public key in a file */
         byte[] key = publicKey.getEncoded();
         FileOutputStream keyfos;
         try {
-            keyfos = new FileOutputStream(directory + "my_public_key");
+            keyfos = new FileOutputStream(pathPublicKey);
             keyfos.write(key);
             pub = publicKey;
             keyfos.close();
@@ -91,9 +88,9 @@ public class KeyManager {
            return cipherText;
     }
 
-     static String decryptMessage(byte[] encMessage) {
-         return decrypt(encMessage, priv);
-     }
+    static String decryptMessage(byte[] encMessage) {
+        return decrypt(encMessage, priv);
+    }
 
     public static String decrypt(byte[] text, PrivateKey key) {
         byte[] dectyptedText = null;

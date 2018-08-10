@@ -49,9 +49,11 @@ public class AdminConsole {
 		switch (option) {
 		case GENERATE_KEY_PAIR: 
 
+			String pathPublicKey = getPathPublicKey();
+			String pathPrivateKey = getPathPrivateKey();
 			KeyPair keyPair = KeyManager.generateKeyPair();
-			KeyManager.savePublicKey(keyPair.getPublic());
-			KeyManager.savePrivateKey(keyPair.getPrivate());
+			KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
+			KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
 			break;
 
 		case ENCRYPT_MESSAGE:
@@ -81,6 +83,14 @@ public class AdminConsole {
 		System.out.println(ENCRYPT_MESSAGE + " - Encrypt Message;");
 		System.out.println(DECRYPT_MESSAGE + " - Decrypt Message;");
 		System.out.println(EXIT_OPTION + " - Exit");
+	}
+
+	private static String getPathPublicKey() {
+		return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/public";
+	}
+
+	private static String getPathPrivateKey() {
+		return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/private";
 	}
 
 }
