@@ -71,11 +71,11 @@ public class AdminConsole {
 			break;
 
 		case ADD_ACTUATOR:
-			System.out.println("Not implemented!");
+			addNewActuator();
 			break;
 
 		case CONFIGURE_ACTIONS:
-			System.out.println("Not implemented!");
+			configureActions();
 			break;
 
 		case EXIT_OPTION:
@@ -121,15 +121,15 @@ public class AdminConsole {
 
 	private static String getPathPublicKey() {
 		System.out.println("Please, enter the name of the public key: ");
-		return getFilename();
+		return readFromUser();
 	}
 
 	private static String getPathPrivateKey() {
 		System.out.println("Please, enter the name of the private key: ");
-		return getFilename();
+		return readFromUser();
 	}
 
-	private static String getFilename() {
+	private static String readFromUser() {
 		String line = "";
 		try {
 			line = reader.readLine();
@@ -139,4 +139,24 @@ public class AdminConsole {
 		return line;
 	}
 
+	private static void addNewActuator() {
+		System.out.println("Please, inform the endpoint of the Actuator: ");
+		String actuatorEndpoint = readFromUser();
+		System.out.println("Please, inform the public key to be used: ");
+		String pubKey = readFromUser();
+		System.out.println("TO BE IMPLEMENTED: ");
+		System.out.println("- Validate if the endpoint is valid");
+		System.out.println("- Save in the database both the endpoint informed by the user (" +
+				actuatorEndpoint + ") and the public key (" + pubKey + ")");
+	}
+
+	private static void configureActions() {
+		System.out.println("Please, inform the path of the JSON file that contains the actions: ");
+		String actionFile = readFromUser();
+		System.out.println("TO BE IMPLEMENTED: ");
+		System.out.println("- Read the file informed by the user (" +
+				actionFile + ")");
+		System.out.println("- Validate if the JSON file is valid");
+		System.out.println("- Parse the file and save it to the database");
+	}
 }
