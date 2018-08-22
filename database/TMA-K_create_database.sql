@@ -8,12 +8,17 @@
 -- 
 -- Repository: https://github.com/eubr-atmosphere/tma-framework
 -- License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--
+-- Normalized MySQL version of the script for the knowledge 
+-- database creation. 
 --
 -- @author José Pereira <josep@dei.uc.pt>
 -- @author Nuno Antunes <nmsa@dei.uc.pt>
+-- 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-
 
 DROP TABLE IF EXISTS Data;
 DROP TABLE IF EXISTS Configuration;
