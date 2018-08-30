@@ -4,7 +4,7 @@ The `TMA_Knowledge` component stores measurements data, and stores and manages i
 
 The star schema envisaged for the ATMOSPHERE TMA framework is shown below. The fact table `Data` contains the basic numerical facts obtained from the readouts collected by the probes and the dimensions include all the different perspectives needed to characterize those numerical facts. 
 
-![Simplified view of the data model to be used in knowledge for data related to trustworthiness metrics](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-K_DataModel/TMAF-K_ConceptualDataModel_Measurements.jpg)
+![Data model to be used in knowledge for data related to trustworthiness metrics](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-K_DataModel/TMAF-K_ConceptualDataModel_Measurements.jpg)
 
 The dimensions are as follows: 
 
