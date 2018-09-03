@@ -12,8 +12,9 @@ public class AdminConsole {
 	private static final int ENCRYPT_MESSAGE = 2;
 	private static final int DECRYPT_MESSAGE = 3;
 	private static final int ADD_ACTUATOR = 4;
-	private static final int CONFIGURE_ACTIONS = 5;
-	private static final int EXIT_OPTION = 6;
+	private static final int ADD_RESOURCE = 5;
+	private static final int CONFIGURE_ACTIONS = 6;
+	private static final int EXIT_OPTION = 7;
 
 	private static byte[] encMessage = null;
 	private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
@@ -74,6 +75,10 @@ public class AdminConsole {
 			addNewActuator();
 			break;
 
+		case ADD_RESOURCE:
+			addNewResource();
+			break;
+
 		case CONFIGURE_ACTIONS:
 			configureActions();
 			break;
@@ -96,6 +101,7 @@ public class AdminConsole {
 		System.out.println(ENCRYPT_MESSAGE + " - Encrypt Message;");
 		System.out.println(DECRYPT_MESSAGE + " - Decrypt Message;");
 		System.out.println(ADD_ACTUATOR + " - Add new actuator;");
+		System.out.println(ADD_RESOURCE + " - Add new resource;");
 		System.out.println(CONFIGURE_ACTIONS + " - Configure actions;");
 		System.out.println(EXIT_OPTION + " - Exit");
 	}
@@ -148,6 +154,24 @@ public class AdminConsole {
 		System.out.println("- Validate if the endpoint is valid");
 		System.out.println("- Save in the database both the endpoint informed by the user (" +
 				actuatorEndpoint + ") and the public key (" + pubKey + ")");
+	}
+
+	private static void addNewResource() {
+		System.out.println("Please, inform the Resource Name: ");
+		String name = readFromUser();
+		System.out.println("Please, inform the resource type: ");
+		String type = readFromUser();
+		System.out.println("Please, inform the resource address: ");
+		String address = readFromUser();
+		Integer resourceId = saveNewResource(name, type, address);
+		System.out.println("The Resource Id is: " + resourceId);
+	}
+
+	private static Integer saveNewResource(String name, String type, String address) {
+		// TODO Save the resource in the database (MySQL).
+		// TODO Return the id to inform to user.
+		// TODO This should go to a different class that manipulates database.
+		return -1;
 	}
 
 	private static void configureActions() {
