@@ -146,14 +146,17 @@ public class AdminConsole {
 	}
 
 	private static void addNewActuator() {
-		System.out.println("Please, inform the endpoint of the Actuator: ");
-		String actuatorEndpoint = readFromUser();
+		System.out.println("Please, inform the address of the Actuator: ");
+		String address = readFromUser();
 		System.out.println("Please, inform the public key to be used: ");
 		String pubKey = readFromUser();
 		System.out.println("TO BE IMPLEMENTED: ");
 		System.out.println("- Validate if the endpoint is valid");
-		System.out.println("- Save in the database both the endpoint informed by the user (" +
-				actuatorEndpoint + ") and the public key (" + pubKey + ")");
+		System.out.println("- Save in the database both the address informed by the user (" +
+				address + ") and the public key (" + pubKey + ")");
+		DatabaseManager databaseManager = new DatabaseManager();
+		Long actuatorId = databaseManager.saveNewActuator(address, pubKey);
+		System.out.println("The Resource Id is: " + actuatorId);
 	}
 
 	private static void addNewResource() {
@@ -163,15 +166,9 @@ public class AdminConsole {
 		String type = readFromUser();
 		System.out.println("Please, inform the resource address: ");
 		String address = readFromUser();
-		Integer resourceId = saveNewResource(name, type, address);
+		DatabaseManager databaseManager = new DatabaseManager();
+		Long resourceId = databaseManager.saveNewResource(name, type, address);
 		System.out.println("The Resource Id is: " + resourceId);
-	}
-
-	private static Integer saveNewResource(String name, String type, String address) {
-		// TODO Save the resource in the database (MySQL).
-		// TODO Return the id to inform to user.
-		// TODO This should go to a different class that manipulates database.
-		return -1;
 	}
 
 	private static void configureActions() {
