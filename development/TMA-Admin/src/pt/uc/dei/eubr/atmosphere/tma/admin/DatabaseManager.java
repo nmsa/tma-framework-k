@@ -11,7 +11,7 @@ public class DatabaseManager {
     private static Connection connection = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
-    
+
     private static Connection getConnectionInstanceMySQL() {
         // This will load the MySQL driver, each DB has its own driver
         try {
@@ -30,7 +30,7 @@ public class DatabaseManager {
         return connection;
     }
     
-    private static Connection getConnectionInstance() {
+    public static Connection getConnectionInstance() {
         // SQLite connection string
         String url = "jdbc:sqlite:/Users/josealexandredabruzzopereira/"
         		+ "Projects/tma-framework-k/development/TMA-Admin/sqlite/db/"
@@ -57,7 +57,7 @@ public class DatabaseManager {
         }
     }
     
-    private static ResultSet executeQuery(String sql) {
+    public static ResultSet executeQuery(String sql) {
         Connection conn = getConnectionInstance();
         Statement stmt;
         ResultSet rs = null;
@@ -70,8 +70,7 @@ public class DatabaseManager {
         return rs;
     }
 
-    // You need to close the resultSet
-    private void close() {
+    public void close() {
         try {
             if (resultSet != null) {
                 resultSet.close();
@@ -89,27 +88,7 @@ public class DatabaseManager {
         }
     }
 
-	public Long saveNewResource(String name, String type, String address) {
-		String sql = "INSERT INTO "
-				+ "Resource(resourceName, resourceType, resourceAddress) "
-				+ "VALUES "
-				+ "(?, ?, ?)";
-		
-		PreparedStatement ps = null;
-		
-		try {
-			ps = connection.prepareStatement(sql);
-			ps.setString(1, name);
-			ps.setString(2, type);
-			ps.setString(3, address);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return executeQuery(ps);
-	}
-
-	private Long executeQuery(PreparedStatement ps) {
+	public Long executeQuery(PreparedStatement ps) {
 		Long key = (long) -1;
 		try {
 			ps.executeQuery();

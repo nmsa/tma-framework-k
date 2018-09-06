@@ -166,8 +166,8 @@ public class AdminConsole {
 		String type = readFromUser();
 		System.out.println("Please, inform the resource address: ");
 		String address = readFromUser();
-		DatabaseManager databaseManager = new DatabaseManager();
-		Long resourceId = databaseManager.saveNewResource(name, type, address);
+		ResourceManager resourceManager = new ResourceManager();
+		Long resourceId = resourceManager.saveNewResource(name, type, address);
 		System.out.println("The Resource Id is: " + resourceId);
 	}
 
