@@ -3,7 +3,7 @@ timestamp() {
 }
 
 
-i="0"
+i="1"
 
 while [ $i -lt 141 ]
 do
