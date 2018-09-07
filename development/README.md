@@ -65,7 +65,7 @@ After completing all steps of the previous section, the first step of project in
 cd ceph/
 sh ceph_installation.sh
 ```
-The output of this script should replace the information of key field of the ceph-secret.yaml file.
+The output of this script should replace the information of `key` field of the ceph-secret.yaml file. All commands describe 
 After that you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
 ```sh
 kubectl create -f ceph/ceph-secret.yaml
@@ -78,7 +78,7 @@ The next step is to create database to store all information provided by other c
 ```sh
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword -e "CREATE DATABASE knowledge /*\!40100 DEFAULT CHARACTER SET utf8 */;"
 ```
-After the creation of database, the next step is create all tables and relations between themselves. To do that, you should execute the following SQL script.
+After the creation of database, the next step is create all tables and relations between themselves. To do that, you should run `TMA-K_create_database.sql` script. To do that, run the following command:
 ```sh
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../database/TMA-K_create_database.sql
 ```
