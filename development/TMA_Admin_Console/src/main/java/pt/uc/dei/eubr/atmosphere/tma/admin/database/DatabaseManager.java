@@ -1,4 +1,4 @@
-package pt.uc.dei.eubr.atmosphere.tma.admin;
+package pt.uc.dei.eubr.atmosphere.tma.admin.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

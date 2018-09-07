@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 
+import pt.uc.dei.eubr.atmosphere.tma.admin.database.ActuatorManager;
+import pt.uc.dei.eubr.atmosphere.tma.admin.database.ResourceManager;
+
 public class AdminConsole {
 	
 	private static final int GENERATE_KEY_PAIR = 1;
