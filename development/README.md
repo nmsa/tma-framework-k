@@ -83,7 +83,7 @@ After the creation of database, the next step is create all tables and relations
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../database/TMA-K_create_database.sql
 ```
 ## Testing
-For testing purposes, there is a script called `example_data_mysql.sql` that inserts example data in Probe,Resource, and Description tables.
+For testing purposes, there is a script called `example_data_mysql.sql` that inserts example data in Probe, Resource, and Description tables.
 To do that, you just need to execute the following SQL script
 ```sh
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < mysql/example_data_mysql.sql
