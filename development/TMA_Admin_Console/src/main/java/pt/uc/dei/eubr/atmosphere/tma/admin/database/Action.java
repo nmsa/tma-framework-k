@@ -1,10 +1,18 @@
 package pt.uc.dei.eubr.atmosphere.tma.admin.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Action {
 
     private int actuatorId;
     private int resourceId;
     private String actionName;
+    private List<Configuration> configuration;
+
+    public Action() {
+        this.configuration = new ArrayList<Configuration>();
+    }
 
     public int getActuatorId() {
         return actuatorId;
@@ -28,5 +36,9 @@ public class Action {
 
     public void setActionName(String actionName) {
         this.actionName = actionName;
+    }
+
+    public void addConfiguration(Configuration conf) {
+        this.configuration.add(conf);
     }
 }
