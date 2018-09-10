@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -53,30 +54,35 @@ public class ActuatorManager {
         parseActionsJsonFile(filename);
     }
 
-    private void parseActionsJsonFile(String filename) {
+    private List<Action> parseActionsJsonFile(String filename) {
         Gson gson = new GsonBuilder().create();
         InputStream input;
+        List<Action> actions = new ArrayList<Action>();
         try {
             input = new FileInputStream(filename);
             InputStreamReader isr = new InputStreamReader(input);
 
             Object rawJson = gson.fromJson(isr, Object.class);
             LinkedTreeMap<String, Object> c = (LinkedTreeMap<String, Object>) rawJson;
-            List<Object> actions = (List<Object>) c.get("actions");
-            for (Object object : actions) {
+            List<Object> actionsJson = (List<Object>) c.get("actions");
+            for (Object object : actionsJson) {
                 LinkedTreeMap<String, Object> actionData = (LinkedTreeMap<String, Object>) object;
-                System.out.println(actionData.get("action"));
-                System.out.println(actionData.get("resourceId"));
+                actionData.get("resourceId");
+                Action action = new Action(-1, (Integer) actionData.get("resourceId"),
+                        actionData.get("action").toString());
                 List<Object> configuration = (List<Object>) actionData.get("configuration");
-                for (Object config : configuration) {
-                    LinkedTreeMap<String, Object> configData = (LinkedTreeMap<String, Object>) config;
-                    System.out.println(configData.get("key"));
-                    System.out.println(configData.get("value"));
+                for (Object configJson : configuration) {
+                    LinkedTreeMap<String, Object> configData = (LinkedTreeMap<String, Object>) configJson;
+                    Configuration conf = new Configuration(configData.get("key").toString(),
+                            configData.get("value").toString());
+                    action.addConfiguration(conf);
                 }
                 System.out.println(actionData);
+                actions.add(action);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        return actions;
     }
 }

@@ -5,6 +5,10 @@ public class Configuration {
     private String keyName;
     private String domain;
 
+    public Configuration(String keyName, String domain) {
+        this.keyName = keyName;
+        this.domain = domain;
+    }
     public String getKeyName() {
         return keyName;
     }
