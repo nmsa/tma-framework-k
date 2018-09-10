@@ -1,10 +1,7 @@
 package pt.uc.dei.eubr.atmosphere.tma.admin.database;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
@@ -13,8 +10,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
 public class ActuatorManager {
@@ -35,18 +30,30 @@ public class ActuatorManager {
         return databaseManager.executeQuery(ps);
     }
 
-    public void saveActions() {
-        //String jsonString = readJson();
-        String filename = "/Users/josealexandredabruzzopereira/Projects/"
-                          + "TMA_Admin_Console/src/main/resources/actions.json";
-        readJson2(filename);
-        /*JsonObject obj = new JsonObject(jsonString);
-        JsonArray arr = obj.getAsJsonArray()("number");
-        for (int i = 0; i < arr.length(); i++)
-            System.out.println(arr.getInt(i));*/
+    public Long saveActions(List<Action> actions) {
+        String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) VALUES (?, ?, ?)";
+        PreparedStatement ps = null;
+
+        try {
+            ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, 1);
+            ps.setString(3, "resourceName");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        return databaseManager.executeQuery(ps);
     }
 
-    private void readJson2(String filename) {
+    public void saveActions() {
+        String filename = "/Users/josealexandredabruzzopereira/Projects/"
+                          + "TMA_Admin_Console/src/main/resources/actions.json";
+        parseActionsJsonFile(filename);
+    }
+
+    private void parseActionsJsonFile(String filename) {
         Gson gson = new GsonBuilder().create();
         InputStream input;
         try {
@@ -71,24 +78,5 @@ public class ActuatorManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    private String readJson() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            // pass the path to the file as a parameter
-            FileReader fr =
-              new FileReader("C:\\Users\\pankaj\\Desktop\\test.txt");
-
-            int i;
-            while ((i=fr.read()) != -1) {
-              System.out.print((char) i);
-              sb.append((char) i);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
     }
 }
