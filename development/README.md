@@ -65,8 +65,8 @@ After completing all steps of the previous section, the first step of project in
 cd ceph/
 sh ceph_installation.sh
 ```
-The output of this script should replace the information of `key` field of the ceph-secret.yaml file. All commands describe 
-After that you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
+The output of this script should be inserted in `key` field of the ceph-secret.yaml file. 
+After that, you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
 ```sh
 kubectl create -f ceph/ceph-secret.yaml
 ```
