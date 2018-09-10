@@ -12,7 +12,7 @@ public class DatabaseManager {
     private Statement statement = null;
     private ResultSet resultSet = null;
 
-    private static Connection getConnectionInstanceMySQL() {
+    public static Connection getConnectionInstance() {
         // This will load the MySQL driver, each DB has its own driver
         try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -22,15 +22,15 @@ public class DatabaseManager {
         // Setup the connection with the DB
         try {
 			connection = DriverManager
-			        .getConnection("jdbc:mysql://localhost/feedback?"
-			                + "user=sqluser&password=sqluserpw");
+			        .getConnection("jdbc:mysql://localhost/knowledge?"
+			                + "user=root&password=123456");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
         return connection;
     }
     
-    public static Connection getConnectionInstance() {
+    public static Connection getConnectionInstanceSqlite() {
         // SQLite connection string
         String url = "jdbc:sqlite:/Users/josealexandredabruzzopereira/"
         		+ "Projects/tma-framework-k/development/TMA-Admin/sqlite/db/"

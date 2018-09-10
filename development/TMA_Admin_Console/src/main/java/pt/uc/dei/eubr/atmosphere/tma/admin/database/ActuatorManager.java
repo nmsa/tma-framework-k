@@ -23,12 +23,16 @@ public class ActuatorManager {
             ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
             ps.setString(1, address);
             ps.setString(2, pubKey);
+
+            ps.execute();
+
+            // THE METHOD TO INSERT THE CONFIGURATION SHOULD BE ADDED HERE
+            // LAST_INSERT_ID()
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        DatabaseManager databaseManager = new DatabaseManager();
-        return databaseManager.executeQuery(ps);
+        return (long) -1.0;
     }
 
     private void saveActions(List<Action> actions, int actuatorId) {
