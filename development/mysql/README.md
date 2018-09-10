@@ -20,7 +20,7 @@ With the knowledge database created, it is time to create all necessary tables a
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../database/TMA-K_create_database.sql
 ```
 ## Testing
-For testing purposes, there is a SQL script that inserts in the knowledge database tables example data.
+For testing purposes, there is a SQL script that inserts examples of data in the knowledge database tables.
 To insert the example data, you should execute the following command:
 ```sh
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < mysql/example_data_mysql.sql
