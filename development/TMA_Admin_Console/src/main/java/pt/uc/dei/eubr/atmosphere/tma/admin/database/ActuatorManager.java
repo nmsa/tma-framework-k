@@ -31,21 +31,43 @@ public class ActuatorManager {
         return databaseManager.executeQuery(ps);
     }
 
-    private Long saveActions(List<Action> actions, int actuatorId) {
+    private void saveActions(List<Action> actions, int actuatorId) {
         String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) VALUES (?, ?, ?)";
         PreparedStatement ps = null;
 
         try {
-            ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
-            ps.setInt(1, actuatorId);
-            ps.setInt(2, 1);
-            ps.setString(3, "resourceName");
+            for (Action action: actions) {
+                ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+                ps.setInt(1, actuatorId);
+                ps.setInt(2, action.getResourceId());
+                ps.setString(3, action.getActionName());
+
+                DatabaseManager databaseManager = new DatabaseManager();
+                Long actionId = databaseManager.executeQuery(ps);
+                saveConfiguration(actionId, action.getConfiguration());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        DatabaseManager databaseManager = new DatabaseManager();
-        return databaseManager.executeQuery(ps);
+    private void saveConfiguration(Long actionId, List<Configuration> configurationList) {
+        String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
+        PreparedStatement ps = null;
+
+        try {
+            for (Configuration configuration: configurationList) {
+                ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+                ps.setLong(1, actionId);
+                ps.setString(2, configuration.getKeyName());
+                ps.setString(3, configuration.getDomain());
+
+                DatabaseManager databaseManager = new DatabaseManager();
+                databaseManager.executeQuery(ps);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveActions(String filename, int actuatorId) {

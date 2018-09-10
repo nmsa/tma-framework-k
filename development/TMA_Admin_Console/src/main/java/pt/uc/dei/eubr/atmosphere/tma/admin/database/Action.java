@@ -48,4 +48,8 @@ public class Action {
     public void addConfiguration(Configuration conf) {
         this.configuration.add(conf);
     }
+
+    public List<Configuration> getConfiguration() {
+        return configuration;
+    }
 }

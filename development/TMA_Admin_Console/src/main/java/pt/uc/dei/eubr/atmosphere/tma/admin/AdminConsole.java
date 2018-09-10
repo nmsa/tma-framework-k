@@ -186,6 +186,6 @@ public class AdminConsole {
 		System.out.println("- Validate if the JSON file is valid");
 		System.out.println("- Parse the file and save it to the database");
 		ActuatorManager actuatorManager = new ActuatorManager();
-		actuatorManager.saveActions();
+		actuatorManager.saveActions(actionFile, actuatorId);
 	}
 }
