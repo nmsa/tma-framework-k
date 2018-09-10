@@ -31,13 +31,13 @@ public class ActuatorManager {
         return databaseManager.executeQuery(ps);
     }
 
-    public Long saveActions(List<Action> actions) {
+    private Long saveActions(List<Action> actions, int actuatorId) {
         String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) VALUES (?, ?, ?)";
         PreparedStatement ps = null;
 
         try {
             ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
-            ps.setInt(1, 1);
+            ps.setInt(1, actuatorId);
             ps.setInt(2, 1);
             ps.setString(3, "resourceName");
         } catch (SQLException e) {
@@ -48,10 +48,10 @@ public class ActuatorManager {
         return databaseManager.executeQuery(ps);
     }
 
-    public void saveActions() {
-        String filename = "/Users/josealexandredabruzzopereira/Projects/"
-                          + "TMA_Admin_Console/src/main/resources/actions.json";
-        parseActionsJsonFile(filename);
+    public void saveActions(String filename, int actuatorId) {
+        //String filename = "/Users/josealexandredabruzzopereira/Projects/TMA_Admin_Console/src/main/resources/actions.json";
+        List<Action> actions = parseActionsJsonFile(filename);
+        saveActions(actions, actuatorId);
     }
 
     private List<Action> parseActionsJsonFile(String filename) {

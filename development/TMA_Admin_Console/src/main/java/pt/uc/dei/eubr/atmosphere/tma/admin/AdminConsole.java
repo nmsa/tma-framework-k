@@ -175,6 +175,9 @@ public class AdminConsole {
 	}
 
 	private static void configureActions() {
+		System.out.println("Please, inform the public key to be used: ");
+		String actuatorIdString = readFromUser();
+		Integer actuatorId = Integer.parseInt(actuatorIdString);
 		System.out.println("Please, inform the path of the JSON file that contains the actions: ");
 		String actionFile = readFromUser();
 		System.out.println("TO BE IMPLEMENTED: ");
