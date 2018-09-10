@@ -38,18 +38,17 @@ public class ActuatorManager {
 	public void saveActions() {
 	    
 		//String jsonString = readJson();
-		readJson2();
+        String filename = "/Users/josealexandredabruzzopereira/Projects/"
+                          + "TMA_Admin_Console/src/main/resources/actions.json";
+		readJson2(filename);
 		/*JsonObject obj = new JsonObject(jsonString);
 		JsonArray arr = obj.getAsJsonArray()("number");
 		for (int i = 0; i < arr.length(); i++)
 		    System.out.println(arr.getInt(i));*/
 	}
 	
-    private void readJson2() {
+    private void readJson2(String filename) {
     	Gson gson = new GsonBuilder().create();
-    	
-    	String filename = "/Users/josealexandredabruzzopereira/Projects/"
-    	+ "TMA_Admin_Console/src/main/resources/actions.json";
     	File file = new File(filename);
 		InputStream input;
 		try {
@@ -61,6 +60,14 @@ public class ActuatorManager {
 			List<Object> actions = (List<Object>) c.get("actions");
 			for (Object object : actions) {
 				LinkedTreeMap<String, Object> actionData = (LinkedTreeMap<String, Object>) object;
+				System.out.println(actionData.get("action"));
+				System.out.println(actionData.get("resourceId"));
+				List<Object> configuration = (List<Object>) actionData.get("configuration");
+				for (Object config : configuration) {
+					LinkedTreeMap<String, Object> configData = (LinkedTreeMap<String, Object>) config;
+					System.out.println(configData.get("key"));
+					System.out.println(configData.get("value"));
+				}
 				System.out.println(actionData);	
 			}
 		} catch (FileNotFoundException e) {
