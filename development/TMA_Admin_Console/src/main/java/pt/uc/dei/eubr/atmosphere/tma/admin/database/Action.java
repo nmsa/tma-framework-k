@@ -14,6 +14,13 @@ public class Action {
         this.configuration = new ArrayList<Configuration>();
     }
 
+    public Action(int actuatorId, int resourceId, String actionName) {
+        super();
+        this.actuatorId = actuatorId;
+        this.resourceId = resourceId;
+        this.actionName = actionName;
+    }
+
     public int getActuatorId() {
         return actuatorId;
     }
