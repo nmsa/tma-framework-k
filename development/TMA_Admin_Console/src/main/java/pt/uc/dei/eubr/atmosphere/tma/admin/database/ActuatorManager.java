@@ -25,10 +25,6 @@ public class ActuatorManager {
             ps.setString(2, pubKey);
 
             ps.execute();
-
-            // THE METHOD TO INSERT THE CONFIGURATION SHOULD BE ADDED HERE
-            // LAST_INSERT_ID()
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -36,8 +32,10 @@ public class ActuatorManager {
     }
 
     private void saveActions(List<Action> actions, int actuatorId) {
-        String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) "
+                + "VALUES (LAST_INSERT_ID(), ?, ?)";
         PreparedStatement ps = null;
+        DatabaseManager databaseManager = new DatabaseManager();
 
         try {
             for (Action action: actions) {
@@ -46,25 +44,23 @@ public class ActuatorManager {
                 ps.setInt(2, action.getResourceId());
                 ps.setString(3, action.getActionName());
 
-                DatabaseManager databaseManager = new DatabaseManager();
-                Long actionId = databaseManager.executeQuery(ps);
-                saveConfiguration(actionId, action.getConfiguration());
+                databaseManager.executeQuery(ps);
+                saveConfiguration(action.getConfiguration());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void saveConfiguration(Long actionId, List<Configuration> configurationList) {
-        String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
+    private void saveConfiguration(List<Configuration> configurationList) {
+        String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (LAST_INSERT_ID(), ?, ?)";
         PreparedStatement ps = null;
 
         try {
             for (Configuration configuration: configurationList) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
-                ps.setLong(1, actionId);
-                ps.setString(2, configuration.getKeyName());
-                ps.setString(3, configuration.getDomain());
+                ps.setString(1, configuration.getKeyName());
+                ps.setString(2, configuration.getDomain());
 
                 DatabaseManager databaseManager = new DatabaseManager();
                 databaseManager.executeQuery(ps);
