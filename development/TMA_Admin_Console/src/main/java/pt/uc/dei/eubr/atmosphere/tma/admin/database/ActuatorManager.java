@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,23 +13,29 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
+import com.mysql.jdbc.Statement;
 
 public class ActuatorManager {
 
-    public Long saveNewActuator(String address, String pubKey) {
+    public int saveNewActuator(String address, String pubKey) {
         String sql = "INSERT INTO Actuator(address, pubKey) VALUES (?, ?)";
         PreparedStatement ps = null;
+        int newId = -1;
 
         try {
-            ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+            ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, address);
             ps.setString(2, pubKey);
-
             ps.execute();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+              newId = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return (long) -1.0;
+        return newId;
     }
 
     private void saveActions(List<Action> actions, int actuatorId) {

@@ -153,13 +153,10 @@ public class AdminConsole {
 		String address = readFromUser();
 		System.out.println("Please, inform the public key to be used: ");
 		String pubKey = readFromUser();
-		System.out.println("TO BE IMPLEMENTED: ");
-		System.out.println("- Validate if the endpoint is valid");
-		System.out.println("- Save in the database both the address informed by the user (" +
-				address + ") and the public key (" + pubKey + ")");
+		System.out.println("STILL PENDING: Validate if the endpoint is valid");
 		ActuatorManager actuatorManager = new ActuatorManager();
-		Long actuatorId = actuatorManager.saveNewActuator(address, pubKey);
-		System.out.println("The Resource Id is: " + actuatorId);
+		int actuatorId = actuatorManager.saveNewActuator(address, pubKey);
+		System.out.println("The Resource Id is: " + actuatorId + "\n");
 	}
 
 	private static void addNewResource() {
