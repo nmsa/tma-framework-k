@@ -1,3 +1,4 @@
+
 # TMA-Knowledge Development
 This component of TMA platform is composed by a DBMS MySQL and a Ceph block-storage persistent volume that stores all data of MySQL database.
 The instructions provided below include all steps that are needed to set up this component in your local system for testing purposes.
@@ -65,7 +66,12 @@ After completing all steps of the previous section, the first step of project in
 cd ceph/
 sh ceph_installation.sh
 ```
-The output of this script should be inserted in `key` field of the ceph-secret.yaml file. 
+Next, in the Ceph machine execute the following command:
+```sh
+cd ceph/
+sh ceph_configuration.sh
+```
+The output of the previous script should be inserted in `key` field of the ceph-secret.yaml file. 
 After that, you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
 ```sh
 kubectl create -f ceph/ceph-secret.yaml
