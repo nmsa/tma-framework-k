@@ -1,10 +1,11 @@
+
 # Ceph
 Ceph is an open-source program that provides object storage on a distributed cluster.  Ceph has no single point of fail, it can be scalable until Exabyte.
 Ceph is also able to replicate the data and has fault-tolerant mechanisms to avoid loss of data. Ceph has efficient auto-management and monitoring mechanisms.
 ## Prerequisites
 To integrate Ceph with Kubernetes, you need to initialize the Kubernetes cluster and follow the instructions present in README file of that development folder of this repository.
 ## Installation
-The commands below of the process of installation Ceph are automated in `ceph_installation.sh` and should be executed in a third machine separated from Kubernetes Cluster.
+The commands below of the process of installation Ceph are automated in `ceph_installation.sh` and in `ceph_configuration.sh` should be executed in a third machine separated from Kubernetes Cluster.
 To install Ceph, you should execute the following command in all machines:
 ```sh
 apt-get install ceph
