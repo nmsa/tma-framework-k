@@ -47,16 +47,6 @@ public class DatabaseManager {
         return connection;
     }
 
-    static void executeStatement(String sql) {
-        Connection conn = getConnectionInstance();
-        try {
-            Statement statement = conn.createStatement();
-            statement.executeQuery(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
     public static ResultSet executeQuery(String sql) {
         Connection conn = getConnectionInstance();
         Statement stmt;

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 
+import pt.uc.dei.eubr.atmosphere.tma.admin.database.ActionManager;
 import pt.uc.dei.eubr.atmosphere.tma.admin.database.ActuatorManager;
 import pt.uc.dei.eubr.atmosphere.tma.admin.database.ResourceManager;
 
@@ -156,7 +157,7 @@ public class AdminConsole {
 		System.out.println("STILL PENDING: Validate if the endpoint is valid");
 		ActuatorManager actuatorManager = new ActuatorManager();
 		int actuatorId = actuatorManager.saveNewActuator(address, pubKey);
-		System.out.println("The Resource Id is: " + actuatorId + "\n");
+		System.out.println("The Actuator Id is: " + actuatorId + "\n");
 	}
 
 	private static void addNewResource() {
@@ -178,7 +179,7 @@ public class AdminConsole {
 		System.out.println("Please, inform the path of the JSON file that contains the actions: ");
 		String actionFile = readFromUser();
 		System.out.println("STILL PENDING: Validate if the JSON file is valid");
-		ActuatorManager actuatorManager = new ActuatorManager();
-		actuatorManager.saveActions(actionFile, actuatorId);
+		ActionManager actionManager = new ActionManager();
+		actionManager.saveNewActions(actionFile, actuatorId);
 	}
 }
