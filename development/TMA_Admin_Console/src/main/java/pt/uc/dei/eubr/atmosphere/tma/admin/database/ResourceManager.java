@@ -3,9 +3,11 @@ package pt.uc.dei.eubr.atmosphere.tma.admin.database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.mysql.jdbc.Statement;
+
 public class ResourceManager {
 	
-	public Long saveNewResource(String name, String type, String address) {
+	public int saveNewResource(String name, String type, String address) {
 		String sql = "INSERT INTO "
 				+ "Resource(resourceName, resourceType, resourceAddress) "
 				+ "VALUES "
@@ -14,7 +16,7 @@ public class ResourceManager {
 		PreparedStatement ps = null;
 		
 		try {
-			ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+			ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, name);
 			ps.setString(2, type);
 			ps.setString(3, address);
@@ -23,6 +25,6 @@ public class ResourceManager {
 		}
 		
 		DatabaseManager databaseManager = new DatabaseManager();
-		return databaseManager.executeQuery(ps);
+		return databaseManager.execute(ps);
 	}
 }

@@ -88,14 +88,13 @@ public class DatabaseManager {
         }
     }
 
-	public Long executeQuery(PreparedStatement ps) {
-		Long key = (long) -1;
+	public int execute(PreparedStatement ps) {
+		int key = -1;
 		try {
-			ps.executeQuery();
+			ps.execute();
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			if (generatedKeys.next()) {
-				key = generatedKeys.getLong(1);
-				System.out.println(key);
+				key = generatedKeys.getInt(1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -51,7 +51,7 @@ public class ActuatorManager {
                 ps.setInt(2, action.getResourceId());
                 ps.setString(3, action.getActionName());
 
-                databaseManager.executeQuery(ps);
+                databaseManager.execute(ps);
                 saveConfiguration(action.getConfiguration());
             }
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class ActuatorManager {
                 ps.setString(2, configuration.getDomain());
 
                 DatabaseManager databaseManager = new DatabaseManager();
-                databaseManager.executeQuery(ps);
+                databaseManager.execute(ps);
             }
         } catch (SQLException e) {
             e.printStackTrace();
