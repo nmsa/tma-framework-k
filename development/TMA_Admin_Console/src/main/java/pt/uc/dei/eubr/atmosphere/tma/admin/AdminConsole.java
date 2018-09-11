@@ -172,16 +172,12 @@ public class AdminConsole {
 	}
 
 	private static void configureActions() {
-		System.out.println("Please, inform the public key to be used: ");
+		System.out.println("Please, inform the actuatorId of the Actuator of the Actions: ");
 		String actuatorIdString = readFromUser();
 		Integer actuatorId = Integer.parseInt(actuatorIdString);
 		System.out.println("Please, inform the path of the JSON file that contains the actions: ");
 		String actionFile = readFromUser();
-		System.out.println("TO BE IMPLEMENTED: ");
-		System.out.println("- Read the file informed by the user (" +
-				actionFile + ")");
-		System.out.println("- Validate if the JSON file is valid");
-		System.out.println("- Parse the file and save it to the database");
+		System.out.println("STILL PENDING: Validate if the JSON file is valid");
 		ActuatorManager actuatorManager = new ActuatorManager();
 		actuatorManager.saveActions(actionFile, actuatorId);
 	}

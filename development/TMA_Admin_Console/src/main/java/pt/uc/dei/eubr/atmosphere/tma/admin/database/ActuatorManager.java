@@ -33,34 +33,35 @@ public class ActuatorManager {
 
     private void saveActions(List<Action> actions, int actuatorId) {
         String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) "
-                + "VALUES (LAST_INSERT_ID(), ?, ?)";
+                + "VALUES (?, ?, ?)";
         PreparedStatement ps = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
         try {
             for (Action action: actions) {
-                ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
+                ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, actuatorId);
                 ps.setInt(2, action.getResourceId());
                 ps.setString(3, action.getActionName());
 
-                databaseManager.execute(ps);
-                saveConfiguration(action.getConfiguration());
+                int actionId = databaseManager.execute(ps);
+                saveConfiguration(actionId, action.getConfiguration());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void saveConfiguration(List<Configuration> configurationList) {
-        String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (LAST_INSERT_ID(), ?, ?)";
+    private void saveConfiguration(int actionId, List<Configuration> configurationList) {
+        String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
         PreparedStatement ps = null;
 
         try {
             for (Configuration configuration: configurationList) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
-                ps.setString(1, configuration.getKeyName());
-                ps.setString(2, configuration.getDomain());
+                ps.setInt(1, actionId);
+                ps.setString(2, configuration.getKeyName());
+                ps.setString(3, configuration.getDomain());
 
                 DatabaseManager databaseManager = new DatabaseManager();
                 databaseManager.execute(ps);
@@ -71,12 +72,12 @@ public class ActuatorManager {
     }
 
     public void saveActions(String filename, int actuatorId) {
-        //String filename = "/Users/josealexandredabruzzopereira/Projects/TMA_Admin_Console/src/main/resources/actions.json";
-        List<Action> actions = parseActionsJsonFile(filename);
+        // One example of file is the one of the repository: src/main/resources/actions.json
+        List<Action> actions = parseActionsJsonFile(filename, actuatorId);
         saveActions(actions, actuatorId);
     }
 
-    private List<Action> parseActionsJsonFile(String filename) {
+    private List<Action> parseActionsJsonFile(String filename, int actuatorId) {
         Gson gson = new GsonBuilder().create();
         InputStream input;
         List<Action> actions = new ArrayList<Action>();
@@ -89,9 +90,8 @@ public class ActuatorManager {
             List<Object> actionsJson = (List<Object>) c.get("actions");
             for (Object object : actionsJson) {
                 LinkedTreeMap<String, Object> actionData = (LinkedTreeMap<String, Object>) object;
-                actionData.get("resourceId");
-                Action action = new Action(-1, (Integer) actionData.get("resourceId"),
-                        actionData.get("action").toString());
+                Double resourceId = Double.parseDouble(actionData.get("resourceId").toString().trim());
+                Action action = new Action(actuatorId, resourceId.intValue(), actionData.get("action").toString());
                 List<Object> configuration = (List<Object>) actionData.get("configuration");
                 for (Object configJson : configuration) {
                     LinkedTreeMap<String, Object> configData = (LinkedTreeMap<String, Object>) configJson;
@@ -99,7 +99,6 @@ public class ActuatorManager {
                             configData.get("value").toString());
                     action.addConfiguration(conf);
                 }
-                System.out.println(actionData);
                 actions.add(action);
             }
         } catch (FileNotFoundException e) {

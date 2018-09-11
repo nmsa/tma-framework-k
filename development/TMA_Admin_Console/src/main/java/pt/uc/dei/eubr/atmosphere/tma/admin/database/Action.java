@@ -15,7 +15,7 @@ public class Action {
     }
 
     public Action(int actuatorId, int resourceId, String actionName) {
-        super();
+        this.configuration = new ArrayList<Configuration>();
         this.actuatorId = actuatorId;
         this.resourceId = resourceId;
         this.actionName = actionName;
