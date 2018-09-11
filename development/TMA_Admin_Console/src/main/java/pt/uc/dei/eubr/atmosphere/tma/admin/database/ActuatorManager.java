@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,22 +19,16 @@ public class ActuatorManager {
     public int saveNewActuator(String address, String pubKey) {
         String sql = "INSERT INTO Actuator(address, pubKey) VALUES (?, ?)";
         PreparedStatement ps = null;
-        int newId = -1;
 
         try {
             ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, address);
             ps.setString(2, pubKey);
-            ps.execute();
-
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-              newId = rs.getInt(1);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return newId;
+        DatabaseManager databaseManager = new DatabaseManager();
+        return databaseManager.execute(ps);
     }
 
     private void saveActions(List<Action> actions, int actuatorId) {
