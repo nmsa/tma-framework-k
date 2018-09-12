@@ -82,10 +82,11 @@ CREATE TABLE Action (
 );
 
 CREATE TABLE Configuration (
+    configurationId INT NOT NULL AUTO_INCREMENT,
     actionId INT NOT NULL,
     keyName VARCHAR(128),
     domain VARCHAR(1024),
-    PRIMARY KEY (actionId)
+    PRIMARY KEY (configurationId)
 );
 
 CREATE TABLE Data (
