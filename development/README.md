@@ -6,7 +6,7 @@ The instructions provided below include all steps that are needed to set up this
 The instructions were tested in `ubuntu`, but should work in other `debian`-based distributions, assuming that you are able to install the key dependencies.
 
 The first step is to install the required components: `docker`, and `kubernetes`.
-To install docker, you should execute the following command:
+To install docker, you should execute the following commands:
 ```sh
 sudo su -
 apt-get install docker.io
@@ -23,7 +23,7 @@ apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 
 In order to use Kubernetes two machines (nodes) are required with different IP addresses for deploying all necessary pods.
 These two nodes communicate through network plugin Flannel.
-To inicialize the Kubernetes cluster, run the following command in the Master machine:
+To inicialize the Kubernetes cluster, run the following commands in the Master machine:
 
 ```sh
 swapoff -a
@@ -69,7 +69,7 @@ To install Ceph in Kubernetes Master and Worker machines, run the following comm
 ```sh
 apt-get -y install ceph
 ```
-Next, in the Ceph machine execute the following command:
+Next, in the Ceph machine execute the following commands:
 ```sh
 cd ceph/
 sh ceph_configuration.sh
