@@ -65,7 +65,7 @@ After completing all steps of the previous section, the first step of project in
 cd ceph/
 sh ceph_installation.sh
 ```
-To install Ceph in Kubernetes Master and Worker machines, run the following command
+To install Ceph in Kubernetes Master and Worker machines, run the following command:
 ```sh
 apt-get -y install ceph
 ```

@@ -2,7 +2,7 @@
 MySQL is an open-source relational DBMS. This database system has a good performance in almost every scenarios of application. It is compatible with almost every operating systems and program languages. One of the most important characteristics of this software is its documentation that is very good and simple.
 
 ## Prerequisites
-To deploy MySQL, you need to initialize the Kubernetes cluster and follow the instructions present in README file of the development folder of this repository.
+To deploy MySQL, you need to initialize the Kubernetes cluster and follow the instructions present in `README` file of the development folder of this repository.
 Another requirement is to have Ceph correctly installed in all machines of Kubernetes cluster and running in its machine. All the steps needed to install and to connect Ceph with Kubernetes are described in the `README` file of Ceph folder of this repository.
 
 ## Installation
@@ -12,7 +12,7 @@ The first step of installing MySQL in Kubernetes cluster is to execute the yaml 
 kubectl create -f mysql-deployment.yaml
 ```
 After some seconds, MySQL pod should be in "Running" status.
-When MySQL pod is in the "Running" status, the next step is create a database to store all necessary data. That can be done by executing the following command on Master node of Kubernetes Cluster.
+When MySQL pod is in the "Running" status, the next step is to create a database to store all necessary data. That can be done by executing the following command: 
 ```sh
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword -e "CREATE DATABASE knowledge /*\!40100 DEFAULT CHARACTER SET utf8 */;"
 ```

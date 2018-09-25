@@ -48,7 +48,7 @@ After mapping the image, it is necessary to define the type of file system that 
 ```sh
 mkfs.ext4 "Output of the previous command"
 ```
-In order to MySQL pod be able to connect with its image, we have to unmap it. To do that, run the following commands:
+In order to MySQL pod be able to connect with its image, we have to unmap it. To do that, run the following command:
 ```sh
 rbd unmap tma_k_db_mysql
 ```
