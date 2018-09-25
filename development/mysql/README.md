@@ -18,13 +18,13 @@ kubectl exec -ti mysql-0 -- mysql -u root -ppassword -e "CREATE DATABASE knowled
 ```
 With the knowledge database created, it is time to create all necessary tables and their relations on it. To do that, you should execute the following command:
  ```sh
-kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../database/TMA-K_create_database.sql
+kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../../database/TMA-K_create_database.sql
 ```
 ## Testing
 For testing purposes, there is a SQL script that inserts examples of data in the knowledge database tables.
 To insert the example data, you should execute the following command:
 ```sh
-kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < mysql/example_data_mysql.sql
+kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < example_data_mysql.sql
 ```
 This script inserts data in Probe, Resource, and Description tables. More specifically, `example_data_mysql.sql` inserts 6 rows in Probe table, 26 rows in Description table, and 7 rows in Resource table.
 
