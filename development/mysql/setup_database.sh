@@ -1,5 +1,5 @@
 # Deploy secret with MySQL password
-kubectl create secret generic mysql-pass --from-literal=password=password
+kubectl create secret generic mysql-pass --from-literal=password=passtobereplaced
 
 # Deploy MySQL in Kubernetes Cluster
 kubectl create -f mysql-deployment.yaml
