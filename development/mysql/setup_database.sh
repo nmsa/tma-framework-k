@@ -5,13 +5,13 @@ kubectl create secret generic mysql-pass --from-literal=password=password
 kubectl create -f mysql-deployment.yaml
 
 # Timeout until MySQL pod is ready
-getmyqlstate () {
+getMyqlState () {
 	mysqlstate=$(kubectl get pods -n default mysql-0 -o jsonpath="{.status.phase}")
 }
-getmyqlstate
+getMyqlState
 while [ $mysqlstate != "Running" ]
 do
-getmyqlstate
+getMyqlState
 sleep 1
 done
 
