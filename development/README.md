@@ -1,4 +1,3 @@
-
 # TMA-Knowledge Development
 This component of TMA platform is composed by a DBMS MySQL and a Ceph block-storage persistent volume that stores all data of MySQL database.
 The instructions provided below include all steps that are needed to set up this component in your local system for testing purposes.
@@ -7,7 +6,7 @@ The instructions provided below include all steps that are needed to set up this
 The instructions were tested in `ubuntu`, but should work in other `debian`-based distributions, assuming that you are able to install the key dependencies.
 
 The first step is to install the required components: `docker`, and `kubernetes`.
-To install docker, you should execute the following command:
+To install docker, you should execute the following commands:
 ```sh
 sudo su -
 apt-get install docker.io
@@ -24,7 +23,7 @@ apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 
 In order to use Kubernetes two machines (nodes) are required with different IP addresses for deploying all necessary pods.
 These two nodes communicate through network plugin Flannel.
-To inicialize the Kubernetes cluster, run the following command in the Master machine:
+To inicialize the Kubernetes cluster, run the following commands in the Master machine:
 
 ```sh
 swapoff -a
@@ -61,33 +60,31 @@ Now, the Kubernetes cluster are ready to deploy containers.
 
 ## Installation
 
-After completing all steps of the previous section, the first step of project installation is to install  Ceph. Ceph needs to be installed on a separate machine. To deploy Ceph, you need to install Ceph in all three machines. To do that you just need to execute the following script in all machines:
+After completing all steps of the previous section, the first step of project installation is to install  Ceph. Ceph needs to be installed on a separate machine. To deploy Ceph, you need to install Ceph in all three machines. To do that you just need to execute the following script in Ceph machine:
 ```sh
 cd ceph/
 sh ceph_installation.sh
 ```
-Next, in the Ceph machine execute the following command:
+To install Ceph in Kubernetes Master and Worker machines, run the following command:
+```sh
+apt-get -y install ceph
+```
+Next, in the Ceph machine execute the following commands:
 ```sh
 cd ceph/
 sh ceph_configuration.sh
 ```
-The output of the previous script should be inserted in `key` field of the ceph-secret.yaml file. 
+The output of the previous script should be inserted in `key` field of the `ceph-secret.yaml` file. 
 After that, you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
 ```sh
 kubectl create -f ceph/ceph-secret.yaml
 ```
-With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. To do that, you just need to execute the following command:
+With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. To do that, you just need to execute the following commands:
 ```sh
-kubectl create -f mysql/mysql-deployment.yaml
+cd mysql/
+sh setup_database.sh
 ```
-The next step is to create database to store all information provided by other components of this platform. To do that, you should execute the following command:
-```sh
-kubectl exec -ti mysql-0 -- mysql -u root -ppassword -e "CREATE DATABASE knowledge /*\!40100 DEFAULT CHARACTER SET utf8 */;"
-```
-After the creation of database, the next step is create all tables and relations between themselves. To do that, you should run `TMA-K_create_database.sql` script. To do that, run the following command:
-```sh
-kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < ../database/TMA-K_create_database.sql
-```
+
 ## Testing
 For testing purposes, there is a script called `example_data_mysql.sql` that inserts example data in Probe, Resource, and Description tables.
 To do that, you just need to execute the following SQL script
@@ -95,4 +92,3 @@ To do that, you just need to execute the following SQL script
 kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < mysql/example_data_mysql.sql
 ```
 If everything runs correctly, you should see the data inserted by script in database tables previously referred.
-
