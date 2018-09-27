@@ -19,4 +19,4 @@ done
 kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD -e \"CREATE DATABASE knowledge /*\!40100 DEFAULT CHARACTER SET utf8 */;\""
 
 # knowledge database population
-kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /var/lib/mysql/TMA-K_create_database.sql"
+kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/TMA-K_create_database.sql"
