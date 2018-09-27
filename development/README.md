@@ -85,7 +85,7 @@ With Ceph correctly installed and connected to Kubernetes Cluster, it is time to
 cd mysql/
 sh build.sh
 ```
-Now, MySQL is ready to be executed inside of a Kubernetes pod. To do that execute the following script:
+Now, MySQL is ready to be executed inside of a Kubernetes pod. To do that execute the following script in Kubernetes Master node:
 ```sh
 cd mysql/
 sh setup_database.sh
