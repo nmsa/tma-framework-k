@@ -8,5 +8,3 @@ COPY TMA-K_create_database.sql /mysql/TMA-K_create_database.sql
 
 # Copy file that creates example data in knowledge database
 COPY example_data_mysql.sql /mysql/example_data_mysql.sql
-
-
