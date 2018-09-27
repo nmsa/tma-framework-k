@@ -79,13 +79,13 @@ After that, you should deploy this file in Kubernetes. To do that, you need to e
 ```sh
 kubectl create -f ceph/ceph-secret.yaml
 ```
-With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. The first step is build MySQL Docker image. To do that, you just need to execute the following commands on Worker node of Kubernetes Cluster:
+With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. The first step is to build MySQL Docker image. To do that, you just need to execute the following commands on Worker node of Kubernetes Cluster:
 
 ```sh
 cd mysql/
 sh build.sh
 ```
-Now, MySQL is ready to be eexcuted inside of a Kubernetes pod. To do that execute the following script:
+Now, MySQL is ready to be executed inside of a Kubernetes pod. To do that execute the following script:
 ```sh
 cd mysql/
 sh setup_database.sh
@@ -93,9 +93,9 @@ sh setup_database.sh
 
 ## Testing
 For testing purposes, there is a script called `example_data_mysql.sql` that inserts example data in Probe, Resource, and Description tables.
-To do that, you just need to execute the following SQL script
+To do that, you just need to execute the following SQL script:
 ```sh
-kubectl exec -ti mysql-0 -- mysql -u root -ppassword knowledge < mysql/example_data_mysql.sql
+kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/example_data_mysql.sql"
 ```
 If everything runs correctly, you should see the data inserted by script in database tables previously referred.
 

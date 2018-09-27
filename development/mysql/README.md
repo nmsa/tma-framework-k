@@ -6,11 +6,11 @@ To deploy MySQL, you need to initialize the Kubernetes cluster and follow the in
 Another requirement is to have Ceph correctly installed in all machines of Kubernetes cluster and running in its machine. All the steps needed to install and to connect Ceph with Kubernetes are described in the `README` file of Ceph folder of this repository.
 
 ## Installation
-All commands below of the process of MySQL installation are automated in `setup_database.sh`. All of the following commands must be executed in Kubernetes Master machine.
 The first step is to build the Docker image of MySQL. To do that, the following command needs to be executed:
 ```sh
 sh build.sh
 ```
+All commands below of the process of MySQL installation are automated in `setup_database.sh`. All of the following commands must be executed in Kubernetes Master machine.
 The second step is to create a secret that encoding MySQL root password. To do that, the following command needs to be executed:
 ```sh
 kubectl create secret generic mysql-pass --from-literal=password=passtobereplaced
@@ -35,4 +35,3 @@ To insert the example data, you should execute the following command:
 kubectl exec -ti mysql-0 -- mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < example_data_mysql.sql
 ```
 This script inserts data in Probe, Resource, and Description tables. More specifically, `example_data_mysql.sql` inserts 6 rows in Probe table, 26 rows in Description table, and 7 rows in Resource table.
-
