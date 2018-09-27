@@ -80,7 +80,6 @@ After that, you should deploy this file in Kubernetes. To do that, you need to e
 kubectl create -f ceph/ceph-secret.yaml
 ```
 With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. The first step is to build MySQL Docker image. To do that, you just need to execute the following commands on Worker node of Kubernetes Cluster:
-
 ```sh
 cd mysql/
 sh build.sh
