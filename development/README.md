@@ -98,4 +98,3 @@ To do that, you just need to execute the following SQL script:
 kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/example_data_mysql.sql"
 ```
 If everything runs correctly, you should see the data inserted by script in database tables previously referred.
-
