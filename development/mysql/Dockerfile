@@ -7,4 +7,4 @@ WORKDIR /mysql
 COPY TMA-K_create_database.sql /mysql/TMA-K_create_database.sql
 
 # Copy file that inserts example data in knowledge database
-COPY example_data_mysql.sql /mysql/TMA-K_insert_example_data.sql
+COPY TMA-K_insert_example_data.sql /mysql/TMA-K_insert_example_data.sql
