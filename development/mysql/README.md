@@ -32,6 +32,6 @@ kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSW
 For testing purposes, there is a SQL script that inserts examples of data in the knowledge database tables.
 To insert the example data, you should execute the following command:
 ```sh
-kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < example_data_mysql.sql"
+kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < TMA-K_insert_example_data.sql"
 ```
-This script inserts data in Probe, Resource, and Description tables. More specifically, `example_data_mysql.sql` inserts 6 rows in Probe table, 26 rows in Description table, and 7 rows in Resource table.
+This script inserts data in Probe, Resource, and Description tables. More specifically, `TMA-K_insert_example_data.sql` inserts 6 rows in Probe table, 26 rows in Description table, and 7 rows in Resource table.
