@@ -1,5 +1,6 @@
 package pt.uc.dei.eubr.atmosphere.tma.admin;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
+
+import org.apache.commons.io.FileUtils;
 
 public class KeyManager {
 
@@ -26,7 +29,7 @@ public class KeyManager {
         KeyPair keyPair = null;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
-            keyPairGenerator.initialize(4096, SecureRandom.getInstance("SHA1PRNG"));
+            keyPairGenerator.initialize(1024, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             System.err.println("[ATMOSPHERE] NoSuchAlgorithmException");
@@ -82,6 +85,7 @@ public class KeyManager {
              // encrypt the plain text using the public key
              cipher.init(Cipher.ENCRYPT_MODE, key);
              cipherText = cipher.doFinal(text.getBytes());
+             FileUtils.writeByteArrayToFile(new File("/home/virt-atm/Documents/encrypted-message"), cipherText);
            } catch (Exception e) {
              e.printStackTrace();
            }

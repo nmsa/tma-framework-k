@@ -152,11 +152,11 @@ public class AdminConsole {
 	private static void addNewActuator() {
 		System.out.println("Please, inform the address of the Actuator: ");
 		String address = readFromUser();
-		System.out.println("Please, inform the public key to be used: ");
-		String pubKey = readFromUser();
+		System.out.println("Please, inform the path of public key to be used: ");
+		String pubKeyPath = readFromUser();
 		System.out.println("STILL PENDING: Validate if the endpoint is valid");
 		ActuatorManager actuatorManager = new ActuatorManager();
-		int actuatorId = actuatorManager.saveNewActuator(address, pubKey);
+		int actuatorId = actuatorManager.saveNewActuator(address, pubKeyPath);
 		System.out.println("The Actuator Id is: " + actuatorId + "\n");
 	}
 
