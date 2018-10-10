@@ -18,7 +18,8 @@ public class AdminConsole {
 	private static final int ADD_ACTUATOR = 4;
 	private static final int ADD_RESOURCE = 5;
 	private static final int CONFIGURE_ACTIONS = 6;
-	private static final int EXIT_OPTION = 7;
+	private static final int DECRYPT_SAMPLE_MESSAGE = 7;
+	private static final int EXIT_OPTION = 8;
 
 	private static byte[] encMessage = null;
 	private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
@@ -87,6 +88,11 @@ public class AdminConsole {
 			configureActions();
 			break;
 
+		case DECRYPT_SAMPLE_MESSAGE:
+		    String filenameMessage = getFilenameMessage();
+		    System.out.println("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
+            break;
+
 		case EXIT_OPTION:
 			System.out.println("Bye!");
 			break;
@@ -107,6 +113,7 @@ public class AdminConsole {
 		System.out.println(ADD_ACTUATOR + " - Add new actuator;");
 		System.out.println(ADD_RESOURCE + " - Add new resource;");
 		System.out.println(CONFIGURE_ACTIONS + " - Configure actions;");
+		System.out.println(DECRYPT_SAMPLE_MESSAGE + " - Test Decrypt Message;");
 		System.out.println(EXIT_OPTION + " - Exit");
 	}
 
@@ -147,6 +154,10 @@ public class AdminConsole {
 			e.printStackTrace();
 		}
 		return line;
+	}
+
+	private static String getFilenameMessage() {
+	    return "/home/virt-atm/Documents/encrypted-response";
 	}
 
 	private static void addNewActuator() {
