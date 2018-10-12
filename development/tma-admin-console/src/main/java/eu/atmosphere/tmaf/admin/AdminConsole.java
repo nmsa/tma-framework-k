@@ -14,17 +14,45 @@ import eu.atmosphere.tmaf.admin.database.ResourceManager;
 
 public class AdminConsole {
 
+    // TODO: JoseP: this logger should be used for the Command Line Interface
+    private static final Logger CLI_LOG = LoggerFactory.getLogger("tma-admin-cli-logger");
+    //
+    // TODO: JoseP: this name is not standart logging practice, is it?
+    // TODO: JoseP: if you want to enforce the pattern, you should modify the log4j2.
     private static final Logger LOGGER = LoggerFactory.getLogger("[ATMOSPHERE]");
+//    private static final Logger LOGGER = LoggerFactory.getLogger(AdminConsole.class);
 
-    private static final int GENERATE_KEY_PAIR = 1;
-    private static final int ENCRYPT_MESSAGE = 2;
-    private static final int DECRYPT_MESSAGE = 3;
-    private static final int ADD_ACTUATOR = 4;
-    private static final int ADD_RESOURCE = 5;
-    private static final int CONFIGURE_ACTIONS = 6;
-    private static final int DECRYPT_SAMPLE_MESSAGE = 7;
-    private static final int EXIT_OPTION = 8;
+    // TODO: JoseP: suggest refactoring for enumeration
+    public enum AdminAction {
+        GENERATE_KEY_PAIR,
+        ENCRYPT_MESSAGE,
+        DECRYPT_MESSAGE,
+        ADD_ACTUATOR,
+        ADD_RESOURCE,
+        CONFIGURE_ACTIONS,
+        DECRYPT_SAMPLE_MESSAGE,
+        EXIT_OPTION;
 
+        @Override
+        public String toString() {
+            return Integer.toString(ordinal());
+        }
+
+        public static AdminAction valueOf(int ordinal) {
+            return (ordinal < values().length) ? values()[ordinal]
+                    : EXIT_OPTION;
+        }
+    }
+
+    // TODO: JoseP: suggest refactoring for enumeration, as above
+//    private static final int GENERATE_KEY_PAIR = 1;
+//    private static final int ENCRYPT_MESSAGE = 2;
+//    private static final int DECRYPT_MESSAGE = 3;
+//    private static final int ADD_ACTUATOR = 4;
+//    private static final int ADD_RESOURCE = 5;
+//    private static final int CONFIGURE_ACTIONS = 6;
+//    private static final int DECRYPT_SAMPLE_MESSAGE = 7;
+//    private static final int EXIT_OPTION = 8;
     private static byte[] encMessage = null;
     private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
             + "As aves que aqui gorgeiam não gorgeiam como lá";
@@ -32,6 +60,7 @@ public class AdminConsole {
     private static BufferedReader reader;
 
     public static void main(String[] args) {
+
         reader = new BufferedReader(new InputStreamReader(System.in));
 
         try {
@@ -45,22 +74,27 @@ public class AdminConsole {
     }
 
     private static void readUserOption() throws IOException {
-        int option = 0;
+        int input;
+        AdminAction option = AdminAction.ADD_ACTUATOR; // we should add an harmless default option.
         do {
             printMenuOptions();
             String line = reader.readLine();
             try {
-                option = Integer.parseInt(line);
+                input = Integer.parseInt(line);
+                option = AdminAction.valueOf(input);
                 performAction(option);
             } catch (NumberFormatException nfe) {
-                LOGGER.error("Not a valid number!\n");
+                CLI_LOG.error("Not a valid number! (DUP)\n"); //  TODO: JoseP: decide what to do with this boy over here
+                LOGGER.error("Not a valid number!\n"); //  TODO: JoseP: decide what to do with this boy over here
             }
 
-        } while (option != EXIT_OPTION);
+        } while (option != AdminAction.EXIT_OPTION);
     }
 
-    private static void performAction(int option) {
-        switch (option) {
+    private static void performAction(AdminAction option) { // TODO: JoseP: if you want, you can limit in method declaration
+
+        switch (option) { // TODO: JoseP: suggested change
+//        switch (option) { // TODO: JoseP: old vertion
             case GENERATE_KEY_PAIR:
 
                 String directory = getDirectory();
@@ -98,40 +132,41 @@ public class AdminConsole {
                 break;
 
             case EXIT_OPTION:
-                System.out.println("Bye!");
+                CLI_LOG.info("Bye!");
                 break;
 
             default:
-                System.out.println("Invalid Option!");
+                CLI_LOG.info("Invalid Option!");
                 break;
         }
     }
 
     private static void printMenuOptions() {
-        System.out.println("Welcome to TMA-Admin!");
-        System.out.println("---------------------");
-        System.out.println("What do you want to do?");
-        System.out.println(GENERATE_KEY_PAIR + " - Generate key-pair;");
-        System.out.println(ENCRYPT_MESSAGE + " - Encrypt Message;");
-        System.out.println(DECRYPT_MESSAGE + " - Decrypt Message;");
-        System.out.println(ADD_ACTUATOR + " - Add new actuator;");
-        System.out.println(ADD_RESOURCE + " - Add new resource;");
-        System.out.println(CONFIGURE_ACTIONS + " - Configure actions;");
-        System.out.println(DECRYPT_SAMPLE_MESSAGE + " - Test Decrypt Message;");
-        System.out.println(EXIT_OPTION + " - Exit");
+        CLI_LOG.info("Welcome to TMA-Admin!");
+        CLI_LOG.info("---------------------");
+        CLI_LOG.info("What do you want to do?");
+        // TODO: JoseP: suggest refactoring for enumeration, as above, as below
+        CLI_LOG.info(AdminAction.GENERATE_KEY_PAIR + " - Generate key-pair;");
+        CLI_LOG.info(AdminAction.ENCRYPT_MESSAGE + " - Encrypt Message;");
+        CLI_LOG.info(AdminAction.DECRYPT_MESSAGE + " - Decrypt Message;");
+        CLI_LOG.info(AdminAction.ADD_ACTUATOR + " - Add new actuator;");
+        CLI_LOG.info(AdminAction.ADD_RESOURCE + " - Add new resource;");
+        CLI_LOG.info(AdminAction.CONFIGURE_ACTIONS + " - Configure actions;");
+        CLI_LOG.info(AdminAction.DECRYPT_SAMPLE_MESSAGE + " - Test Decrypt Message;");
+        CLI_LOG.info(AdminAction.EXIT_OPTION + " - Exit");
     }
 
     private static String getDirectory() {
         File file = null;
         do {
             try {
-                System.out.println("Please, enter a valid directory: ");
+                CLI_LOG.info("Please, enter a valid directory: ");
                 String line = reader.readLine();
                 file = new File(line);
                 if (file.isDirectory()) {
                     return line;
                 } else {
-                    System.err.println("The path is not valid!");
+                    CLI_LOG.warn("The path is not valid!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -141,12 +176,12 @@ public class AdminConsole {
     }
 
     private static String getPathPublicKey() {
-        System.out.println("Please, enter the name of the public key: ");
+        CLI_LOG.info("Please, enter the name of the public key: ");
         return readFromUser();
     }
 
     private static String getPathPrivateKey() {
-        System.out.println("Please, enter the name of the private key: ");
+        CLI_LOG.info("Please, enter the name of the private key: ");
         return readFromUser();
     }
 
@@ -165,35 +200,35 @@ public class AdminConsole {
     }
 
     private static void addNewActuator() {
-        System.out.println("Please, inform the address of the Actuator: ");
+        CLI_LOG.info("Please, inform the address of the Actuator: ");
         String address = readFromUser();
-        System.out.println("Please, inform the path of public key to be used: ");
+        CLI_LOG.info("Please, inform the path of public key to be used: ");
         String pubKeyPath = readFromUser();
-        System.out.println("STILL PENDING: Validate if the endpoint is valid");
+        CLI_LOG.info("STILL PENDING: Validate if the endpoint is valid");
         ActuatorManager actuatorManager = new ActuatorManager();
         int actuatorId = actuatorManager.saveNewActuator(address, pubKeyPath);
-        System.out.println("The Actuator Id is: " + actuatorId + "\n");
+        CLI_LOG.info("The Actuator Id is: " + actuatorId + "\n");
     }
 
     private static void addNewResource() {
-        System.out.println("Please, inform the Resource Name: ");
+        CLI_LOG.info("Please, inform the Resource Name: ");
         String name = readFromUser();
-        System.out.println("Please, inform the resource type: ");
+        CLI_LOG.info("Please, inform the resource type: ");
         String type = readFromUser();
-        System.out.println("Please, inform the resource address: ");
+        CLI_LOG.info("Please, inform the resource address: ");
         String address = readFromUser();
         ResourceManager resourceManager = new ResourceManager();
         int resourceId = resourceManager.saveNewResource(name, type, address);
-        System.out.println("The Resource Id is: " + resourceId);
+        CLI_LOG.info("The Resource Id is: " + resourceId);
     }
 
     private static void configureActions() {
-        System.out.println("Please, inform the actuatorId of the Actuator of the Actions: ");
+        CLI_LOG.info("Please, inform the actuatorId of the Actuator of the Actions: ");
         String actuatorIdString = readFromUser();
         Integer actuatorId = Integer.parseInt(actuatorIdString);
-        System.out.println("Please, inform the path of the JSON file that contains the actions: ");
+        CLI_LOG.info("Please, inform the path of the JSON file that contains the actions: ");
         String actionFile = readFromUser();
-        System.out.println("STILL PENDING: Validate if the JSON file is valid");
+        CLI_LOG.info("STILL PENDING: Validate if the JSON file is valid");
         ActionManager actionManager = new ActionManager();
         actionManager.saveNewActions(actionFile, actuatorId);
     }
