@@ -1,4 +1,4 @@
-package pt.uc.dei.eubr.atmosphere.tma.admin.database;
+package eu.atmosphere.tmaf.admin.database;
 
 public class Configuration {
 

@@ -1,2 +1,7 @@
 *.class
 /development/tma-admin-console/target/
+
+.classpath
+.project
+.settings
+logs

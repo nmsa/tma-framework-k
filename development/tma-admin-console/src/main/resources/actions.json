@@ -1,0 +1,32 @@
+{
+  "actions": [
+    {
+      "action": "myScaleOutAction",
+      "resourceId": 1,
+      "configuration": [
+        {
+          "key": "lastScale",
+          "value": "int"
+        },
+        {
+          "key": "replicaIncrease",
+          "value": "int"
+        }
+      ]
+    },
+    {
+      "action": "myScaleInAction",
+      "resourceId": 1,
+      "configuration": [
+        {
+          "key": "lastScale",
+          "value": "int"
+        },
+        {
+          "key": "replicaDecrease",
+          "value": "int"
+        }
+      ]
+    }
+  ]
+}

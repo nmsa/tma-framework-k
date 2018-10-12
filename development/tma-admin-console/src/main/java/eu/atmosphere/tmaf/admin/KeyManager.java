@@ -1,4 +1,4 @@
-package pt.uc.dei.eubr.atmosphere.tma.admin;
+package eu.atmosphere.tmaf.admin;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
