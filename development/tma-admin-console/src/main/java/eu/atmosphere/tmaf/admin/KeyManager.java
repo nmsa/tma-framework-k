@@ -54,7 +54,7 @@ public class KeyManager {
             keyPairGenerator.initialize(2048, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("[ATMOSPHERE] NoSuchAlgorithmException");
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
 
@@ -71,8 +71,10 @@ public class KeyManager {
             priv = privateKey;
             keyfos.close();
         } catch (FileNotFoundException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -87,8 +89,10 @@ public class KeyManager {
             pub = publicKey;
             keyfos.close();
         } catch (FileNotFoundException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -107,6 +111,7 @@ public class KeyManager {
             cipherText = cipher.doFinal(text.getBytes());
             FileUtils.writeByteArrayToFile(new File("/home/virt-atm/Documents/encrypted-message"), cipherText);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
         return cipherText;
@@ -134,12 +139,16 @@ public class KeyManager {
 
             return privKey;
         } catch (FileNotFoundException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
 
@@ -163,12 +172,16 @@ public class KeyManager {
 
             return pubKey;
         } catch (FileNotFoundException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -198,8 +211,10 @@ public class KeyManager {
             }
             br.close();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
         return decryptedMessage;
@@ -225,8 +240,9 @@ public class KeyManager {
             cipher.init(Cipher.DECRYPT_MODE, key);
             dectyptedText = cipher.doFinal(text);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         return new String(dectyptedText);
     }

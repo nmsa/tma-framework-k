@@ -7,10 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DatabaseManager {
     private static Connection connection = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManager.class);
 
     public static Connection getConnectionInstance() {
         // This will load the MySQL driver, each DB has its own driver
@@ -25,7 +30,7 @@ public class DatabaseManager {
 			        .getConnection("jdbc:mysql://localhost/knowledge?"
 			                + "user=root&password=123456");
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    LOGGER.error(e.getMessage());
 		}
         return connection;
     }
@@ -41,7 +46,7 @@ public class DatabaseManager {
             	connection = DriverManager.getConnection(url);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
 
         return connection;
@@ -55,7 +60,7 @@ public class DatabaseManager {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         return rs;
     }
@@ -74,7 +79,7 @@ public class DatabaseManager {
                 connection.close();
             }
         } catch (Exception e) {
-
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -87,7 +92,7 @@ public class DatabaseManager {
 				key = generatedKeys.getInt(1);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    LOGGER.error(e.getMessage());
 	    }
 		return key;
 	}

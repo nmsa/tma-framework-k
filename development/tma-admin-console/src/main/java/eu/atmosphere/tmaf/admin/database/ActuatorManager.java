@@ -8,10 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.Statement;
 
 public class ActuatorManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActuatorManager.class);
 
     public int saveNewActuator(String address, String pubKeyPath) {
         String sql = "INSERT INTO Actuator(address, pubKey) VALUES (?, ?)";
@@ -23,7 +27,7 @@ public class ActuatorManager {
             ps.setString(1, address);
             ps.setBytes(2, pubKey);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         DatabaseManager databaseManager = new DatabaseManager();
         return databaseManager.execute(ps);
@@ -36,11 +40,9 @@ public class ActuatorManager {
             input = new FileInputStream(pubKeyPath);
             pkBytes = IOUtils.toByteArray(input);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         return pkBytes;
     }

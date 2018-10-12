@@ -14,10 +14,7 @@ import eu.atmosphere.tmaf.admin.database.ResourceManager;
 
 public class AdminConsole {
 
-    //TODO: Use LOGGER insted of sout 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminConsole.class);
-    //
-    //
+    private static final Logger LOGGER = LoggerFactory.getLogger("[ATMOSPHERE]");
 
     private static final int GENERATE_KEY_PAIR = 1;
     private static final int ENCRYPT_MESSAGE = 2;
@@ -41,7 +38,7 @@ public class AdminConsole {
             readUserOption();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            System.err.println("[ATMOSPHERE] There was a problem reading your option!");
+            LOGGER.error("[ATMOSPHERE] There was a problem reading your option!");
             e.printStackTrace();
         }
 
@@ -56,7 +53,7 @@ public class AdminConsole {
                 option = Integer.parseInt(line);
                 performAction(option);
             } catch (NumberFormatException nfe) {
-                System.err.println("Not a valid number!\n");
+                LOGGER.error("Not a valid number!\n");
             }
 
         } while (option != EXIT_OPTION);
@@ -76,11 +73,11 @@ public class AdminConsole {
 
             case ENCRYPT_MESSAGE:
                 encMessage = KeyManager.encryptMessage(message);
-                System.out.println(encMessage);
+                LOGGER.info(new String(encMessage));
                 break;
 
             case DECRYPT_MESSAGE:
-                System.out.println(KeyManager.decryptMessage(encMessage));
+                LOGGER.info(KeyManager.decryptMessage(encMessage));
                 break;
 
             case ADD_ACTUATOR:
@@ -97,7 +94,7 @@ public class AdminConsole {
 
             case DECRYPT_SAMPLE_MESSAGE:
                 String filenameMessage = getFilenameMessage();
-                System.out.println("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
+                LOGGER.info("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
                 break;
 
             case EXIT_OPTION:

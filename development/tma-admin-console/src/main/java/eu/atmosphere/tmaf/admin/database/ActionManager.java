@@ -9,12 +9,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.mysql.jdbc.Statement;
 
 public class ActionManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionManager.class);
 
     public void saveNewActions(String filename, int actuatorId) {
         // One example of file is the one of the repository: src/main/resources/actions.json
@@ -39,7 +44,7 @@ public class ActionManager {
                 saveConfiguration(actionId, action.getConfiguration());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -68,7 +73,7 @@ public class ActionManager {
                 actions.add(action);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         return actions;
     }
@@ -88,7 +93,7 @@ public class ActionManager {
                 databaseManager.execute(ps);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
     }
 }
