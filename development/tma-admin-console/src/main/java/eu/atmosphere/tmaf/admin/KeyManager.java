@@ -34,11 +34,16 @@ import org.slf4j.LoggerFactory;
 public class KeyManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyManager.class);
-    //
-    //
+    private static final Logger CLI_LOG = LoggerFactory.getLogger("tma-admin-cli-logger");
 
     static PublicKey pub = null;
     static PrivateKey priv = null;
+
+    // TODO: Remove it! Just for testing purposes
+    public static String getBaseDir() {
+        //return "/home/virt-atm/Documents/";
+        return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/";
+    }
 
     /**
      * String to hold name of the encryption algorithm.
@@ -98,7 +103,14 @@ public class KeyManager {
     }
 
     static byte[] encryptMessage(String message) {
-        return encrypt(message, pub);
+        byte[] result = null;
+        if (pub == null) {
+            CLI_LOG.error("You need to define a key before encrypting the message!\n");
+        } else  {
+            result = encrypt(message, pub);
+            LOGGER.info(new String(result));
+        }
+        return result;
     }
 
     public static byte[] encrypt(String text, PublicKey key) {
@@ -109,7 +121,7 @@ public class KeyManager {
             // encrypt the plain text using the public key
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
-            FileUtils.writeByteArrayToFile(new File("/home/virt-atm/Documents/encrypted-message"), cipherText);
+            FileUtils.writeByteArrayToFile(new File(getBaseDir() + "encrypted-message"), cipherText);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -118,7 +130,14 @@ public class KeyManager {
     }
 
     static String decryptMessage(byte[] encMessage) {
-        return decrypt(encMessage, priv);
+        String result = "";
+        if (priv == null) {
+            CLI_LOG.error("You need to define a key before decrypting the message!\n");
+        } else  {
+            result = decrypt(encMessage, priv);
+            LOGGER.info(result);
+        }
+        return result;
     }
 
     private static PrivateKey getPrivateKey(String filenamePrivKey) {
@@ -199,12 +218,12 @@ public class KeyManager {
                     // data
                     encMessage = Base64.getDecoder().decode(st);
                     System.out.println("byteArray.length: " + encMessage.length);
-                    decryptedMessage = decrypt(encMessage, getPrivateKey("/home/virt-atm/Documents/priv-key-execute"));
+                    decryptedMessage = decrypt(encMessage, getPrivateKey(getBaseDir() + "priv-key-execute"));
                 }
                 if (i == 1) {
                     // signature
                     System.out.println("signature: " + st);
-                    System.out.println(verifySignature(decryptedMessage.getBytes(UTF_8), Base64.getDecoder().decode(st), getPublicKey("/home/virt-atm/Documents/pub-key-again")));
+                    System.out.println(verifySignature(decryptedMessage.getBytes(UTF_8), Base64.getDecoder().decode(st), getPublicKey(getBaseDir() + "pub-key-again")));
                 }
 
                 i++;

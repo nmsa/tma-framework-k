@@ -14,15 +14,11 @@ import eu.atmosphere.tmaf.admin.database.ResourceManager;
 
 public class AdminConsole {
 
-    // TODO: JoseP: this logger should be used for the Command Line Interface
+    // This logger should be used for the Command Line Interface
     private static final Logger CLI_LOG = LoggerFactory.getLogger("tma-admin-cli-logger");
-    //
-    // TODO: JoseP: this name is not standart logging practice, is it?
-    // TODO: JoseP: if you want to enforce the pattern, you should modify the log4j2.
-    private static final Logger LOGGER = LoggerFactory.getLogger("[ATMOSPHERE]");
-//    private static final Logger LOGGER = LoggerFactory.getLogger(AdminConsole.class);
 
-    // TODO: JoseP: suggest refactoring for enumeration
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminConsole.class);
+
     public enum AdminAction {
         GENERATE_KEY_PAIR,
         ENCRYPT_MESSAGE,
@@ -44,15 +40,6 @@ public class AdminConsole {
         }
     }
 
-    // TODO: JoseP: suggest refactoring for enumeration, as above
-//    private static final int GENERATE_KEY_PAIR = 1;
-//    private static final int ENCRYPT_MESSAGE = 2;
-//    private static final int DECRYPT_MESSAGE = 3;
-//    private static final int ADD_ACTUATOR = 4;
-//    private static final int ADD_RESOURCE = 5;
-//    private static final int CONFIGURE_ACTIONS = 6;
-//    private static final int DECRYPT_SAMPLE_MESSAGE = 7;
-//    private static final int EXIT_OPTION = 8;
     private static byte[] encMessage = null;
     private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
             + "As aves que aqui gorgeiam não gorgeiam como lá";
@@ -66,11 +53,9 @@ public class AdminConsole {
         try {
             readUserOption();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             LOGGER.error("[ATMOSPHERE] There was a problem reading your option!");
             e.printStackTrace();
         }
-
     }
 
     private static void readUserOption() throws IOException {
@@ -80,38 +65,31 @@ public class AdminConsole {
             printMenuOptions();
             String line = reader.readLine();
             try {
+                // TODO: nsma: What is the point of having both input and option?
                 input = Integer.parseInt(line);
                 option = AdminAction.valueOf(input);
                 performAction(option);
             } catch (NumberFormatException nfe) {
-                CLI_LOG.error("Not a valid number! (DUP)\n"); //  TODO: JoseP: decide what to do with this boy over here
-                LOGGER.error("Not a valid number!\n"); //  TODO: JoseP: decide what to do with this boy over here
+                CLI_LOG.error("Not a valid number!\n");
+                LOGGER.error("Not a valid number!\n");
             }
 
         } while (option != AdminAction.EXIT_OPTION);
     }
 
-    private static void performAction(AdminAction option) { // TODO: JoseP: if you want, you can limit in method declaration
+    private static void performAction(AdminAction option) {
 
-        switch (option) { // TODO: JoseP: suggested change
-//        switch (option) { // TODO: JoseP: old vertion
+        switch (option) {
             case GENERATE_KEY_PAIR:
-
-                String directory = getDirectory();
-                String pathPublicKey = directory + "/" + getPathPublicKey();
-                String pathPrivateKey = directory + "/" + getPathPrivateKey();
-                KeyPair keyPair = KeyManager.generateKeyPair();
-                KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
-                KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
+                generateKeyPair();
                 break;
 
             case ENCRYPT_MESSAGE:
                 encMessage = KeyManager.encryptMessage(message);
-                LOGGER.info(new String(encMessage));
                 break;
 
             case DECRYPT_MESSAGE:
-                LOGGER.info(KeyManager.decryptMessage(encMessage));
+                KeyManager.decryptMessage(encMessage);
                 break;
 
             case ADD_ACTUATOR:
@@ -127,7 +105,7 @@ public class AdminConsole {
                 break;
 
             case DECRYPT_SAMPLE_MESSAGE:
-                String filenameMessage = getFilenameMessage();
+                String filenameMessage = KeyManager.getBaseDir() + "encrypted-response";
                 LOGGER.info("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
                 break;
 
@@ -145,7 +123,6 @@ public class AdminConsole {
         CLI_LOG.info("Welcome to TMA-Admin!");
         CLI_LOG.info("---------------------");
         CLI_LOG.info("What do you want to do?");
-        // TODO: JoseP: suggest refactoring for enumeration, as above, as below
         CLI_LOG.info(AdminAction.GENERATE_KEY_PAIR + " - Generate key-pair;");
         CLI_LOG.info(AdminAction.ENCRYPT_MESSAGE + " - Encrypt Message;");
         CLI_LOG.info(AdminAction.DECRYPT_MESSAGE + " - Decrypt Message;");
@@ -195,8 +172,13 @@ public class AdminConsole {
         return line;
     }
 
-    private static String getFilenameMessage() {
-        return "/home/virt-atm/Documents/encrypted-response";
+    private static void generateKeyPair() {
+        String directory = getDirectory();
+        String pathPublicKey = directory + "/" + getPathPublicKey();
+        String pathPrivateKey = directory + "/" + getPathPrivateKey();
+        KeyPair keyPair = KeyManager.generateKeyPair();
+        KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
+        KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
     }
 
     private static void addNewActuator() {

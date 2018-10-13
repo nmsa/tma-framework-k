@@ -6,8 +6,7 @@
 
     <Appenders>
         
-        <!-- JoseP: This new appender defines the pattern for the CLI --> 
-
+        <!-- This new appender defines the pattern for the CLI -->
         <Console name="tma-admin-cli" target="SYSTEM_OUT">
             <PatternLayout pattern="TMA-Admin> %msg%n" />
         </Console>
@@ -32,13 +31,13 @@
 
     <Loggers>
         
-        <!-- JoseP: the key is the additivity to false in this logger --> 
+        <!-- The key is the additivity to false in this logger -->
         <Logger name="tma-admin-cli-logger" level="trace"  additivity="false">
             <AppenderRef ref="tma-admin-cli"/>
             <AppenderRef ref="rollingFile" />
         </Logger>
     
-        <!-- JoseP: this is the normal root logger that takes every other logger  --> 
+        <!-- This is the normal root logger that takes every other logger  -->
         <Root level="TRACE" additivity="false">
             <AppenderRef ref="console" />
             <AppenderRef ref="rollingFile" />
