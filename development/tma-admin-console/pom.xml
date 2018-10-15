@@ -6,8 +6,8 @@
 
     <groupId>eu.atmosphere.tmaf</groupId>
     <artifactId>tma-admin-console</artifactId>
-    <version>0.1</version>
-    <!--    <packaging>jar</packaging>-->
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <url>https://github.com/eubr-atmosphere/tma-framework</url>
     
@@ -65,10 +65,33 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>eu.atmosphere.tmaf.tma-admin-console.Main</mainClass>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>eu.atmosphere.tmaf.admin.AdminConsole</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>${basedir}/bin</outputDirectory>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/bin/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- If you need your jar to include the dependencies -->
             <!--            
