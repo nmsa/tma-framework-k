@@ -1,1 +1,1 @@
-docker run --name tma-admin tma-admin:0.1
+docker run -i -t --name tma-admin tma-admin:0.1
