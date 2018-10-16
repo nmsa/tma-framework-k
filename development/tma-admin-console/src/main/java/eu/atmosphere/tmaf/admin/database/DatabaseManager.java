@@ -20,30 +20,33 @@ public class DatabaseManager {
     public static Connection getConnectionInstance() {
         // This will load the MySQL driver, each DB has its own driver
         try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         // Setup the connection with the DB
         try {
-			connection = DriverManager
-			        .getConnection("jdbc:mysql://localhost/knowledge?"
-			                + "user=root&password=123456");
-		} catch (SQLException e) {
-		    LOGGER.error(e.getMessage());
-		}
+            /*connection = DriverManager
+                    .getConnection("jdbc:mysql://localhost/knowledge?"
+                            + "user=root&password=123456");*/
+            connection = DriverManager
+                    .getConnection("jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge?"
+                            + "user=root&password=password");
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
         return connection;
     }
     
     public static Connection getConnectionInstanceSqlite() {
         // SQLite connection string
         String url = "jdbc:sqlite:/Users/josealexandredabruzzopereira/"
-        		+ "Projects/tma-framework-k/development/TMA-Admin/sqlite/db/"
-        		+ "adminDatabase";
+                + "Projects/tma-framework-k/development/TMA-Admin/sqlite/db/"
+                + "adminDatabase";
 
         try {
             if ((connection == null) || connection.isClosed()) {
-            	connection = DriverManager.getConnection(url);
+                connection = DriverManager.getConnection(url);
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
@@ -83,17 +86,17 @@ public class DatabaseManager {
         }
     }
 
-	public int execute(PreparedStatement ps) {
-		int key = -1;
-		try {
-			ps.execute();
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-			if (generatedKeys.next()) {
-				key = generatedKeys.getInt(1);
-			}
-		} catch (SQLException e) {
-		    LOGGER.error(e.getMessage());
-	    }
-		return key;
-	}
+    public int execute(PreparedStatement ps) {
+        int key = -1;
+        try {
+            ps.execute();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                key = generatedKeys.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return key;
+    }
 }
