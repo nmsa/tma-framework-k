@@ -1,17 +1,27 @@
-apiVersion: apps/v1
-kind: Deployment
-
+apiVersion: v1
+kind: Service
 metadata:
   name: tma-admin-console
-
+  labels:
+    app: tma-admin-console
+spec:
+  clusterIP: None
+  selector:
+    app: tma-admin-console
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tma-admin-console
 spec:
   selector:
     matchLabels:
-      run: tma-admin-console
+      app: tma-admin-console # has to match .spec.template.metadata.labels
+  serviceName: "tma-admin-console"
   template:
     metadata:
       labels:
-        run: tma-admin-console
+        app: tma-admin-console # has to match .spec.selector.matchLabels
     spec:
       containers:
       - name: tma-admin
