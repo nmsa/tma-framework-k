@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Base64;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public class ActuatorManager {
         try {
             ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, address);
-            ps.setBytes(2, pubKey);
+            ps.setString(2, Base64.getEncoder().encodeToString(pubKey));
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
         }

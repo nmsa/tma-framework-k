@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,7 @@ public class AdminConsole {
                 break;
 
             case DECRYPT_SAMPLE_MESSAGE:
-                String filenameMessage = KeyManager.getBaseDir() + "encrypted-response";
+                String filenameMessage = Paths.get("") + "encrypted-response";
                 LOGGER.info("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
                 break;
 
