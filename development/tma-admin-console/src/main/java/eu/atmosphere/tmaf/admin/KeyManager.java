@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -38,12 +39,6 @@ public class KeyManager {
 
     static PublicKey pub = null;
     static PrivateKey priv = null;
-
-    // TODO: Remove it! Just for testing purposes
-    public static String getBaseDir() {
-        //return "/home/virt-atm/Documents/";
-        return "/Users/josealexandredabruzzopereira/Projects/tma-framework-k/";
-    }
 
     /**
      * String to hold name of the encryption algorithm.
@@ -121,7 +116,7 @@ public class KeyManager {
             // encrypt the plain text using the public key
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
-            FileUtils.writeByteArrayToFile(new File(getBaseDir() + "encrypted-message"), cipherText);
+            FileUtils.writeByteArrayToFile(new File(Paths.get("") + "encrypted-message"), cipherText);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -218,12 +213,12 @@ public class KeyManager {
                     // data
                     encMessage = Base64.getDecoder().decode(st);
                     System.out.println("byteArray.length: " + encMessage.length);
-                    decryptedMessage = decrypt(encMessage, getPrivateKey(getBaseDir() + "priv-key-execute"));
+                    decryptedMessage = decrypt(encMessage, getPrivateKey(Paths.get("") + "priv-key-execute"));
                 }
                 if (i == 1) {
                     // signature
                     System.out.println("signature: " + st);
-                    System.out.println(verifySignature(decryptedMessage.getBytes(UTF_8), Base64.getDecoder().decode(st), getPublicKey(getBaseDir() + "pub-key-again")));
+                    System.out.println(verifySignature(decryptedMessage.getBytes(UTF_8), Base64.getDecoder().decode(st), getPublicKey(Paths.get("") + "pub-key-again")));
                 }
 
                 i++;
