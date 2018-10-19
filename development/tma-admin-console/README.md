@@ -4,7 +4,7 @@ This project allows you to:
 * Generate public-private key pair to be used in the encryption process;
 * Add a new actuator to the database;
 * Add a new resource to the database;
-* Configure the actions that an actuator can perform.
+* Configure the actions that an actuator can perform (check details on [Message Format for Actions Registration](https://github.com/eubr-atmosphere/tma-framework-k/tree/master#message-format-for-actions-registration)).
 
 Additionally, this project also allows you to test both the encryption and decryption of a message.
 
