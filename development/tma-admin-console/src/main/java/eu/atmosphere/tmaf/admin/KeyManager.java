@@ -1,11 +1,9 @@
 package eu.atmosphere.tmaf.admin;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -16,7 +14,6 @@ import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +101,6 @@ public class KeyManager {
             // encrypt the plain text using the public key
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
-            FileUtils.writeByteArrayToFile(new File(Paths.get("") + "encrypted-message"), cipherText);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
