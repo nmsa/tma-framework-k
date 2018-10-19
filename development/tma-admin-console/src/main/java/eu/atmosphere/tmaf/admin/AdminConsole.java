@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
 import java.security.KeyPair;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,6 @@ public class AdminConsole {
         ADD_ACTUATOR,
         ADD_RESOURCE,
         CONFIGURE_ACTIONS,
-        DECRYPT_SAMPLE_MESSAGE,
         EXIT_OPTION;
 
         @Override
@@ -105,11 +104,6 @@ public class AdminConsole {
                 configureActions();
                 break;
 
-            case DECRYPT_SAMPLE_MESSAGE:
-                String filenameMessage = Paths.get("") + "encrypted-response";
-                LOGGER.info("Decrypted: " + KeyManager.decryptMessage(filenameMessage));
-                break;
-
             case EXIT_OPTION:
                 CLI_LOG.info("Bye!");
                 break;
@@ -130,7 +124,6 @@ public class AdminConsole {
         CLI_LOG.info(AdminAction.ADD_ACTUATOR + " - Add new actuator;");
         CLI_LOG.info(AdminAction.ADD_RESOURCE + " - Add new resource;");
         CLI_LOG.info(AdminAction.CONFIGURE_ACTIONS + " - Configure actions;");
-        CLI_LOG.info(AdminAction.DECRYPT_SAMPLE_MESSAGE + " - Test Decrypt Message;");
         CLI_LOG.info(AdminAction.EXIT_OPTION + " - Exit");
     }
 
