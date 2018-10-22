@@ -67,18 +67,19 @@ CREATE TABLE Action (
  actionId INT NOT NULL PRIMARY KEY,
  actuatorId INT NOT NULL,
  resourceId INT NOT NULL,
- actionName VARCHAR(128)
+ actionName VARCHAR(128),
+ FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId),
+ FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
 
 DROP TABLE Configuration CASCADE CONSTRAINTS;
 CREATE TABLE Configuration (
- actionId INT NOT NULL,
+ actionId INT NOT NULL PRIMARY KEY,
  keyName VARCHAR(128),
- domain VARCHAR(1024)
+ domain VARCHAR(1024),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
-
-ALTER TABLE Configuration ADD CONSTRAINT FK_Configuration_0 FOREIGN KEY (actionId) REFERENCES Action (actionId);
 
 
 DROP TABLE Metric CASCADE CONSTRAINTS;
@@ -136,7 +137,9 @@ CREATE TABLE Data (
  resourceId INT NOT NULL,
  valueTime TIMESTAMP(6) NOT NULL,
  value DOUBLE PRECISION,
+
  PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
+
  FOREIGN KEY (probeId) REFERENCES Probe (probeId),
  FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
  FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
