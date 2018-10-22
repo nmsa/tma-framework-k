@@ -21,6 +21,7 @@
 -- ------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS MetricData;
+DROP TABLE IF EXISTS MetricComposition;
 DROP TABLE IF EXISTS MetricComponent;
 
 DROP TABLE IF EXISTS Metric;
@@ -131,6 +132,13 @@ CREATE TABLE MetricComponent (
     PRIMARY KEY (descriptionId,metricId,qualityModelId)
 );
 
+-- Table created to represent a metric composed by other(s)
+CREATE TABLE MetricComposition (
+    parentMetric INT NOT NULL,
+    childMetric INT NOT NULL,
+
+    PRIMARY KEY (parentMetric, childMetric)
+);
 
 CREATE TABLE Data (
     probeId INT NOT NULL,
@@ -162,4 +170,8 @@ ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_2 FOREIGN KEY (qualityModelI
 ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
 ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
 ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_2 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
+
+ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_0 FOREIGN KEY (parentMetric) REFERENCES Metric (metricId);
+ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_1 FOREIGN KEY
+(childMetric) REFERENCES Metric (metricId);
 
