@@ -113,10 +113,14 @@ CREATE TABLE MetricData (
  valueTime TIMESTAMP(10) NOT NULL,
  qualityModelId VARCHAR(10) NOT NULL,
  value DOUBLE PRECISION,
- resourceId INT NOT NULL
-);
+ resourceId INT NOT NULL,
 
-ALTER TABLE MetricData ADD CONSTRAINT PK_MetricData PRIMARY KEY (metricId,valueTime,qualityModelId);
+ PRIMARY KEY (metricId,valueTime,qualityModelId),
+
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+ FOREIGN KEY (valueTime) REFERENCES Time (valueTime),
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
 
 
 DROP TABLE MetricComponent CASCADE CONSTRAINTS;
@@ -126,10 +130,14 @@ CREATE TABLE MetricComponent (
  qualityModelId VARCHAR(10) NOT NULL,
  attributeAggregationOperator INT,
  numSamples INT,
- weight DOUBLE PRECISION
-);
+ weight DOUBLE PRECISION,
 
-ALTER TABLE MetricComponent ADD CONSTRAINT PK_MetricComponent PRIMARY KEY (descriptionId,metricId,qualityModelId);
+ PRIMARY KEY (descriptionId,metricId,qualityModelId),
+
+ FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
 
 
 DROP TABLE Data CASCADE CONSTRAINTS;
@@ -149,10 +157,4 @@ CREATE TABLE Data (
 );
 
 
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
-
-
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
 
