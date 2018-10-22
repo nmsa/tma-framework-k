@@ -77,6 +77,7 @@ CREATE TABLE Action (
  actuatorId INT NOT NULL,
  resourceId INT NOT NULL,
  actionName VARCHAR(128),
+
  FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId),
  FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
@@ -87,22 +88,23 @@ CREATE TABLE Configuration (
  actionId INT NOT NULL PRIMARY KEY,
  keyName VARCHAR(128),
  domain VARCHAR(1024),
+
  FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
 
 
 DROP TABLE Metric CASCADE CONSTRAINTS;
 CREATE TABLE Metric (
- metricId INT NOT NULL,
+ metricId INT NOT NULL PRIMARY KEY,
  qualityModelId VARCHAR(10) NOT NULL,
  normalizationKind VARCHAR(10),
  metricName VARCHAR(10),
  metricAggregationOperator INT,
  threshold DOUBLE PRECISION,
- blockLevel INT
-);
+ blockLevel INT,
 
-ALTER TABLE Metric ADD CONSTRAINT PK_Metric PRIMARY KEY (metricId,qualityModelId);
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
 
 
 DROP TABLE MetricData CASCADE CONSTRAINTS;
@@ -145,13 +147,6 @@ CREATE TABLE Data (
  FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
  FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
 );
-
-
-ALTER TABLE Action ADD CONSTRAINT FK_Action_0 FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId);
-ALTER TABLE Action ADD CONSTRAINT FK_Action_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
-
-
-ALTER TABLE Metric ADD CONSTRAINT FK_Metric_0 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
 
 
 ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
