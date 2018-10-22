@@ -9,3 +9,7 @@
 2) it also includes the tables related to the data model to be used in knowledge for data related to actuators and respective actions.
 
 ![Data model to be used in knowledge for data related to actuators and respective actions](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-K_DataModel/TMAF-K_ConceptualDataModel_Actuators.jpg)
+
+3) it includes the tables related to the quality model and the metrics/scores related to it.
+
+![Data model to be used in knowledge for data related to quality models and metrics/scores](https://github.com/eubr-atmosphere/tma-framework/blob/master/architecture/diagrams/TMA-K_DataModel/TMAF-K_ConceptualDataModel_Metrics.jpg)
