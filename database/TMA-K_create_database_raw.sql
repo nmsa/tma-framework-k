@@ -51,7 +51,7 @@ CREATE TABLE Probe (
 
 DROP TABLE QualityModel CASCADE CONSTRAINTS;
 CREATE TABLE QualityModel (
- qualityModelId VARCHAR(10) NOT NULL PRIMARY KEY,
+ qualityModelId INT NOT NULL PRIMARY KEY,
  modelName VARCHAR(10)
 );
 
@@ -96,7 +96,7 @@ CREATE TABLE Configuration (
 DROP TABLE Metric CASCADE CONSTRAINTS;
 CREATE TABLE Metric (
  metricId INT NOT NULL PRIMARY KEY,
- qualityModelId VARCHAR(10) NOT NULL,
+ qualityModelId INT NOT NULL,
  normalizationKind VARCHAR(10),
  metricName VARCHAR(10),
  metricAggregationOperator INT,
@@ -111,7 +111,7 @@ DROP TABLE MetricData CASCADE CONSTRAINTS;
 CREATE TABLE MetricData (
  metricId INT NOT NULL,
  valueTime TIMESTAMP(10) NOT NULL,
- qualityModelId VARCHAR(10) NOT NULL,
+ qualityModelId INT NOT NULL,
  value DOUBLE PRECISION,
  resourceId INT NOT NULL,
 
@@ -127,7 +127,7 @@ DROP TABLE MetricComponent CASCADE CONSTRAINTS;
 CREATE TABLE MetricComponent (
  descriptionId INT NOT NULL,
  metricId INT NOT NULL,
- qualityModelId VARCHAR(10) NOT NULL,
+ qualityModelId INT NOT NULL,
  attributeAggregationOperator INT,
  numSamples INT,
  weight DOUBLE PRECISION,

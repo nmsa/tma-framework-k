@@ -29,11 +29,11 @@ DROP TABLE IF EXISTS QualityModel;
 DROP TABLE IF EXISTS Data;
 DROP TABLE IF EXISTS Configuration;
 
+DROP TABLE IF EXISTS Action;
 DROP TABLE IF EXISTS Actuator;
 DROP TABLE IF EXISTS Description;
 DROP TABLE IF EXISTS Probe;
 DROP TABLE IF EXISTS Resource;
-DROP TABLE IF EXISTS Action;
 
 -- -- Table time was removed for normalization.
 -- DROP TABLE IF EXISTS Time;
@@ -64,7 +64,7 @@ CREATE TABLE Probe (
 );
 
 CREATE TABLE QualityModel (
-    qualityModelId VARCHAR(10) NOT NULL AUTO_INCREMENT,
+    qualityModelId INT NOT NULL AUTO_INCREMENT,
     modelName VARCHAR(10),
     PRIMARY KEY (qualityModelId)
 );
@@ -102,7 +102,7 @@ CREATE TABLE Configuration (
 
 CREATE TABLE Metric (
     metricId INT NOT NULL AUTO_INCREMENT,
-    qualityModelId VARCHAR(10) NOT NULL,
+    qualityModelId INT NOT NULL,
     normalizationKind VARCHAR(10),
     metricName VARCHAR(10),
     metricAggregationOperator INT,
@@ -113,17 +113,17 @@ CREATE TABLE Metric (
 
 CREATE TABLE MetricData (
     metricId INT NOT NULL,
-    valueTime TIMESTAMP(10) NOT NULL,
-    qualityModelId VARCHAR(10) NOT NULL,
+    valueTime TIMESTAMP(6) NOT NULL,
+    qualityModelId INT NOT NULL,
     value DOUBLE PRECISION,
     resourceId INT NOT NULL,
     PRIMARY KEY (metricId,valueTime,qualityModelId)
-)
+);
 
 CREATE TABLE MetricComponent (
     descriptionId INT NOT NULL,
     metricId INT NOT NULL,
-    qualityModelId VARCHAR(10) NOT NULL,
+    qualityModelId INT NOT NULL,
     attributeAggregationOperator INT,
     numSamples INT,
     weight DOUBLE PRECISION,
@@ -155,9 +155,11 @@ ALTER TABLE Data ADD CONSTRAINT FK_Data_2 FOREIGN KEY (resourceId) REFERENCES Re
 
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_0 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
 
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
+ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
 ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
+ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_2 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
 
 ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
+ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
+ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_2 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
 
