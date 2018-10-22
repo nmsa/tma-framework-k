@@ -29,6 +29,15 @@ CREATE TABLE Actuator (
 );
 
 
+DROP TABLE Description CASCADE CONSTRAINTS;
+CREATE TABLE Description (
+ descriptionId INT NOT NULL PRIMARY KEY,
+ dataType CHAR(16),
+ descriptionName CHAR(128),
+ unit CHAR(16)
+);
+
+
 DROP TABLE Probe CASCADE CONSTRAINTS;
 CREATE TABLE Probe (
  probeId INT NOT NULL PRIMARY KEY,
@@ -106,15 +115,6 @@ CREATE TABLE MetricData (
 );
 
 ALTER TABLE MetricData ADD CONSTRAINT PK_MetricData PRIMARY KEY (metricId,valueTime,qualityModelId);
-
-
-DROP TABLE Description CASCADE CONSTRAINTS;
-CREATE TABLE Description (
- descriptionId INT NOT NULL PRIMARY KEY,
- dataType CHAR(16),
- descriptionName CHAR(128),
- unit CHAR(16)
-);
 
 
 DROP TABLE MetricComponent CASCADE CONSTRAINTS;
