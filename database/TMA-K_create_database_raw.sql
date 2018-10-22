@@ -18,9 +18,10 @@
 -- @author José Pereira <josep@dei.uc.pt>
 -- @author Nuno Antunes <nmsa@dei.uc.pt>
 -- 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
+DROP TABLE Actuator CASCADE CONSTRAINTS;
 CREATE TABLE Actuator (
  actuatorId INT NOT NULL PRIMARY KEY,
  address VARCHAR(1024),
@@ -28,6 +29,7 @@ CREATE TABLE Actuator (
 );
 
 
+DROP TABLE Probe CASCADE CONSTRAINTS;
 CREATE TABLE Probe (
  probeId INT NOT NULL PRIMARY KEY,
  probeName VARCHAR(128),
@@ -38,12 +40,14 @@ CREATE TABLE Probe (
 );
 
 
+DROP TABLE QualityModel CASCADE CONSTRAINTS;
 CREATE TABLE QualityModel (
  qualityModelId VARCHAR(10) NOT NULL PRIMARY KEY,
  modelName VARCHAR(10)
 );
 
 
+DROP TABLE Resource CASCADE CONSTRAINTS;
 CREATE TABLE Resource (
  resourceId INT NOT NULL PRIMARY KEY,
  resourceName VARCHAR(128),
@@ -52,6 +56,7 @@ CREATE TABLE Resource (
 );
 
 
+DROP TABLE Action CASCADE CONSTRAINTS;
 CREATE TABLE Action (
  actionId INT NOT NULL PRIMARY KEY,
  actuatorId INT NOT NULL,
@@ -60,6 +65,7 @@ CREATE TABLE Action (
 );
 
 
+DROP TABLE Configuration CASCADE CONSTRAINTS;
 CREATE TABLE Configuration (
  actionId INT NOT NULL,
  keyName VARCHAR(128),
@@ -69,6 +75,7 @@ CREATE TABLE Configuration (
 ALTER TABLE Configuration ADD CONSTRAINT FK_Configuration_0 FOREIGN KEY (actionId) REFERENCES Action (actionId);
 
 
+DROP TABLE Metric CASCADE CONSTRAINTS;
 CREATE TABLE Metric (
  metricId INT NOT NULL,
  qualityModelId VARCHAR(10) NOT NULL,
@@ -82,6 +89,7 @@ CREATE TABLE Metric (
 ALTER TABLE Metric ADD CONSTRAINT PK_Metric PRIMARY KEY (metricId,qualityModelId);
 
 
+DROP TABLE MetricData CASCADE CONSTRAINTS;
 CREATE TABLE MetricData (
  metricId INT NOT NULL,
  valueTime TIMESTAMP(10) NOT NULL,
@@ -93,6 +101,7 @@ CREATE TABLE MetricData (
 ALTER TABLE MetricData ADD CONSTRAINT PK_MetricData PRIMARY KEY (metricId,valueTime,qualityModelId);
 
 
+DROP TABLE Description CASCADE CONSTRAINTS;
 CREATE TABLE Description (
  descriptionId INT NOT NULL PRIMARY KEY,
  dataType CHAR(16),
@@ -101,6 +110,7 @@ CREATE TABLE Description (
 );
 
 
+DROP TABLE MetricComponents CASCADE CONSTRAINTS;
 CREATE TABLE MetricComponents (
  descriptionId INT NOT NULL,
  metricId INT NOT NULL,
@@ -113,6 +123,7 @@ CREATE TABLE MetricComponents (
 ALTER TABLE MetricComponents ADD CONSTRAINT PK_MetricComponents PRIMARY KEY (descriptionId,metricId,qualityModelId);
 
 
+DROP TABLE Data CASCADE CONSTRAINTS;
 CREATE TABLE Data (
  probeId INT NOT NULL,
  descriptionId INT NOT NULL,
