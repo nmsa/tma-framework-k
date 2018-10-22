@@ -110,8 +110,8 @@ CREATE TABLE Description (
 );
 
 
-DROP TABLE MetricComponents CASCADE CONSTRAINTS;
-CREATE TABLE MetricComponents (
+DROP TABLE MetricComponent CASCADE CONSTRAINTS;
+CREATE TABLE MetricComponent (
  descriptionId INT NOT NULL,
  metricId INT NOT NULL,
  qualityModelId VARCHAR(10) NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE MetricComponents (
  weight DOUBLE PRECISION
 );
 
-ALTER TABLE MetricComponents ADD CONSTRAINT PK_MetricComponents PRIMARY KEY (descriptionId,metricId,qualityModelId);
+ALTER TABLE MetricComponent ADD CONSTRAINT PK_MetricComponent PRIMARY KEY (descriptionId,metricId,qualityModelId);
 
 
 DROP TABLE Data CASCADE CONSTRAINTS;
@@ -149,6 +149,6 @@ ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId,qual
 ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
 
 
-ALTER TABLE MetricComponents ADD CONSTRAINT FK_MetricComponents_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
-ALTER TABLE MetricComponents ADD CONSTRAINT FK_MetricComponents_1 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
+ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
+ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId,qualityModelId) REFERENCES Metric (metricId,qualityModelId);
 
