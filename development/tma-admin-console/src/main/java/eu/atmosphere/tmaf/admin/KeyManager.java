@@ -39,8 +39,7 @@ public class KeyManager {
             keyPairGenerator.initialize(2048, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Error generating the KeyPair.", e);
         }
 
         return keyPair;
@@ -56,11 +55,9 @@ public class KeyManager {
             priv = privateKey;
             keyfos.close();
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] File not found.", e);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] IOException when saving the private key.", e);
         }
     }
 
@@ -74,11 +71,9 @@ public class KeyManager {
             pub = publicKey;
             keyfos.close();
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] File not found.", e);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] IOException when saving the public key.", e);
         }
     }
 
@@ -102,8 +97,7 @@ public class KeyManager {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Error when encrypting the message.", e);
         }
         return cipherText;
     }
@@ -130,8 +124,7 @@ public class KeyManager {
             dectyptedText = cipher.doFinal(text);
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Error when decrypting the message.", e);
         }
         return new String(dectyptedText);
     }

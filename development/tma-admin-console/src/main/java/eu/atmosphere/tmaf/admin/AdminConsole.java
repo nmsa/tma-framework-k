@@ -53,8 +53,7 @@ public class AdminConsole {
         try {
             readUserOption();
         } catch (IOException e) {
-            LOGGER.error("[ATMOSPHERE] There was a problem reading your option!");
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] There was a problem reading your option!", e);
         }
     }
 
@@ -71,7 +70,7 @@ public class AdminConsole {
                 performAction(option);
             } catch (NumberFormatException nfe) {
                 CLI_LOG.error("Not a valid number!\n");
-                LOGGER.error("Not a valid number!\n");
+                LOGGER.error("Not a valid number!\n", nfe);
             }
 
         } while (option != AdminAction.EXIT_OPTION);
@@ -140,7 +139,7 @@ public class AdminConsole {
                     CLI_LOG.warn("The path is not valid!");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("[ATMOSPHERE] IOException when reading the directory.", e);
             }
         } while (file != null && !file.isDirectory());
         return "";
@@ -161,7 +160,7 @@ public class AdminConsole {
         try {
             line = reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("[ATMOSPHERE] IOException when reading the input from the user.", e);
         }
         return line;
     }
