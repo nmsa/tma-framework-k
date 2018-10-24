@@ -1,4 +1,4 @@
-package pt.uc.dei.eubr.atmosphere.tma.admin.database;
+package eu.atmosphere.tmaf.admin.database;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,12 +9,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.mysql.jdbc.Statement;
 
 public class ActionManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionManager.class);
 
     public void saveNewActions(String filename, int actuatorId) {
         // One example of file is the one of the repository: src/main/resources/actions.json
@@ -25,11 +30,11 @@ public class ActionManager {
     private void saveActions(List<Action> actions, int actuatorId) {
         String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) "
                 + "VALUES (?, ?, ?)";
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         DatabaseManager databaseManager = new DatabaseManager();
 
         try {
-            for (Action action: actions) {
+            for (Action action : actions) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, actuatorId);
                 ps.setInt(2, action.getResourceId());
@@ -39,14 +44,14 @@ public class ActionManager {
                 saveConfiguration(actionId, action.getConfiguration());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Error when inserting an action in the database.", e);
         }
     }
 
     private List<Action> parseActionsJsonFile(String filename, int actuatorId) {
         Gson gson = new GsonBuilder().create();
         InputStream input;
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         try {
             input = new FileInputStream(filename);
             InputStreamReader isr = new InputStreamReader(input);
@@ -68,17 +73,17 @@ public class ActionManager {
                 actions.add(action);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Action JSON File not found.", e);
         }
         return actions;
     }
-    
+
     private void saveConfiguration(int actionId, List<Configuration> configurationList) {
         String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
-        PreparedStatement ps = null;
+        PreparedStatement ps;
 
         try {
-            for (Configuration configuration: configurationList) {
+            for (Configuration configuration : configurationList) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
                 ps.setInt(1, actionId);
                 ps.setString(2, configuration.getKeyName());
@@ -88,7 +93,7 @@ public class ActionManager {
                 databaseManager.execute(ps);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("[ATMOSPHERE] Error when inserting a configuration in the database.", e);
         }
     }
 }

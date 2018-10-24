@@ -57,3 +57,5 @@ Each message includes:
 	* `configuration` -- list of expected attributes to execute the operation
 		* `key` -- name of the configuration attribute
 		* `value` -- value of the configuration attribute
+
+One example can be seen [here](interface/atmosphere_tma-k_actions-example.json).
