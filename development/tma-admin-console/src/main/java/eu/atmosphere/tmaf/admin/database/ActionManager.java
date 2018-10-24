@@ -34,7 +34,7 @@ public class ActionManager {
         DatabaseManager databaseManager = new DatabaseManager();
 
         try {
-            for (Action action: actions) {
+            for (Action action : actions) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, actuatorId);
                 ps.setInt(2, action.getResourceId());
@@ -51,7 +51,7 @@ public class ActionManager {
     private List<Action> parseActionsJsonFile(String filename, int actuatorId) {
         Gson gson = new GsonBuilder().create();
         InputStream input;
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         try {
             input = new FileInputStream(filename);
             InputStreamReader isr = new InputStreamReader(input);
@@ -77,13 +77,13 @@ public class ActionManager {
         }
         return actions;
     }
-    
+
     private void saveConfiguration(int actionId, List<Configuration> configurationList) {
         String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
         PreparedStatement ps;
 
         try {
-            for (Configuration configuration: configurationList) {
+            for (Configuration configuration : configurationList) {
                 ps = DatabaseManager.getConnectionInstance().prepareStatement(sql);
                 ps.setInt(1, actionId);
                 ps.setString(2, configuration.getKeyName());

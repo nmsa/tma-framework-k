@@ -58,21 +58,18 @@ public class AdminConsole {
     }
 
     private static void readUserOption() throws IOException {
-        int input;
-        AdminAction option = AdminAction.ADD_ACTUATOR; // we should add an harmless default option.
+        // future we should add an harmless default option.
+        AdminAction option = AdminAction.EXIT_OPTION; 
         do {
             printMenuOptions();
             String line = reader.readLine();
             try {
-                // TODO: nsma: What is the point of having both input and option?
-                input = Integer.parseInt(line);
-                option = AdminAction.valueOf(input);
+                option = AdminAction.valueOf(Integer.parseInt(line));
                 performAction(option);
             } catch (NumberFormatException nfe) {
                 CLI_LOG.error("Not a valid number!\n");
                 LOGGER.error("Not a valid number!\n", nfe);
             }
-
         } while (option != AdminAction.EXIT_OPTION);
     }
 

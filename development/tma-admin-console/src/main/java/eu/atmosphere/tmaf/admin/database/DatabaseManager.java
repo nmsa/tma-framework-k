@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DatabaseManager {
+
     private static Connection connection = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
@@ -37,7 +38,7 @@ public class DatabaseManager {
         }
         return connection;
     }
-    
+
     public static Connection getConnectionInstanceSqlite() {
         // SQLite connection string
         String url = "jdbc:sqlite:/Users/josealexandredabruzzopereira/"
