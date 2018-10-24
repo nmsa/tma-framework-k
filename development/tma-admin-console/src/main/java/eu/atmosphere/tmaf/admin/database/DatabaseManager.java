@@ -33,7 +33,7 @@ public class DatabaseManager {
                     .getConnection("jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge?"
                             + "user=root&password=password");
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when connecting to the database", e);
         }
         return connection;
     }
@@ -49,7 +49,7 @@ public class DatabaseManager {
                 connection = DriverManager.getConnection(url);
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when connecting to the SQLLite database", e);
         }
 
         return connection;
@@ -63,7 +63,7 @@ public class DatabaseManager {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when executing a query", e);
         }
         return rs;
     }
@@ -82,7 +82,7 @@ public class DatabaseManager {
                 connection.close();
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when closing the connection to the database", e);
         }
     }
 
@@ -95,7 +95,7 @@ public class DatabaseManager {
                 key = generatedKeys.getInt(1);
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when executing a prepared statement", e);
         }
         return key;
     }

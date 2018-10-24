@@ -30,7 +30,7 @@ public class ActionManager {
     private void saveActions(List<Action> actions, int actuatorId) {
         String sql = "INSERT INTO Action(actuatorId, resourceId, actionName) "
                 + "VALUES (?, ?, ?)";
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         DatabaseManager databaseManager = new DatabaseManager();
 
         try {
@@ -44,7 +44,7 @@ public class ActionManager {
                 saveConfiguration(actionId, action.getConfiguration());
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when inserting an action in the database.", e);
         }
     }
 
@@ -73,14 +73,14 @@ public class ActionManager {
                 actions.add(action);
             }
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Action JSON File not found.", e);
         }
         return actions;
     }
     
     private void saveConfiguration(int actionId, List<Configuration> configurationList) {
         String sql = "INSERT INTO Configuration(actionId, keyName, domain) VALUES (?, ?, ?)";
-        PreparedStatement ps = null;
+        PreparedStatement ps;
 
         try {
             for (Configuration configuration: configurationList) {
@@ -93,7 +93,7 @@ public class ActionManager {
                 databaseManager.execute(ps);
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("[ATMOSPHERE] Error when inserting a configuration in the database.", e);
         }
     }
 }
