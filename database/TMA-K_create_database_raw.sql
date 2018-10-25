@@ -107,6 +107,43 @@ CREATE TABLE Metric (
 );
 
 
+DROP TABLE Plan CASCADE CONSTRAINTS;
+CREATE TABLE Plan (
+ planId INT NOT NULL PRIMARY KEY,
+ metricId INT NOT NULL,
+ valueTime TIMESTAMP(6) NOT NULL,
+ qualityModelId INT NOT NULL,
+ status INT
+);
+
+
+DROP TABLE ActionPlan CASCADE CONSTRAINTS;
+CREATE TABLE ActionPlan (
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ executionOrder INT,
+ status INT,
+
+ PRIMARY KEY (planId,actionId),
+
+ FOREIGN KEY (planId) REFERENCES Plan (planId),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
+);
+
+
+DROP TABLE ConfigurationData CASCADE CONSTRAINTS;
+CREATE TABLE ConfigurationData (
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ value VARCHAR(1024),
+
+ PRIMARY KEY (planId,actionId),
+
+ FOREIGN KEY (planId) REFERENCES Plan (planId),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
+);
+
+
 DROP TABLE MetricData CASCADE CONSTRAINTS;
 CREATE TABLE MetricData (
  metricId INT NOT NULL,

@@ -24,6 +24,10 @@ DROP TABLE IF EXISTS MetricData;
 DROP TABLE IF EXISTS MetricComposition;
 DROP TABLE IF EXISTS MetricComponent;
 
+DROP TABLE IF EXISTS ConfigurationData;
+DROP TABLE IF EXISTS ActionPlan;
+DROP TABLE IF EXISTS Plan;
+
 DROP TABLE IF EXISTS Metric;
 DROP TABLE IF EXISTS QualityModel;
 
@@ -121,6 +125,33 @@ CREATE TABLE MetricData (
     PRIMARY KEY (metricId,valueTime,qualityModelId)
 );
 
+CREATE TABLE Plan (
+    planId INT NOT NULL AUTO_INCREMENT,
+    metricId INT NOT NULL,
+    valueTime TIMESTAMP(6) NOT NULL,
+    qualityModelId INT NOT NULL,
+    status INT,
+    PRIMARY KEY (planId)
+);
+
+CREATE TABLE ActionPlan (
+    actionPlanId INT NOT NULL AUTO_INCREMENT,
+    planId INT NOT NULL,
+    actionId INT NOT NULL,
+    executionOrder INT,
+    status INT,
+
+    PRIMARY KEY (actionPlanId)
+);
+
+CREATE TABLE ConfigurationData (
+    actionPlanId INT NOT NULL,
+    configurationId INT NOT NULL,
+    value VARCHAR(1024),
+
+    PRIMARY KEY (actionPlanId,configurationId)
+);
+
 CREATE TABLE MetricComponent (
     descriptionId INT NOT NULL,
     metricId INT NOT NULL,
@@ -174,4 +205,13 @@ ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_2 FOREIGN KEY (qua
 ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_0 FOREIGN KEY (parentMetric) REFERENCES Metric (metricId);
 ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_1 FOREIGN KEY
 (childMetric) REFERENCES Metric (metricId);
+
+ALTER TABLE Plan ADD CONSTRAINT FK_Plan_0 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
+ALTER TABLE Plan ADD CONSTRAINT FK_Plan_1 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
+
+ALTER TABLE ActionPlan ADD CONSTRAINT FK_ActionPlan_0 FOREIGN KEY (planId) REFERENCES Plan (planId);
+ALTER TABLE ActionPlan ADD CONSTRAINT FK_ActionPlan_1 FOREIGN KEY (actionId) REFERENCES Action (actionId);
+
+ALTER TABLE ConfigurationData ADD CONSTRAINT FK_ConfigurationData_0 FOREIGN KEY (actionPlanId) REFERENCES ActionPlan (actionPlanId);
+ALTER TABLE ConfigurationData ADD CONSTRAINT FK_ConfigurationData_1 FOREIGN KEY (configurationId) REFERENCES Configuration (configurationId);
 
