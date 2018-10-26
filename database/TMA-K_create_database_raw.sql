@@ -52,7 +52,8 @@ CREATE TABLE Probe (
 DROP TABLE QualityModel CASCADE CONSTRAINTS;
 CREATE TABLE QualityModel (
  qualityModelId INT NOT NULL PRIMARY KEY,
- modelName VARCHAR(10)
+ modelName VARCHAR(10),
+ modelDescriptionReference INT
 );
 
 

@@ -71,6 +71,7 @@ CREATE TABLE Probe (
 CREATE TABLE QualityModel (
     qualityModelId INT NOT NULL AUTO_INCREMENT,
     modelName VARCHAR(10),
+    modelDescriptionReference INT,
     PRIMARY KEY (qualityModelId)
 );
 
