@@ -49,6 +49,14 @@ CREATE TABLE Probe (
 );
 
 
+DROP TABLE QualityModel CASCADE CONSTRAINTS;
+CREATE TABLE QualityModel (
+ qualityModelId INT NOT NULL PRIMARY KEY,
+ modelName VARCHAR(10),
+ modelDescriptionReference INT
+);
+
+
 DROP TABLE Resource CASCADE CONSTRAINTS;
 CREATE TABLE Resource (
  resourceId INT NOT NULL PRIMARY KEY,
@@ -86,6 +94,90 @@ CREATE TABLE Configuration (
 );
 
 
+DROP TABLE Metric CASCADE CONSTRAINTS;
+CREATE TABLE Metric (
+ metricId INT NOT NULL PRIMARY KEY,
+ qualityModelId INT NOT NULL,
+ normalizationKind VARCHAR(10),
+ metricName VARCHAR(10),
+ metricAggregationOperator INT,
+ threshold DOUBLE PRECISION,
+ blockLevel INT,
+
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
+
+
+DROP TABLE Plan CASCADE CONSTRAINTS;
+CREATE TABLE Plan (
+ planId INT NOT NULL PRIMARY KEY,
+ metricId INT NOT NULL,
+ valueTime TIMESTAMP(6) NOT NULL,
+ qualityModelId INT NOT NULL,
+ status INT
+);
+
+
+DROP TABLE ActionPlan CASCADE CONSTRAINTS;
+CREATE TABLE ActionPlan (
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ executionOrder INT,
+ status INT,
+
+ PRIMARY KEY (planId,actionId),
+
+ FOREIGN KEY (planId) REFERENCES Plan (planId),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
+);
+
+
+DROP TABLE ConfigurationData CASCADE CONSTRAINTS;
+CREATE TABLE ConfigurationData (
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ value VARCHAR(1024),
+
+ PRIMARY KEY (planId,actionId),
+
+ FOREIGN KEY (planId) REFERENCES Plan (planId),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
+);
+
+
+DROP TABLE MetricData CASCADE CONSTRAINTS;
+CREATE TABLE MetricData (
+ metricId INT NOT NULL,
+ valueTime TIMESTAMP(10) NOT NULL,
+ qualityModelId INT NOT NULL,
+ value DOUBLE PRECISION,
+ resourceId INT NOT NULL,
+
+ PRIMARY KEY (metricId,valueTime,qualityModelId),
+
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+ FOREIGN KEY (valueTime) REFERENCES Time (valueTime),
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
+
+
+DROP TABLE MetricComponent CASCADE CONSTRAINTS;
+CREATE TABLE MetricComponent (
+ descriptionId INT NOT NULL,
+ metricId INT NOT NULL,
+ qualityModelId INT NOT NULL,
+ attributeAggregationOperator INT,
+ numSamples INT,
+ weight DOUBLE PRECISION,
+
+ PRIMARY KEY (descriptionId,metricId,qualityModelId),
+
+ FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+ FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
+
+
 DROP TABLE Data CASCADE CONSTRAINTS;
 CREATE TABLE Data (
  probeId INT NOT NULL,
@@ -101,5 +193,6 @@ CREATE TABLE Data (
  FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
  FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
 );
+
 
 
