@@ -29,7 +29,8 @@ public class AdminConsole {
         ADD_ACTUATOR,
         ADD_RESOURCE,
         CONFIGURE_ACTIONS,
-        EXIT_OPTION;
+        EXIT_OPTION,
+        INVALID_OPTION;
 
         @Override
         public String toString() {
@@ -38,7 +39,7 @@ public class AdminConsole {
 
         public static AdminAction valueOf(int ordinal) {
             return (ordinal < values().length) ? values()[ordinal]
-                    : EXIT_OPTION;
+                    : INVALID_OPTION;
         }
     }
 
@@ -61,7 +62,7 @@ public class AdminConsole {
 
     private static void readUserOption() throws IOException {
         // future we should add an harmless default option.
-        AdminAction option = AdminAction.EXIT_OPTION; 
+        AdminAction option = AdminAction.INVALID_OPTION;
         do {
             printMenuOptions();
             String line = reader.readLine();
@@ -112,6 +113,10 @@ public class AdminConsole {
 
             case EXIT_OPTION:
                 CLI_LOG.info("Bye!");
+                break;
+
+            case INVALID_OPTION:
+                CLI_LOG.info("Invalid Option!");
                 break;
 
             default:
