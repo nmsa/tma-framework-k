@@ -65,12 +65,16 @@ public class AdminConsole {
         do {
             printMenuOptions();
             String line = reader.readLine();
-            try {
-                option = AdminAction.valueOf(Integer.parseInt(line));
-                performAction(option);
-            } catch (NumberFormatException nfe) {
-                CLI_LOG.error("Not a valid number!\n");
-                LOGGER.error("Not a valid number!\n", nfe);
+            if (!line.isEmpty()) {
+                try {
+                    option = AdminAction.valueOf(Integer.parseInt(line));
+                    performAction(option);
+                } catch (NumberFormatException nfe) {
+                    CLI_LOG.error("Not a valid number!\n");
+                    LOGGER.error("Not a valid number!\n", nfe);
+                }
+            } else {
+                CLI_LOG.error("Not a valid option!\n");
             }
         } while (option != AdminAction.EXIT_OPTION);
     }
