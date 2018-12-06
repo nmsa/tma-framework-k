@@ -3,6 +3,7 @@
 This project allows you to:
 
 * Generate public-private key pair to be used in the encryption process;
+* Add a new probe to the database;
 * Add a new actuator to the database;
 * Add a new resource to the database;
 * Configure the actions that an actuator can perform (check details on [Message Format for Actions Registration](https://github.com/eubr-atmosphere/tma-framework-k/tree/master#message-format-for-actions-registration)).
@@ -42,4 +43,4 @@ When running the console, it will display the options that you can perform in th
 
 ## Authors
 
-* Jose Alexandre D'Abruzzo
+* Jose D'Abruzzo Pereira

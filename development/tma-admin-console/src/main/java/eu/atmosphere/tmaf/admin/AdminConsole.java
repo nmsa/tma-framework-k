@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.atmosphere.tmaf.admin.database.ActionManager;
 import eu.atmosphere.tmaf.admin.database.ActuatorManager;
+import eu.atmosphere.tmaf.admin.database.ProbeManager;
 import eu.atmosphere.tmaf.admin.database.ResourceManager;
 
 public class AdminConsole {
@@ -24,6 +25,7 @@ public class AdminConsole {
         GENERATE_KEY_PAIR,
         ENCRYPT_MESSAGE,
         DECRYPT_MESSAGE,
+        ADD_PROBE,
         ADD_ACTUATOR,
         ADD_RESOURCE,
         CONFIGURE_ACTIONS,
@@ -86,6 +88,10 @@ public class AdminConsole {
 
             case DECRYPT_MESSAGE:
                 KeyManager.decryptMessage(encMessage);
+                break;
+
+            case ADD_PROBE:
+                addNewProbe();
                 break;
 
             case ADD_ACTUATOR:
@@ -169,6 +175,15 @@ public class AdminConsole {
         KeyPair keyPair = KeyManager.generateKeyPair();
         KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
         KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
+    }
+
+    private static void addNewProbe() {
+        CLI_LOG.info("Please, inform the name of the Probe: ");
+        String probeName = readFromUser();
+        // TODO: add the remaining fields (password, salt, token)
+        ProbeManager probeManager = new ProbeManager();
+        int probeId = probeManager.saveNewProbe(probeName);
+        CLI_LOG.info("The Probe Id is: " + probeId + "\n");
     }
 
     private static void addNewActuator() {
