@@ -90,6 +90,8 @@ cd mysql/
 sh setup_database.sh
 ```
 
+To deploy MySQL without Ceph volume, you should follow the instructions presented in this [README](mysql-host-volume/README.md) file.
+
 ## Testing
 For testing purposes, there is a script called `TMA-K_insert_example_data.sql` that inserts example data in Probe, Resource, and Description tables.
 To do that, you just need to execute the following SQL script:
