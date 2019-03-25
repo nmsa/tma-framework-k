@@ -1,0 +1,309 @@
+
+// WP4 : Cluster CPUs (lines 2 and 3 of the spreadsheet
+
+"data":[
+   {
+      "type":"event",
+      "descriptionId": DESCRIPTION_ID_DEPLOYMENT_CHANGE,
+      "observations":[
+         {
+            "time":123,
+            "value":-1
+         }
+      ]
+   },
+   {
+      "type":"measurement",
+      "descriptionId": DESCRIPTION_ID_ALLOCATED_CPUs,
+      "observations":[
+         {
+            "time":123,
+            "value":4.0
+         },
+         {
+            "time":135,
+            "value":8.0
+         }
+      ]
+   },
+   {
+      "type":"measurement",
+      "descriptionId": DESCRIPTION_ID_NUMBER_AVAILABLE_CPUs,
+      "observations":[
+         {
+            "time":123,
+            "value":8.0
+         },
+         {
+            "time":135,
+            "value":4.0
+         }
+      ]
+   }
+]
+
+// WP4: Node-POD Usage (lines 4 and 5)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_NODE_CPU,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_NODE_MEMORY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_NODE_DISK,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_POD_CPU,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_POD_MEMORY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_POD_DISK,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+
+// WP4: Service Availability
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_RECEIVED_REQUESTS,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_FAILED_REQUESTS,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+// WP4: Resource Availability
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_RELEASED_RESOURCES,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_FAILED_RELEASE_RESOURCE,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+// WP4: Node-POD Usage (lines 4 and 5)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_SERVICE_LATENCY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+// WP6: Fairness (lines 9 and 14)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_EQUAL_PARITY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_PROPORTIONAL_PARITY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_FALSE_POSITIVE_RATE,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_FALSE_NEGATIVE_RATE,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_FALSE_DISCOVERY_RATE,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_OMISSION_RATE,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+// WP6: Stability (lines 15 and 16)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_EVALUATOR_CONSENSUS,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_CONCEPT_DRIFT,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+// WP6: Transparency (lines 18)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_USER_EVALUATION_TRANSPARENCY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+
+// WP5 (lines 19 and 20)
+
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_QUERY_LATENCY,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
+
+{
+    "type": "measurement",
+    "descriptionId": DESCRIPTION_ID_PROPORTION_RUNNING_TIME,
+    "observations": [
+        {
+            "time": 1524782445,
+            "value": -1
+        }
+    ]
+},
