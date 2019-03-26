@@ -1,5 +1,5 @@
 # TMA-Knowledge Development
-This component of TMA platform is composed by a DBMS `MySQL` and a `Ceph` block-storage persistent volume that stores all data of MySQL database.
+This component of TMA platform is composed by a DBMS `MySQL` and a `Ceph` block-storage persistent volume that stores all data of `MySQL` database.
 The instructions provided below include all steps that are needed to set up this component in your local system for testing purposes.
 
 ## Prerequisites
@@ -61,6 +61,8 @@ Now, the `Kubernetes` cluster is ready to deploy containers.
 
 ## Deployment Alternatives
 
-In this repository there is two different ways to deploy `MySQL`. `MySQL` can be deployed with `Ceph` storage solution or it can be deployed using a host volume.
+In this repository there are two different ways to deploy `MySQL`. 
 
-To deploy `MySQL` with `Ceph` you can follow the instructions presented in this [README](mysql/README.md) file. On the other hand, if you want to deploy `MySQL` with a host volume, you should follow the instructions presented in this [README](mysql-host-volume/README.md) file.
+* `MySQL` inegrated with `Ceph` for block-storage - All instructions needed are presented in this [README](mysql/README.md) file;
+
+* `MySQL` with a persistent host volume - All instructions needed are presented in this [README](mysql-host-volume/README.md) file.
