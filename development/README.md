@@ -61,6 +61,6 @@ Now, the `Kubernetes` cluster is ready to deploy containers.
 
 ## Deployment Alternatives
 
-In this repository there is two different ways to deploy `MySQL`. `MySQL` can be deployed with `Ceph` storage soloution or it can be deployed using a host volume.
+In this repository there is two different ways to deploy `MySQL`. `MySQL` can be deployed with `Ceph` storage solution or it can be deployed using a host volume.
 
 To deploy `MySQL` with `Ceph` you can follow the instructions presented in this [README](mysql/README.md) file. On the other hand, if you want to deploy `MySQL` with a host volume, you should follow the instructions presented in this [README](mysql-host-volume/README.md) file.

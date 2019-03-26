@@ -3,7 +3,7 @@
 
 ## Prerequisites
 To deploy `MySQL`, you need to initialize the `Kubernetes` cluster and follow the instructions present in `README` file of the development folder of this repository.
-Another requirement is to have Ceph correctly installed in all machines of `Kubernetes` cluster and running in its machine. All the steps needed to install and to connect `Ceph` with `Kubernetes` are described in the `README` file of `Ceph` folder of this repository.
+Another requirement is to have `Ceph` correctly installed in all machines of `Kubernetes` cluster and running in its machine. All the steps needed to install and to connect `Ceph` with `Kubernetes` are described in the `README` file of `Ceph` folder of this repository.
 
 ## Installation
 
@@ -23,27 +23,25 @@ apt-get -y install ceph
 Next, in the `Ceph` machine execute the following commands:
 
 ```sh
-cd ceph/
 sh ceph_configuration.sh
 ```
 The output of the previous script should be inserted in `key` field of the `ceph-secret.yaml` file. 
 After that, you should deploy this file in `Kubernetes`. To do that, you need to execute the following the command:
 
 ```sh
-kubectl create -f ceph/ceph-secret.yaml
+kubectl create -f ceph-secret.yaml
 ```
 
 With `Ceph` correctly installed and connected to `Kubernetes` cluster, it is time to deploy `MySQL`. The first step is to build `MySQL` `Docker` image. To do that, you just need to execute the following commands on Worker node of `Kubernetes` cluster:
 
 ```sh
-cd mysql/
+cd ../mysql/
 sh build.sh
 ```
 
 Now, `MySQL` is ready to be executed inside of a `Kubernetes` pod. To do that execute the following script in `Kubernetes` Master node:
 
 ```sh
-cd mysql/
 sh setup_database.sh
 ```
 
