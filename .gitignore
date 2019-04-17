@@ -5,3 +5,4 @@
 .project
 .settings
 logs
+/development/common/tmak-jpa/target/
