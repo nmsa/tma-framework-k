@@ -6,3 +6,4 @@
 .settings
 logs
 /development/common/tmak-jpa/target/
+/development/tma-knowledge-db/target/

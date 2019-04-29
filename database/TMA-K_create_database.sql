@@ -24,6 +24,10 @@ DROP TABLE IF EXISTS MetricData;
 DROP TABLE IF EXISTS MetricComposition;
 DROP TABLE IF EXISTS MetricComponent;
 
+DROP TABLE IF EXISTS  CompositeAttribute;
+DROP TABLE IF EXISTS  Configuration;
+DROP TABLE IF EXISTS  LeafAttribute;
+
 DROP TABLE IF EXISTS ConfigurationData;
 DROP TABLE IF EXISTS ActionPlan;
 DROP TABLE IF EXISTS Plan;
@@ -50,6 +54,15 @@ CREATE TABLE Actuator (
     PRIMARY KEY (actuatorId)
 );
 
+CREATE TABLE Metric (
+    metricId INT NOT NULL AUTO_INCREMENT,
+    metricName VARCHAR(10),
+    metricAggregationOperator INT,
+    blockLevel INT,
+    normalizationThreshold DOUBLE PRECISION,
+    PRIMARY KEY (metricId)
+);
+
 CREATE TABLE Description (
     descriptionId INT NOT NULL AUTO_INCREMENT,
     dataType CHAR(16),
@@ -70,9 +83,12 @@ CREATE TABLE Probe (
 
 CREATE TABLE QualityModel (
     qualityModelId INT NOT NULL AUTO_INCREMENT,
+    metricId INT NOT NULL,
     modelName VARCHAR(10),
     modelDescriptionReference INT,
-    PRIMARY KEY (qualityModelId)
+    businessThreshold VARCHAR(10),
+    PRIMARY KEY (qualityModelId, metricId),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
 CREATE TABLE Resource (
@@ -95,82 +111,103 @@ CREATE TABLE Action (
     actuatorId INT NOT NULL,
     resourceId INT NOT NULL,
     actionName VARCHAR(128),
-    PRIMARY KEY (actionId)
+    actuatorId INT NOT NULL,
+    PRIMARY KEY (actionId),
+    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
+    FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId)
 );
+
+
+CREATE TABLE CompositeAttribute (
+    parentMetric INT NOT NULL,
+    childMetric INT NOT NULL,
+    attributeAggregationOperator INT,
+
+    PRIMARY KEY (parentMetric,childMetric),
+
+    FOREIGN KEY (parentMetric) REFERENCES Metric (metricId),
+    FOREIGN KEY (childMetric) REFERENCES Metric (metricId)
+);
+
 
 CREATE TABLE Configuration (
     configurationId INT NOT NULL AUTO_INCREMENT,
     actionId INT NOT NULL,
     keyName VARCHAR(128),
     domain VARCHAR(1024),
-    PRIMARY KEY (configurationId)
+    PRIMARY KEY (configurationId, actionId)
+
+    FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
 
-CREATE TABLE Metric (
-    metricId INT NOT NULL AUTO_INCREMENT,
-    qualityModelId INT NOT NULL,
-    normalizationKind VARCHAR(10),
-    metricName VARCHAR(10),
+
+
+
+
+
+
+CREATE TABLE LeafAttribute (
+    descriptionId INT NOT NULL,
+    metricId INT NOT NULL,
     metricAggregationOperator INT,
-    threshold DOUBLE PRECISION,
-    blockLevel INT,
-    PRIMARY KEY (metricId)
+    numSamples INT,
+    weight DOUBLE PRECISION,
+    normalizationMethod VARCHAR(10),
+    normalizationKind VARCHAR(10),
+
+    PRIMARY KEY (descriptionId,metricId),
+
+    FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
+
 
 CREATE TABLE MetricData (
     metricId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
-    qualityModelId INT NOT NULL,
     value DOUBLE PRECISION,
-    resourceId INT NOT NULL,
-    PRIMARY KEY (metricId,valueTime,qualityModelId)
+    resourceId INT,
+
+    PRIMARY KEY (metricId,valueTime),
+
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
 CREATE TABLE Plan (
     planId INT NOT NULL AUTO_INCREMENT,
     metricId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
-    qualityModelId INT NOT NULL,
     status INT,
-    PRIMARY KEY (planId)
+    PRIMARY KEY (planId),
+
+    FOREIGN KEY (metricId,valueTime) REFERENCES MetricData (metricId,valueTime)
 );
 
 CREATE TABLE ActionPlan (
-    actionPlanId INT NOT NULL AUTO_INCREMENT,
     planId INT NOT NULL,
     actionId INT NOT NULL,
     executionOrder INT,
     status INT,
 
-    PRIMARY KEY (actionPlanId)
+    PRIMARY KEY (planId, actionId),
+
+    FOREIGN KEY (planId) REFERENCES Plan (planId),
+    FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
+
 
 CREATE TABLE ConfigurationData (
-    actionPlanId INT NOT NULL,
-    configurationId INT NOT NULL,
+    planId INT NOT NULL,
+    actionId INT NOT NULL,
     value VARCHAR(1024),
 
-    PRIMARY KEY (actionPlanId,configurationId)
+    PRIMARY KEY (planId,actionId),
+
+    FOREIGN KEY (planId,actionId) REFERENCES ActionPlan (planId,actionId),
+    FOREIGN KEY (actionId) REFERENCES Configuration (actionId)
 );
 
-CREATE TABLE MetricComponent (
-    descriptionId INT NOT NULL,
-    metricId INT NOT NULL,
-    qualityModelId INT NOT NULL,
-    attributeAggregationOperator INT,
-    numSamples INT,
-    weight DOUBLE PRECISION,
-
-    PRIMARY KEY (descriptionId,metricId,qualityModelId)
-);
-
--- Table created to represent a metric composed by other(s)
-CREATE TABLE MetricComposition (
-    parentMetric INT NOT NULL,
-    childMetric INT NOT NULL,
-
-    PRIMARY KEY (parentMetric, childMetric)
-);
 
 CREATE TABLE Data (
     probeId INT NOT NULL,
@@ -178,41 +215,13 @@ CREATE TABLE Data (
     resourceId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
     value DOUBLE PRECISION,
-    PRIMARY KEY (probeId,descriptionId,resourceId,valueTime)
+
+    PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
+
+    FOREIGN KEY (probeId) REFERENCES Probe (probeId),
+    FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
+    FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
 );
 
-ALTER TABLE Action ADD CONSTRAINT FK_Action_0 FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId);
-ALTER TABLE Action ADD CONSTRAINT FK_Action_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
-
-ALTER TABLE Configuration ADD CONSTRAINT FK_Configuration_0 FOREIGN KEY (actionId) REFERENCES Action (actionId);
-
-ALTER TABLE Data ADD CONSTRAINT FK_Data_0 FOREIGN KEY (probeId) REFERENCES Probe (probeId);
-ALTER TABLE Data ADD CONSTRAINT FK_Data_1 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
-ALTER TABLE Data ADD CONSTRAINT FK_Data_2 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
-
--- -- Table time was removed for normalization.
--- ALTER TABLE Data ADD CONSTRAINT FK_Data_3 FOREIGN KEY (valueTime) REFERENCES Time (valueTime);
-
-ALTER TABLE Metric ADD CONSTRAINT FK_Metric_0 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
-
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_0 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_1 FOREIGN KEY (resourceId) REFERENCES Resource (resourceId);
-ALTER TABLE MetricData ADD CONSTRAINT FK_MetricData_2 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
-
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_0 FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId);
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_1 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
-ALTER TABLE MetricComponent ADD CONSTRAINT FK_MetricComponent_2 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
-
-ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_0 FOREIGN KEY (parentMetric) REFERENCES Metric (metricId);
-ALTER TABLE MetricComposition ADD CONSTRAINT FK_MetricComposition_1 FOREIGN KEY
-(childMetric) REFERENCES Metric (metricId);
-
-ALTER TABLE Plan ADD CONSTRAINT FK_Plan_0 FOREIGN KEY (metricId) REFERENCES Metric (metricId);
-ALTER TABLE Plan ADD CONSTRAINT FK_Plan_1 FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId);
-
-ALTER TABLE ActionPlan ADD CONSTRAINT FK_ActionPlan_0 FOREIGN KEY (planId) REFERENCES Plan (planId);
-ALTER TABLE ActionPlan ADD CONSTRAINT FK_ActionPlan_1 FOREIGN KEY (actionId) REFERENCES Action (actionId);
-
-ALTER TABLE ConfigurationData ADD CONSTRAINT FK_ConfigurationData_0 FOREIGN KEY (actionPlanId) REFERENCES ActionPlan (actionPlanId);
-ALTER TABLE ConfigurationData ADD CONSTRAINT FK_ConfigurationData_1 FOREIGN KEY (configurationId) REFERENCES Configuration (configurationId);
 
