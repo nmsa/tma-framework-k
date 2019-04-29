@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="eu.atmosphere.tmaf_tma-knowledge-db_jar_0.1PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Metric</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Configuration</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.QualityModel</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Actuator</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.CompositeAttribute</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.MetricData</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.ConfigurationData</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.ActionPlan</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Plan</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.LeafAttribute</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Description</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Resource</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Data</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Probe</class>
+    <class>eu.atmosphere.tmaf.knowledge.db.entity.Action</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/tmak?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="tpc"/>
+    </properties>
+  </persistence-unit>
+</persistence>
