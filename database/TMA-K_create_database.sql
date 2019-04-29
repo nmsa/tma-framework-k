@@ -20,23 +20,25 @@
 -- ------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------
 
+
+DROP TABLE IF EXISTS Data;
+DROP TABLE IF EXISTS ConfigurationData;
+
+DROP TABLE IF EXISTS Configuration;
+
 DROP TABLE IF EXISTS MetricData;
 DROP TABLE IF EXISTS MetricComposition;
-DROP TABLE IF EXISTS MetricComponent;
+DROP TABLE IF EXISTS MetricComponent ;
 
 DROP TABLE IF EXISTS  CompositeAttribute;
 DROP TABLE IF EXISTS  Configuration;
 DROP TABLE IF EXISTS  LeafAttribute;
 
-DROP TABLE IF EXISTS ConfigurationData;
 DROP TABLE IF EXISTS ActionPlan;
 DROP TABLE IF EXISTS Plan;
 
 DROP TABLE IF EXISTS Metric;
 DROP TABLE IF EXISTS QualityModel;
-
-DROP TABLE IF EXISTS Data;
-DROP TABLE IF EXISTS Configuration;
 
 DROP TABLE IF EXISTS Action;
 DROP TABLE IF EXISTS Actuator;
@@ -111,7 +113,6 @@ CREATE TABLE Action (
     actuatorId INT NOT NULL,
     resourceId INT NOT NULL,
     actionName VARCHAR(128),
-    actuatorId INT NOT NULL,
     PRIMARY KEY (actionId),
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
     FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId)
@@ -135,7 +136,7 @@ CREATE TABLE Configuration (
     actionId INT NOT NULL,
     keyName VARCHAR(128),
     domain VARCHAR(1024),
-    PRIMARY KEY (configurationId, actionId)
+    PRIMARY KEY (configurationId, actionId),
 
     FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
@@ -220,8 +221,5 @@ CREATE TABLE Data (
 
     FOREIGN KEY (probeId) REFERENCES Probe (probeId),
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
-    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
-    FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
+    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
-
-
