@@ -1,4 +1,4 @@
-package eubr.atmosphere.tma.planning;
+package eubr.atmosphere.tma.planning.consumer;
 
 import java.util.Collections;
 import java.util.Properties;
@@ -12,10 +12,10 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import eubr.atmosphere.tma.planning.utils.PropertiesManager;
 
 
-@Deprecated
+
 public class ConsumerCreator {
 
-    private static String TOPIC = "topic-planning";
+    private static String TOPIC = "test";
 
     public static Consumer<Long, String> createConsumer() {
         Properties props = new Properties();
