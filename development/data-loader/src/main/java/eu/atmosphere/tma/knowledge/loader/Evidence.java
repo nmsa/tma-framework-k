@@ -12,7 +12,7 @@
  */
 package eu.atmosphere.tma.knowledge.loader;
 
-import eu.atmosphere.tmaf.monitor.message.Observation;
+//import eu.atmosphere.tmaf.monitor.message.Observation;
 
 /**
  * This class stores Evidences to be added to the Data table in the Knowledge.

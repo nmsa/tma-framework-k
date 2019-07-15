@@ -1,11 +1,12 @@
 /**
  * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- *** <p>
+ * ***
+ * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: (TBD)
  * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework License:
- * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * Repository: https://github.com/eubr-atmosphere/tma-framework
+ * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
  * <p>
  * <p>
  */

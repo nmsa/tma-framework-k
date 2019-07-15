@@ -20,10 +20,12 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.logging.Level;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -44,7 +46,6 @@ public class Main {
     // TODO: Rui arranja o nome
     private static String TOPIC = "test";
 
-    // TODO: Paulo usar logger em todo lado em vez de  System.out.println("");
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     private static final int KAFKA_CONSUMER_POLL_DURATION = 1000;
@@ -53,37 +54,35 @@ public class Main {
 
         Consumer<Long, String> consumer = createConsumer();
 
-        //int noMessageFound = 0;
-        //int maxNoMessageFoundCount = Integer.parseInt(PropertiesManager.getInstance().getProperty("maxNoMessageFoundCount"));
         final Duration pollDuration = Duration.ofMillis(KAFKA_CONSUMER_POLL_DURATION);
 
         try {
             while (true) {
 
+                // pollDuration is the time in milliseconds consumer will wait if no record is found at broker.
                 ConsumerRecords<Long, String> consumerRecords = consumer.poll(pollDuration);
-
-                // 1000 is the time in milliseconds consumer will wait if no record is found at broker.
-                //if (consumerRecords.count() == 0) {
-                //    noMessageFound++;
-                //}
+                
                 LOGGER.trace("ConsumerRecords: {}", consumerRecords.count());
 
                 // Manipulate the records
                 consumerRecords.forEach(record -> {
-                    ArrayList<Evidence> observations = parseJsonEvidences(record.value());
-                    //observations.get(0).printObservation();
-                    if (observations.size() > 0) {
-                        firstDatabaseChange(observations.get(0));
+                    ArrayList <Evidence> evidences = parseJsonEvidences(record.value());
+                    if (evidences.size() > 0) {
+												try {
+														insertEvidenceToDatabase(evidences.get(0));
+												} catch (ClassNotFoundException ex) {
+														java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+												}
                     }
                 });
 
                 // commits the offset of record to broker.
                 consumer.commitAsync();
-//                sleep(5000);
             }
         } finally {
+						LOGGER.trace("Closing consumer");
             consumer.close();
-            System.out.println("End");
+						LOGGER.trace("Consumer closed");
         }
 
     }
@@ -109,8 +108,7 @@ public class Main {
         return consumer;
     }
 
-    // TODO: name corrigir
-    private static void firstDatabaseChange(Evidence observation) {
+    private static void insertEvidenceToDatabase (Evidence evidence) throws ClassNotFoundException {
         try {
             // create a mysql database connection
             String myDriver = "knowledge";
@@ -127,74 +125,100 @@ public class Main {
             // create the mysql insert preparedstatement
             PreparedStatement preparedState = conn.prepareStatement(query);
 
-            preparedState.setInt(1, observation.getProbeId());
-            preparedState.setInt(2, observation.getResourceId());
-            preparedState.setInt(3, observation.getDescriptionId());
-            preparedState.setDouble(4, observation.getTime());
-            preparedState.setDouble(5, observation.getValue());
+            preparedState.setInt(1, evidence.getProbeId());
+            preparedState.setInt(2, evidence.getResourceId());
+            preparedState.setInt(3, evidence.getDescriptionId());
+            preparedState.setDouble(4, evidence.getTime());
+            preparedState.setDouble(5, evidence.getValue());
 
             // execute the preparedstatement
             preparedState.execute();
 
             conn.commit();
             conn.close();
-        } //error handler
-        catch (Exception e) {
-
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
+        }
+        catch (SQLException sqle) {
+						LOGGER.error("SQL Exception");
+						LOGGER.error("Error Code: " + sqle.getErrorCode());
+						LOGGER.error("Message: " + sqle.getMessage());
+						
+						Throwable t = sqle.getCause();
+						if(t == null){
+								LOGGER.error("Unknown Cause");
+						}
+						else{
+								LOGGER.error("Causes:");
+                while(t != null) {
+                    LOGGER.error(t.getMessage());
+                    t = t.getCause();
+                }
+						}
         }
     }
 
     private static ArrayList<Evidence> parseJsonEvidences(String jsonToParse) {
         JSONObject input;
-        ArrayList<Evidence> evidences = new ArrayList<Evidence>();
+        ArrayList <Evidence> evidences = new ArrayList <Evidence>();
 
+        LOGGER.trace("New message");
         try {
             input = new JSONObject(jsonToParse);
-
         } catch (JSONException je) {
-            // TODO: Paulo Logger e corrigir texto se for necessario.
-            System.out.println("Invalid  Json");
-            // TODO: Paulo usar a je
+            LOGGER.error("Invalid Json input");
+						LOGGER.error("Message: " + je.getMessage());
+						
+						Throwable t = je.getCause();
+						if(t == null){
+								LOGGER.error("Unknown Cause");
+						}
+						else{
+								LOGGER.error("Causes:");
+                while(t != null) {
+                    LOGGER.error(t.getMessage());
+                    t = t.getCause();
+                }
+						}
             return null;
         }
 
-        // TODO: Paulo Logger e corrigir texto se for necessario.
-        System.out.println("NEW MESSAGE:");
         try {
-
-            /* unpacking the json */
+            // unpacking the json
             JSONArray data = input.getJSONArray("data");
             int probeId = input.getInt("probeId");
             int resourceId = input.getInt("resourceId");
-//            int sentTime = input.getInt("sentTime");
-//            int messageId = input.getInt("messageId");
-
+						
+						LOGGER.trace("Reading every data");
             for (int i = 0; i < data.length(); i++) {
-                /* unpacking the data */
+                // unpacking the data
                 int descriptionId = data.getJSONObject(i).getInt("descriptionId");
-                //String type = data.getJSONObject(i).getString("type");
-
                 JSONArray observations = data.getJSONObject(i).getJSONArray("observations");
+								
+								LOGGER.trace("Reading every observation");
                 for (int j = 0; j < observations.length(); j++) {
-                    /* unpacking the observation */
+                    // unpacking the observation
                     int time = observations.getJSONObject(j).getInt("time");
                     Double value = observations.getJSONObject(j).getDouble("value");
-
-                    Evidence newObservation = new Evidence(probeId, resourceId, descriptionId, time, value);
-
-                    evidences.add(newObservation);
-                    //System.out.println(newObservation);
+										
+                    Evidence newEvidence = new Evidence(probeId, resourceId, descriptionId, time, value);
+                    evidences.add(newEvidence);
                 }
             }
+						
         } catch (JSONException je) {
-            // TODO: Paulo Logger e corrigir texto se for necessario.
-            // TODO: Paulo usar a je
-
-            System.out.println("***********************");
-            System.out.println("Error reading the Json");
-            System.out.println("***********************");
+						LOGGER.error("Wrong Json format");
+						LOGGER.error("Message: " + je.getMessage());
+						
+						Throwable t = je.getCause();
+						if(t == null){
+								LOGGER.error("Unknown Cause");
+						}
+						else{
+								LOGGER.error("Causes:");
+                while(t != null) {
+                    LOGGER.error(t.getMessage());
+                    t = t.getCause();
+                }
+						}
         }
         return evidences;
     }
