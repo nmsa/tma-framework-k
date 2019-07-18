@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: tma-planning
+  name: tma-dataloader
 
 spec:
   selector:
     matchLabels:
-      run: tma-planning
+      run: tma-dataloader
   template:
     metadata:
       labels:
-        run: tma-planning
+        run: tma-dataloader
     spec:
       containers:
-      - name: tma-planning
-        image: joseadp/tma-planning
+      - name: tma-dataloader
+        image: tma-dataloader:0.1

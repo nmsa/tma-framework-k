@@ -43,8 +43,7 @@ import org.json.JSONObject;
  */
 public class Main {
 
-    // TODO: Rui arranja o nome
-    private static String TOPIC = "test";
+    private static String TOPIC = "topic-monitor";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
@@ -62,17 +61,20 @@ public class Main {
                 // pollDuration is the time in milliseconds consumer will wait if no record is found at broker.
                 ConsumerRecords<Long, String> consumerRecords = consumer.poll(pollDuration);
                 
-                LOGGER.trace("ConsumerRecords: {}", consumerRecords.count());
+                LOGGER.info("ConsumerRecords: {}", consumerRecords.count());
 
                 // Manipulate the records
                 consumerRecords.forEach(record -> {
                     ArrayList <Evidence> evidences = parseJsonEvidences(record.value());
-                    if (evidences.size() > 0) {
-												try {
-														insertEvidenceToDatabase(evidences.get(0));
-												} catch (ClassNotFoundException ex) {
-														java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-												}
+                    
+                    if (evidences == null){
+												return;                    
+										}
+					if (evidences.size() > 0) {
+                        for (Evidence ev : evidences){
+                            insertEvidenceToDatabase(ev);
+                        }
+                        
                     }
                 });
 
@@ -108,45 +110,60 @@ public class Main {
         return consumer;
     }
 
-    private static void insertEvidenceToDatabase (Evidence evidence) throws ClassNotFoundException {
+    private static void insertEvidenceToDatabase (Evidence evidence){
+        // create a mysql database connection
+        String myDriver = "com.mysql.cj.jdbc.Driver";
+				try{
+        		Class.forName(myDriver);
+				}
+				catch (ClassNotFoundException ce) {
+						LOGGER.error("Wrong Class name");
+						LOGGER.error("Message: " + ce.getMessage());
+						
+						Throwable t = ce.getCause();
+						if(t != null){
+								LOGGER.error("Causes:");
+		            while(t != null) {
+		                LOGGER.error(t.getMessage());
+		                t = t.getCause();
+		            }
+						}
+				}
+
+        String myUrl = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
+
         try {
-            // create a mysql database connection
-            String myDriver = "knowledge";
-            Class.forName(myDriver);
-
-            String myUrl = "jdbc:mysql://localhost/test"; // @TODO Rui corrige
-
             Connection conn = DriverManager.getConnection(myUrl, "root", "passtobereplaced");
 
             // the mysql insert statement
             String query = "INSERT INTO Data(probeId, resourceId, descriptionId, valueTime, value) "
-                    + " VALUES (? , ? , ?, ?, ?)";
+                    + " VALUES (? , ? , ?, FROM_UNIXTIME(?), ?)";
+
+            conn.setAutoCommit(false);
 
             // create the mysql insert preparedstatement
-            PreparedStatement preparedState = conn.prepareStatement(query);
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
 
-            preparedState.setInt(1, evidence.getProbeId());
-            preparedState.setInt(2, evidence.getResourceId());
-            preparedState.setInt(3, evidence.getDescriptionId());
-            preparedState.setDouble(4, evidence.getTime());
-            preparedState.setDouble(5, evidence.getValue());
+            preparedStatement.setInt(1, evidence.getProbeId());
+            preparedStatement.setInt(2, evidence.getResourceId());
+            preparedStatement.setInt(3, evidence.getDescriptionId());
+            preparedStatement.setDouble(4, evidence.getTime());
+            preparedStatement.setDouble(5, evidence.getValue());
+            
+            // execute the prepared statement
+            preparedStatement.executeUpdate();
 
-            // execute the preparedstatement
-            preparedState.execute();
-
+            
             conn.commit();
             conn.close();
         }
         catch (SQLException sqle) {
-						LOGGER.error("SQL Exception");
+						LOGGER.error("SQL Error");
 						LOGGER.error("Error Code: " + sqle.getErrorCode());
 						LOGGER.error("Message: " + sqle.getMessage());
 						
 						Throwable t = sqle.getCause();
-						if(t == null){
-								LOGGER.error("Unknown Cause");
-						}
-						else{
+						if(t != null){
 								LOGGER.error("Causes:");
                 while(t != null) {
                     LOGGER.error(t.getMessage());
@@ -156,7 +173,7 @@ public class Main {
         }
     }
 
-    private static ArrayList<Evidence> parseJsonEvidences(String jsonToParse) {
+    private static ArrayList <Evidence> parseJsonEvidences(String jsonToParse) {
         JSONObject input;
         ArrayList <Evidence> evidences = new ArrayList <Evidence>();
 
@@ -168,10 +185,7 @@ public class Main {
 						LOGGER.error("Message: " + je.getMessage());
 						
 						Throwable t = je.getCause();
-						if(t == null){
-								LOGGER.error("Unknown Cause");
-						}
-						else{
+						if(t != null){
 								LOGGER.error("Causes:");
                 while(t != null) {
                     LOGGER.error(t.getMessage());
@@ -209,16 +223,14 @@ public class Main {
 						LOGGER.error("Message: " + je.getMessage());
 						
 						Throwable t = je.getCause();
-						if(t == null){
-								LOGGER.error("Unknown Cause");
-						}
-						else{
+						if(t != null){
 								LOGGER.error("Causes:");
                 while(t != null) {
                     LOGGER.error(t.getMessage());
                     t = t.getCause();
                 }
 						}
+						return null;
         }
         return evidences;
     }

@@ -1,1 +1,1 @@
-docker build -t tma-planning:0.1 .
+docker build -t tma-dataloader:0.1 .
