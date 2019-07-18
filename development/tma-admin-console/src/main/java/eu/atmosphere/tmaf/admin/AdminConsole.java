@@ -41,8 +41,7 @@ public class AdminConsole {
     }
 
     private static byte[] encMessage = null;
-    private static String message = "Minha terra tem palmeiras onde canta o sabiá / "
-            + "As aves que aqui gorgeiam não gorgeiam como lá";
+    private static String message = "Minha terra tem palmeiras, Onde canta o Sabiá As aves, que aqui gorjeiam Não gorjeiam como lá Nosso céu tem mais estrelas, Nossas várzeas têm mais flores Nossos bosques têm mais vida Nossa vida mais amores Em cismar – sozinho – à noite – Mais prazer encontro eu láMinha terra tem palmeiras Onde canta o SabiáMinha terra tem primores Que tais não encontro eu cá Em cismar – sozinho – à noite – Mais prazer encontro eu láMinha terra tem palmeiras Onde canta o Sabiá";
 
     private static BufferedReader reader;
 
