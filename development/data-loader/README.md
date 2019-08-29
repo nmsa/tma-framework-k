@@ -1,39 +1,36 @@
-# TMA Planning
+# TMA Data Loader
 
 This project aims to:
-* Consume the items from a topic queue (To be changed to the database);
-* Check if the scores from the queue are in the proper threshold;
-* Create the adaptation plan with action items when an adaption is needed.
+* Consume the items from a topic monitor of the apache kafka;
+* Processes the data received in order to be inserted in the `knowledge` database;
+* Insert the data in the table of the `knowledge` database;
 
 ## Prerequisites
 
-This component requires the software available in [tma-utils](https://github.com/joseadp/tma-utils).
+This component requires the software available in [java-client-lib](https://github.com/eubr-atmosphere/tma-framework-m/tree/master/development/libraries/java-client-lib).
 
 ## Installation
 
-This is a simple module to validate the score of the metrics from Kubernetes.
+This is a simple module to insert data in the `knowledge` database.
 
 To build the jar, you should run the following command on the worker node:
 ```sh
 sh build.sh
 ```
 
-The planning will consume the items from the topic `topic-planning`, and it will add new topics to `topic-execute`. To create the topic, you should run on the master node:
+The data loader will consume the items from the topic `topic-monitor`. To create the topic, you should run on the master node:
 ```sh
-kubectl exec -ti kafka-0 -- kafka-topics.sh --create --topic topic-execute --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181 --partitions 1 --replication-factor 1
+kubectl exec -ti kafka-0 -- kafka-topics.sh --create --topic topic-monitor --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181 --partitions 1 --replication-factor 1
 ```
 
 To deploy the pod in the cluster, you should run the following command on the master node:
 
 ```sh
-kubectl create -f tma-planning.yaml
-```
-
-You can also check the items on topic. In order to do that, you should connect to the Kafka pod and execute the consumer:
-```sh
-kubectl exec -ti kafka-0 -- bash
-kafka-console-consumer.sh --topic topic-execute --bootstrap-server localhost:9093
+kubectl create -f tma-dataloader.yaml
 ```
 
 ## Authors
-* José D'Abruzzo Pereira
+* José D'Abruzzo Pereira 
+* Rui Silva
+* Paulo Gonçalves
+

@@ -1,12 +1,10 @@
 /**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
+ * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/ *** <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: (TBD)
  * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * Repository: https://github.com/eubr-atmosphere/tma-framework License:
+ * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
  * <p>
  * <p>
  */
@@ -16,12 +14,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-
 /**
- * TODO: José, complete please
+ * This class manages the general properties of the project
+ * 
  * <p>
  *
- * @author Jose A. D. Pereira  <josep@dei.uc.pt>
+ * @author Nuno Antunes     <nmsa@dei.uc.pt>
+ * @author Jose Pereira     <josep@dei.uc.pt>
+ * @author Rui Silva        <rfsilva@student.dei.uc.pt>
+ * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
  */
 public class PropertiesManager {
 

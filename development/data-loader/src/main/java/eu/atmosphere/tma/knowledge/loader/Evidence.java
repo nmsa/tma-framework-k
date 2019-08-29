@@ -1,18 +1,14 @@
 /**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
+ * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/ *** <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: Knowledge - DataLoader
  * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * Repository: https://github.com/eubr-atmosphere/tma-framework License:
+ * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
  * <p>
  * <p>
  */
 package eu.atmosphere.tma.knowledge.loader;
-
-//import eu.atmosphere.tmaf.monitor.message.Observation;
 
 /**
  * This class stores Evidences to be added to the Data table in the Knowledge.
@@ -20,10 +16,10 @@ package eu.atmosphere.tma.knowledge.loader;
  * detail.
  * <p>
  *
- * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
- * @author Rui Silva        <rfsilva@student.dei.uc.pt>
- * @author Jose Pereira     <josep@dei.uc.pt>
  * @author Nuno Antunes     <nmsa@dei.uc.pt>
+ * @author Jose Pereira     <josep@dei.uc.pt>
+ * @author Rui Silva        <rfsilva@student.dei.uc.pt>
+ * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
  */
 public class Evidence {
 
