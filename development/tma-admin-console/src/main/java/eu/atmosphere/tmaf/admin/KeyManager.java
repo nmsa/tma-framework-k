@@ -36,7 +36,7 @@ public class KeyManager {
         KeyPair keyPair = null;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
-            keyPairGenerator.initialize(2048, SecureRandom.getInstance("SHA1PRNG"));
+            keyPairGenerator.initialize(4096, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("[ATMOSPHERE] Error generating the KeyPair.", e);
