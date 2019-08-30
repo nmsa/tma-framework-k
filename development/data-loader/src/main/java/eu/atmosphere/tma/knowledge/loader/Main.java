@@ -1,11 +1,12 @@
 /**
  * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- *** <p>
+ * ***
+ * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: Knowledge - DataLoader
  * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework License:
- * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * Repository: https://github.com/eubr-atmosphere/tma-framework
+ * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
  * <p>
  * <p>
  */
@@ -34,23 +35,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * 
+ *
  * This class is used to consume the items of the topic monitor
  * and inserts them in the knowledge database.
- * 
- *
+ * <p>
+ * <p>
  * <p>
  *
- * @author Nuno Antunes     <nmsa@dei.uc.pt>
- * @author Jose Pereira     <josep@dei.uc.pt>
- * @author Rui Silva        <rfsilva@student.dei.uc.pt>
  * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
+ * @author Rui Silva        <rfsilva@student.dei.uc.pt>
+ * @author Jose Pereira     <josep@dei.uc.pt>
+ * @author Nuno Antunes     <nmsa@dei.uc.pt>
  */
 public class Main {
 
-    private static String TOPIC = "topic-monitor";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+    private static String TOPIC = "topic-monitor";
+    private static String DB_URL = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
 
     private static final int KAFKA_CONSUMER_POLL_DURATION = 1000;
 
@@ -119,28 +121,16 @@ public class Main {
         try {
             Class.forName(myDriver);
         } catch (ClassNotFoundException ce) {
-            LOGGER.error("Wrong Class name");
-            LOGGER.error("Message: {}", ce.getMessage());
-
-            Throwable t = ce.getCause();
-            if (t != null) {
-                LOGGER.error("Causes:");
-                while (t != null) {
-                    LOGGER.error(t.getMessage());
-                    t = t.getCause();
-                }
-            }
+            LOGGER.error("Wrong Class name", ce);
             return;
         }
 
-        String myUrl = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
-
         try {
-            LOGGER.debug("Opening connection");
-            Connection conn = DriverManager.getConnection(myUrl, "root", "passtobereplaced");
+            LOGGER.trace("Opening connection");
+            Connection conn = DriverManager.getConnection(DB_URL, "root", "passtobereplaced");
             LOGGER.debug("Connection opened");
 
-            LOGGER.debug("Preparing mysql statement");
+            LOGGER.trace("Preparing mysql statement");
             // the mysql insert statement
             String query = "INSERT INTO Data(probeId, resourceId, descriptionId, valueTime, value) "
                     + " VALUES (? , ? , ?, FROM_UNIXTIME(?), ?)";
@@ -156,28 +146,17 @@ public class Main {
             preparedStatement.setDouble(4, evidence.getTime());
             preparedStatement.setDouble(5, evidence.getValue());
 
-            LOGGER.debug("Executing mysql statement");
+            LOGGER.trace("Executing mysql statement");
             // execute the prepared statement
             preparedStatement.executeUpdate();
             LOGGER.trace("Data correctly added to database");
 
             conn.commit();
-            LOGGER.debug("Closing Connection");
+            LOGGER.trace("Closing Connection");
             conn.close();
             LOGGER.trace("Connection closed");
         } catch (SQLException sqle) {
-            LOGGER.error("SQL Error");
-            LOGGER.error("Error Code: {}", sqle.getErrorCode());
-            LOGGER.error("Message: {}", sqle.getMessage());
-
-            Throwable t = sqle.getCause();
-            if (t != null) {
-                LOGGER.error("Causes:");
-                while (t != null) {
-                    LOGGER.error(t.getMessage());
-                    t = t.getCause();
-                }
-            }
+            LOGGER.error("SQL Error ", sqle);
         }
     }
 
@@ -189,17 +168,7 @@ public class Main {
         try {
             input = new JSONObject(jsonToParse);
         } catch (JSONException je) {
-            LOGGER.error("Invalid Json input");
-            LOGGER.error("Message: {}", je.getMessage());
-
-            Throwable t = je.getCause();
-            if (t != null) {
-                LOGGER.error("Causes:");
-                while (t != null) {
-                    LOGGER.error(t.getMessage());
-                    t = t.getCause();
-                }
-            }
+            LOGGER.error("Invalid Json input", je);
             return null;
         }
 
@@ -227,17 +196,7 @@ public class Main {
             }
 
         } catch (JSONException je) {
-            LOGGER.error("Wrong Json format");
-            LOGGER.error("Message: {}", je.getMessage());
-
-            Throwable t = je.getCause();
-            if (t != null) {
-                LOGGER.error("Causes:");
-                while (t != null) {
-                    LOGGER.error(t.getMessage());
-                    t = t.getCause();
-                }
-            }
+            LOGGER.error("Wrong Json format", je);
             return null;
         }
         return evidences;

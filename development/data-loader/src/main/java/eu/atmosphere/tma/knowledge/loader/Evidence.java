@@ -1,10 +1,12 @@
 /**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/ *** <p>
+ * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
+ * ***
+ * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: Knowledge - DataLoader
  * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework License:
- * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * Repository: https://github.com/eubr-atmosphere/tma-framework
+ * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
  * <p>
  * <p>
  */
@@ -16,10 +18,10 @@ package eu.atmosphere.tma.knowledge.loader;
  * detail.
  * <p>
  *
- * @author Nuno Antunes     <nmsa@dei.uc.pt>
- * @author Jose Pereira     <josep@dei.uc.pt>
- * @author Rui Silva        <rfsilva@student.dei.uc.pt>
  * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
+ * @author Rui Silva        <rfsilva@student.dei.uc.pt>
+ * @author Jose Pereira     <josep@dei.uc.pt>
+ * @author Nuno Antunes     <nmsa@dei.uc.pt>
  */
 public class Evidence {
 
@@ -79,6 +81,8 @@ public class Evidence {
 
     @Override
     public String toString() {
-        return "Evidence{probeId=" + probeId + ", resourceId=" + resourceId + ", descriptionId=" + descriptionId + ", time=" + time + ", value=" + value + '}';
+        return "Evidence{probeId=" + probeId + ", resourceId=" + resourceId
+                + ", descriptionId=" + descriptionId + ", time=" + time
+                + ", value=" + value + '}';
     }
 }
