@@ -46,8 +46,13 @@ DROP TABLE IF EXISTS Description;
 DROP TABLE IF EXISTS Probe;
 DROP TABLE IF EXISTS Resource;
 
+DROP TABLE IF EXISTS ConfigurationProfile;
+DROP TABLE IF EXISTS Preference;
+
+
 -- -- Table time was removed for normalization.
 -- DROP TABLE IF EXISTS Time;
+
 
 CREATE TABLE Actuator (
     actuatorId INT NOT NULL AUTO_INCREMENT,
@@ -56,22 +61,35 @@ CREATE TABLE Actuator (
     PRIMARY KEY (actuatorId)
 );
 
+
+CREATE TABLE ConfigurationProfile (
+    configurationProfileID INT NOT NULL AUTO_INCREMENT,
+    profileName VARCHAR(50) NOT NULL,
+    PRIMARY KEY (configurationProfileID)
+);
+
+
 CREATE TABLE Metric (
     metricId INT NOT NULL AUTO_INCREMENT,
     metricName VARCHAR(10),
-    metricAggregationOperator INT,
     blockLevel INT,
-    normalizationThreshold DOUBLE PRECISION,
+    weight DOUBLE PRECISION,
     PRIMARY KEY (metricId)
 );
 
-CREATE TABLE Description (
-    descriptionId INT NOT NULL AUTO_INCREMENT,
-    dataType CHAR(16),
-    descriptionName CHAR(128),
-    unit CHAR(16),
-    PRIMARY KEY (descriptionId)
+
+CREATE TABLE Preference (
+    configurationProfileID INT NOT NULL,
+    metricId INT NOT NULL,
+    weight DOUBLE PRECISION,
+    threshold DOUBLE PRECISION,
+
+    PRIMARY KEY (configurationProfileID, metricId),
+
+    FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
+
 
 CREATE TABLE Probe (
     probeId INT NOT NULL AUTO_INCREMENT,
@@ -83,6 +101,7 @@ CREATE TABLE Probe (
     PRIMARY KEY (probeId)
 );
 
+
 CREATE TABLE QualityModel (
     qualityModelId INT NOT NULL AUTO_INCREMENT,
     metricId INT NOT NULL,
@@ -93,6 +112,7 @@ CREATE TABLE QualityModel (
     FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
+
 CREATE TABLE Resource (
     resourceId INT NOT NULL AUTO_INCREMENT,
     resourceName VARCHAR(128),
@@ -100,6 +120,7 @@ CREATE TABLE Resource (
     resourceAddress VARCHAR(1024),
     PRIMARY KEY (resourceId)
 );
+
 
 -- -- Table time was removed for normalization.
 -- CREATE TABLE Time (
@@ -136,15 +157,20 @@ CREATE TABLE Configuration (
     actionId INT NOT NULL,
     keyName VARCHAR(128),
     domain VARCHAR(1024),
+
     PRIMARY KEY (configurationId, actionId),
 
     FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
 
 
-
-
-
+CREATE TABLE Description (
+    descriptionId INT NOT NULL AUTO_INCREMENT,
+    dataType CHAR(16),
+    descriptionName CHAR(128),
+    unit CHAR(16),
+    PRIMARY KEY (descriptionId)
+);
 
 
 CREATE TABLE LeafAttribute (
@@ -152,9 +178,10 @@ CREATE TABLE LeafAttribute (
     metricId INT NOT NULL,
     metricAggregationOperator INT,
     numSamples INT,
-    weight DOUBLE PRECISION,
     normalizationMethod VARCHAR(10),
     normalizationKind VARCHAR(10),
+    minimumThreshold DOUBLE PRECISION,
+    maximumThreshold DOUBLE PRECISION,
 
     PRIMARY KEY (descriptionId,metricId),
 
@@ -175,15 +202,18 @@ CREATE TABLE MetricData (
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
+
 CREATE TABLE Plan (
     planId INT NOT NULL AUTO_INCREMENT,
     metricId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
     status INT,
+
     PRIMARY KEY (planId),
 
     FOREIGN KEY (metricId,valueTime) REFERENCES MetricData (metricId,valueTime)
 );
+
 
 CREATE TABLE ActionPlan (
     planId INT NOT NULL,
@@ -191,7 +221,7 @@ CREATE TABLE ActionPlan (
     executionOrder INT,
     status INT,
 
-    PRIMARY KEY (planId, actionId),
+    PRIMARY KEY (planId,actionId),
 
     FOREIGN KEY (planId) REFERENCES Plan (planId),
     FOREIGN KEY (actionId) REFERENCES Action (actionId)
@@ -223,3 +253,5 @@ CREATE TABLE Data (
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
+
+

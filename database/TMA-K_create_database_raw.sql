@@ -37,9 +37,12 @@ DROP TABLE Plan CASCADE CONSTRAINTS;
 DROP TABLE ActionPlan CASCADE CONSTRAINTS;
 DROP TABLE ConfigurationData CASCADE CONSTRAINTS;
 DROP TABLE Data CASCADE CONSTRAINTS;
+DROP TABLE ConfigurationProfile CASCADE CONSTRAINTS;
+DROP TABLE Preference CASCADE CONSTRAINTS;
 
 
-
+-- -- Table time was removed for normalization.
+-- DROP TABLE IF EXISTS Time;
 
 CREATE TABLE Actuator (
     actuatorId INT NOT NULL PRIMARY KEY,
@@ -48,14 +51,31 @@ CREATE TABLE Actuator (
 );
 
 
+CREATE TABLE ConfigurationProfile (
+    configurationProfileID INT NOT NULL PRIMARY KEY,
+    profileName VARCHAR(50) NOT NULL
+);
+
+
 CREATE TABLE Metric (
     metricId INT NOT NULL PRIMARY KEY,
     metricName VARCHAR(10),
-    metricAggregationOperator INT,
     blockLevel INT,
-    normalizationThreshold DOUBLE PRECISION
+    weight DOUBLE PRECISION
 );
 
+
+CREATE TABLE Preference (
+    configurationProfileID INT NOT NULL,
+    metricId INT NOT NULL,
+    weight DOUBLE PRECISION,
+    threshold DOUBLE PRECISION,
+
+    PRIMARY KEY (configurationProfileID,metricId),
+
+    FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+);
 
 CREATE TABLE Probe (
     probeId INT NOT NULL PRIMARY KEY,
@@ -136,12 +156,11 @@ CREATE TABLE LeafAttribute (
     metricId INT NOT NULL,
     metricAggregationOperator INT,
     numSamples INT,
-    weight DOUBLE PRECISION,
     normalizationMethod VARCHAR(10),
     normalizationKind VARCHAR(10),
-
+    minimumThreshold DOUBLE PRECISION,
+    maximumThreshold DOUBLE PRECISION,
     PRIMARY KEY (descriptionId,metricId),
-
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
     FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
@@ -201,9 +220,7 @@ CREATE TABLE Data (
     resourceId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
     value DOUBLE PRECISION,
-
     PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
-
     FOREIGN KEY (probeId) REFERENCES Probe (probeId),
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
