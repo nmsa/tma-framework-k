@@ -13,6 +13,8 @@ package eu.atmosphere.tma.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class manages the general properties of the project
@@ -28,14 +30,14 @@ public class PropertiesManager {
 
     private static PropertiesManager instance;
     private static final Properties props = new Properties();
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesManager.class);
 
     private PropertiesManager() {
         InputStream inputStream = PropertiesManager.class.getResourceAsStream("/environment.properties");
         try {
             props.load(inputStream);
         } catch (IOException e) {
-            // FIXME: log...
-            e.printStackTrace();
+            LOGGER.error("Error while trying to load the Properties.", e);
         }
     }
 

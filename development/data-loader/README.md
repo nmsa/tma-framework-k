@@ -1,8 +1,8 @@
 # TMA Data Loader
 
 This project aims to:
-* Consume the items from a topic monitor of the apache kafka;
-* Processes the data received in order to be inserted in the `knowledge` database;
+* Consume the items from the topic monitor of the apache kafka;
+* Process the data received in order to be inserted in the `knowledge` database;
 * Insert the data in the table of the `knowledge` database;
 
 ## Prerequisites
