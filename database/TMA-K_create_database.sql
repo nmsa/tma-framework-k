@@ -28,11 +28,11 @@ DROP TABLE IF EXISTS Configuration;
 
 DROP TABLE IF EXISTS MetricData;
 DROP TABLE IF EXISTS MetricComposition;
-DROP TABLE IF EXISTS MetricComponent ;
+DROP TABLE IF EXISTS MetricComponent;
 
-DROP TABLE IF EXISTS  CompositeAttribute;
-DROP TABLE IF EXISTS  Configuration;
-DROP TABLE IF EXISTS  LeafAttribute;
+DROP TABLE IF EXISTS CompositeAttribute;
+DROP TABLE IF EXISTS Configuration;
+DROP TABLE IF EXISTS LeafAttribute;
 
 DROP TABLE IF EXISTS ActionPlan;
 DROP TABLE IF EXISTS Plan;
