@@ -21,10 +21,10 @@ import javax.persistence.TemporalType;
 public class MetricDataPK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "metricId", nullable = false)
+    @Column(name = "metricId")
     private int metricId;
     @Basic(optional = false)
-    @Column(name = "valueTime", nullable = false)
+    @Column(name = "valueTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date valueTime;
 

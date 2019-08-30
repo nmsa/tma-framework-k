@@ -1,14 +1,7 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -16,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -28,7 +20,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "CompositeAttribute", catalog = "tmak", schema = "")
+@Table(name = "CompositeAttribute")
 @NamedQueries({
     @NamedQuery(name = "CompositeAttribute.findAll", query = "SELECT c FROM CompositeAttribute c"),
     @NamedQuery(name = "CompositeAttribute.findByParentMetric", query = "SELECT c FROM CompositeAttribute c WHERE c.compositeAttributePK.parentMetric = :parentMetric"),
@@ -41,11 +33,11 @@ public class CompositeAttribute implements Serializable {
     protected CompositeAttributePK compositeAttributePK;
     @Column(name = "attributeAggregationOperator")
     private Integer attributeAggregationOperator;
-    @JoinColumn(name = "parentMetric", referencedColumnName = "metricId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentMetric", referencedColumnName = "metricId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Metric metric;
-    @JoinColumn(name = "childMetric", referencedColumnName = "metricId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "childMetric", referencedColumnName = "metricId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Metric metric1;
 
     public CompositeAttribute() {

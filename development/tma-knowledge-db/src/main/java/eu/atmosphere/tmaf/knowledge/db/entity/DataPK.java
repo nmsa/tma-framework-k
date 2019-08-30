@@ -21,16 +21,16 @@ import javax.persistence.TemporalType;
 public class DataPK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "probeId", nullable = false)
+    @Column(name = "probeId")
     private int probeId;
     @Basic(optional = false)
-    @Column(name = "descriptionId", nullable = false)
+    @Column(name = "descriptionId")
     private int descriptionId;
     @Basic(optional = false)
-    @Column(name = "resourceId", nullable = false)
+    @Column(name = "resourceId")
     private int resourceId;
     @Basic(optional = false)
-    @Column(name = "valueTime", nullable = false)
+    @Column(name = "valueTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date valueTime;
 

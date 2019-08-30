@@ -1,14 +1,7 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -17,7 +10,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -27,15 +19,10 @@ import javax.persistence.Table;
 
 /**
  *
- * 
- * 
- * @author Jorge Luiz <jorgem@unicamp.br>
- * @author Breno de França <breno@ic.unicamp.br>
- * @author José Pereira <josep@dei.uc.pt>
- * @author Nuno Antunes <nmsa@dei.uc.pt>
+ * @author nmsa
  */
 @Entity
-@Table(name = "ActionPlan", catalog = "tmak", schema = "")
+@Table(name = "ActionPlan")
 @NamedQueries({
     @NamedQuery(name = "ActionPlan.findAll", query = "SELECT a FROM ActionPlan a"),
     @NamedQuery(name = "ActionPlan.findByPlanId", query = "SELECT a FROM ActionPlan a WHERE a.actionPlanPK.planId = :planId"),
@@ -51,13 +38,13 @@ public class ActionPlan implements Serializable {
     private Integer executionOrder;
     @Column(name = "status")
     private Integer status;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "actionPlan", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "actionPlan")
     private ConfigurationData configurationData;
-    @JoinColumn(name = "planId", referencedColumnName = "planId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "planId", referencedColumnName = "planId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Plan plan;
-    @JoinColumn(name = "actionId", referencedColumnName = "actionId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "actionId", referencedColumnName = "actionId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Action action;
 
     public ActionPlan() {

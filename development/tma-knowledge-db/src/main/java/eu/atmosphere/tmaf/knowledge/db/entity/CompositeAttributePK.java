@@ -1,14 +1,7 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -25,10 +18,10 @@ import javax.persistence.Embeddable;
 public class CompositeAttributePK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "parentMetric", nullable = false)
+    @Column(name = "parentMetric")
     private int parentMetric;
     @Basic(optional = false)
-    @Column(name = "childMetric", nullable = false)
+    @Column(name = "childMetric")
     private int childMetric;
 
     public CompositeAttributePK() {

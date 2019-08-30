@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,16 +20,17 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "LeafAttribute", catalog = "tmak", schema = "")
+@Table(name = "LeafAttribute")
 @NamedQueries({
     @NamedQuery(name = "LeafAttribute.findAll", query = "SELECT l FROM LeafAttribute l"),
     @NamedQuery(name = "LeafAttribute.findByDescriptionId", query = "SELECT l FROM LeafAttribute l WHERE l.leafAttributePK.descriptionId = :descriptionId"),
     @NamedQuery(name = "LeafAttribute.findByMetricId", query = "SELECT l FROM LeafAttribute l WHERE l.leafAttributePK.metricId = :metricId"),
     @NamedQuery(name = "LeafAttribute.findByMetricAggregationOperator", query = "SELECT l FROM LeafAttribute l WHERE l.metricAggregationOperator = :metricAggregationOperator"),
     @NamedQuery(name = "LeafAttribute.findByNumSamples", query = "SELECT l FROM LeafAttribute l WHERE l.numSamples = :numSamples"),
-    @NamedQuery(name = "LeafAttribute.findByWeight", query = "SELECT l FROM LeafAttribute l WHERE l.weight = :weight"),
     @NamedQuery(name = "LeafAttribute.findByNormalizationMethod", query = "SELECT l FROM LeafAttribute l WHERE l.normalizationMethod = :normalizationMethod"),
-    @NamedQuery(name = "LeafAttribute.findByNormalizationKind", query = "SELECT l FROM LeafAttribute l WHERE l.normalizationKind = :normalizationKind")})
+    @NamedQuery(name = "LeafAttribute.findByNormalizationKind", query = "SELECT l FROM LeafAttribute l WHERE l.normalizationKind = :normalizationKind"),
+    @NamedQuery(name = "LeafAttribute.findByMinimumThreshold", query = "SELECT l FROM LeafAttribute l WHERE l.minimumThreshold = :minimumThreshold"),
+    @NamedQuery(name = "LeafAttribute.findByMaximumThreshold", query = "SELECT l FROM LeafAttribute l WHERE l.maximumThreshold = :maximumThreshold")})
 public class LeafAttribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,18 +40,20 @@ public class LeafAttribute implements Serializable {
     private Integer metricAggregationOperator;
     @Column(name = "numSamples")
     private Integer numSamples;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "weight", precision = 22)
-    private Double weight;
-    @Column(name = "normalizationMethod", length = 10)
+    @Column(name = "normalizationMethod")
     private String normalizationMethod;
-    @Column(name = "normalizationKind", length = 10)
+    @Column(name = "normalizationKind")
     private String normalizationKind;
-    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "minimumThreshold")
+    private Double minimumThreshold;
+    @Column(name = "maximumThreshold")
+    private Double maximumThreshold;
+    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Description description;
-    @JoinColumn(name = "metricId", referencedColumnName = "metricId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "metricId", referencedColumnName = "metricId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Metric metric;
 
     public LeafAttribute() {
@@ -89,14 +91,6 @@ public class LeafAttribute implements Serializable {
         this.numSamples = numSamples;
     }
 
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
     public String getNormalizationMethod() {
         return normalizationMethod;
     }
@@ -111,6 +105,22 @@ public class LeafAttribute implements Serializable {
 
     public void setNormalizationKind(String normalizationKind) {
         this.normalizationKind = normalizationKind;
+    }
+
+    public Double getMinimumThreshold() {
+        return minimumThreshold;
+    }
+
+    public void setMinimumThreshold(Double minimumThreshold) {
+        this.minimumThreshold = minimumThreshold;
+    }
+
+    public Double getMaximumThreshold() {
+        return maximumThreshold;
+    }
+
+    public void setMaximumThreshold(Double maximumThreshold) {
+        this.maximumThreshold = maximumThreshold;
     }
 
     public Description getDescription() {

@@ -10,7 +10,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -22,7 +21,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Data", catalog = "tmak", schema = "")
+@Table(name = "Data")
 @NamedQueries({
     @NamedQuery(name = "Data.findAll", query = "SELECT d FROM Data d"),
     @NamedQuery(name = "Data.findByProbeId", query = "SELECT d FROM Data d WHERE d.dataPK.probeId = :probeId"),
@@ -36,16 +35,16 @@ public class Data implements Serializable {
     @EmbeddedId
     protected DataPK dataPK;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "value", precision = 22)
+    @Column(name = "value")
     private Double value;
-    @JoinColumn(name = "probeId", referencedColumnName = "probeId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "probeId", referencedColumnName = "probeId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Probe probe;
-    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Description description;
-    @JoinColumn(name = "resourceId", referencedColumnName = "resourceId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceId", referencedColumnName = "resourceId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Resource resource;
 
     public Data() {

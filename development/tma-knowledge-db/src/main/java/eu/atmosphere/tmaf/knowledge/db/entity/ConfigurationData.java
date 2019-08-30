@@ -1,14 +1,7 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -16,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -30,7 +22,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "ConfigurationData", catalog = "tmak", schema = "")
+@Table(name = "ConfigurationData")
 @NamedQueries({
     @NamedQuery(name = "ConfigurationData.findAll", query = "SELECT c FROM ConfigurationData c"),
     @NamedQuery(name = "ConfigurationData.findByPlanId", query = "SELECT c FROM ConfigurationData c WHERE c.configurationDataPK.planId = :planId"),
@@ -41,15 +33,15 @@ public class ConfigurationData implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ConfigurationDataPK configurationDataPK;
-    @Column(name = "value", length = 1024)
+    @Column(name = "value")
     private String value;
     @JoinColumns({
-        @JoinColumn(name = "planId", referencedColumnName = "planId", nullable = false, insertable = false, updatable = false),
-        @JoinColumn(name = "actionId", referencedColumnName = "actionId", nullable = false, insertable = false, updatable = false)})
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "planId", referencedColumnName = "planId", insertable = false, updatable = false),
+        @JoinColumn(name = "actionId", referencedColumnName = "actionId", insertable = false, updatable = false)})
+    @OneToOne(optional = false)
     private ActionPlan actionPlan;
-    @JoinColumn(name = "actionId", referencedColumnName = "actionId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "actionId", referencedColumnName = "actionId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Configuration configuration;
 
     public ConfigurationData() {

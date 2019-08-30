@@ -1,14 +1,7 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -18,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +24,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Actuator", catalog = "tmak", schema = "")
+@Table(name = "Actuator")
 @NamedQueries({
     @NamedQuery(name = "Actuator.findAll", query = "SELECT a FROM Actuator a"),
     @NamedQuery(name = "Actuator.findByActuatorId", query = "SELECT a FROM Actuator a WHERE a.actuatorId = :actuatorId"),
@@ -44,13 +36,13 @@ public class Actuator implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "actuatorId", nullable = false)
+    @Column(name = "actuatorId")
     private Integer actuatorId;
-    @Column(name = "address", length = 1024)
+    @Column(name = "address")
     private String address;
-    @Column(name = "pubKey", length = 1024)
+    @Column(name = "pubKey")
     private String pubKey;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actuatorId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actuatorId")
     private Collection<Action> actionCollection;
 
     public Actuator() {

@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +27,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Plan", catalog = "tmak", schema = "")
+@Table(name = "Plan")
 @NamedQueries({
     @NamedQuery(name = "Plan.findAll", query = "SELECT p FROM Plan p"),
     @NamedQuery(name = "Plan.findByPlanId", query = "SELECT p FROM Plan p WHERE p.planId = :planId"),
@@ -39,16 +38,16 @@ public class Plan implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "planId", nullable = false)
+    @Column(name = "planId")
     private Integer planId;
     @Column(name = "status")
     private Integer status;
     @JoinColumns({
-        @JoinColumn(name = "metricId", referencedColumnName = "metricId", nullable = false),
-        @JoinColumn(name = "valueTime", referencedColumnName = "valueTime", nullable = false)})
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "metricId", referencedColumnName = "metricId"),
+        @JoinColumn(name = "valueTime", referencedColumnName = "valueTime")})
+    @ManyToOne(optional = false)
     private MetricData metricData;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "plan", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "plan")
     private Collection<ActionPlan> actionPlanCollection;
 
     public Plan() {

@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +24,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Resource", catalog = "tmak", schema = "")
+@Table(name = "Resource")
 @NamedQueries({
     @NamedQuery(name = "Resource.findAll", query = "SELECT r FROM Resource r"),
     @NamedQuery(name = "Resource.findByResourceId", query = "SELECT r FROM Resource r WHERE r.resourceId = :resourceId"),
@@ -38,19 +37,19 @@ public class Resource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "resourceId", nullable = false)
+    @Column(name = "resourceId")
     private Integer resourceId;
-    @Column(name = "resourceName", length = 128)
+    @Column(name = "resourceName")
     private String resourceName;
-    @Column(name = "resourceType", length = 16)
+    @Column(name = "resourceType")
     private String resourceType;
-    @Column(name = "resourceAddress", length = 1024)
+    @Column(name = "resourceAddress")
     private String resourceAddress;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "resourceId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "resourceId")
     private Collection<Action> actionCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "resource", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "resource")
     private Collection<Data> dataCollection;
-    @OneToMany(mappedBy = "resourceId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "resourceId")
     private Collection<MetricData> metricDataCollection;
 
     public Resource() {

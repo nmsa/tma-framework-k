@@ -12,7 +12,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -25,7 +24,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "MetricData", catalog = "tmak", schema = "")
+@Table(name = "MetricData")
 @NamedQueries({
     @NamedQuery(name = "MetricData.findAll", query = "SELECT m FROM MetricData m"),
     @NamedQuery(name = "MetricData.findByMetricId", query = "SELECT m FROM MetricData m WHERE m.metricDataPK.metricId = :metricId"),
@@ -37,15 +36,15 @@ public class MetricData implements Serializable {
     @EmbeddedId
     protected MetricDataPK metricDataPK;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "value", precision = 22)
+    @Column(name = "value")
     private Double value;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metricData", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metricData")
     private Collection<Plan> planCollection;
-    @JoinColumn(name = "metricId", referencedColumnName = "metricId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "metricId", referencedColumnName = "metricId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Metric metric;
     @JoinColumn(name = "resourceId", referencedColumnName = "resourceId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Resource resourceId;
 
     public MetricData() {

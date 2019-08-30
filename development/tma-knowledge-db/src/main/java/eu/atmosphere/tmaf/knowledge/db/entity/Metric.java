@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,40 +24,39 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Metric", catalog = "tmak", schema = "")
+@Table(name = "Metric")
 @NamedQueries({
     @NamedQuery(name = "Metric.findAll", query = "SELECT m FROM Metric m"),
     @NamedQuery(name = "Metric.findByMetricId", query = "SELECT m FROM Metric m WHERE m.metricId = :metricId"),
     @NamedQuery(name = "Metric.findByMetricName", query = "SELECT m FROM Metric m WHERE m.metricName = :metricName"),
-    @NamedQuery(name = "Metric.findByMetricAggregationOperator", query = "SELECT m FROM Metric m WHERE m.metricAggregationOperator = :metricAggregationOperator"),
     @NamedQuery(name = "Metric.findByBlockLevel", query = "SELECT m FROM Metric m WHERE m.blockLevel = :blockLevel"),
-    @NamedQuery(name = "Metric.findByNormalizationThreshold", query = "SELECT m FROM Metric m WHERE m.normalizationThreshold = :normalizationThreshold")})
+    @NamedQuery(name = "Metric.findByWeight", query = "SELECT m FROM Metric m WHERE m.weight = :weight")})
 public class Metric implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "metricId", nullable = false)
+    @Column(name = "metricId")
     private Integer metricId;
-    @Column(name = "metricName", length = 10)
+    @Column(name = "metricName")
     private String metricName;
-    @Column(name = "metricAggregationOperator")
-    private Integer metricAggregationOperator;
     @Column(name = "blockLevel")
     private Integer blockLevel;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "normalizationThreshold", precision = 22)
-    private Double normalizationThreshold;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric", fetch = FetchType.LAZY)
+    @Column(name = "weight")
+    private Double weight;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<QualityModel> qualityModelCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<CompositeAttribute> compositeAttributeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric1", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric1")
     private Collection<CompositeAttribute> compositeAttributeCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
+    private Collection<Preference> preferenceCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<LeafAttribute> leafAttributeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<MetricData> metricDataCollection;
 
     public Metric() {
@@ -84,14 +82,6 @@ public class Metric implements Serializable {
         this.metricName = metricName;
     }
 
-    public Integer getMetricAggregationOperator() {
-        return metricAggregationOperator;
-    }
-
-    public void setMetricAggregationOperator(Integer metricAggregationOperator) {
-        this.metricAggregationOperator = metricAggregationOperator;
-    }
-
     public Integer getBlockLevel() {
         return blockLevel;
     }
@@ -100,12 +90,12 @@ public class Metric implements Serializable {
         this.blockLevel = blockLevel;
     }
 
-    public Double getNormalizationThreshold() {
-        return normalizationThreshold;
+    public Double getWeight() {
+        return weight;
     }
 
-    public void setNormalizationThreshold(Double normalizationThreshold) {
-        this.normalizationThreshold = normalizationThreshold;
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     public Collection<QualityModel> getQualityModelCollection() {
@@ -130,6 +120,14 @@ public class Metric implements Serializable {
 
     public void setCompositeAttributeCollection1(Collection<CompositeAttribute> compositeAttributeCollection1) {
         this.compositeAttributeCollection1 = compositeAttributeCollection1;
+    }
+
+    public Collection<Preference> getPreferenceCollection() {
+        return preferenceCollection;
+    }
+
+    public void setPreferenceCollection(Collection<Preference> preferenceCollection) {
+        this.preferenceCollection = preferenceCollection;
     }
 
     public Collection<LeafAttribute> getLeafAttributeCollection() {

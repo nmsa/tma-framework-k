@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +24,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "Description", catalog = "tmak", schema = "")
+@Table(name = "Description")
 @NamedQueries({
     @NamedQuery(name = "Description.findAll", query = "SELECT d FROM Description d"),
     @NamedQuery(name = "Description.findByDescriptionId", query = "SELECT d FROM Description d WHERE d.descriptionId = :descriptionId"),
@@ -38,17 +37,17 @@ public class Description implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "descriptionId", nullable = false)
+    @Column(name = "descriptionId")
     private Integer descriptionId;
-    @Column(name = "dataType", length = 16)
+    @Column(name = "dataType")
     private String dataType;
-    @Column(name = "descriptionName", length = 128)
+    @Column(name = "descriptionName")
     private String descriptionName;
-    @Column(name = "unit", length = 16)
+    @Column(name = "unit")
     private String unit;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "description", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "description")
     private Collection<Data> dataCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "description", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "description")
     private Collection<LeafAttribute> leafAttributeCollection;
 
     public Description() {

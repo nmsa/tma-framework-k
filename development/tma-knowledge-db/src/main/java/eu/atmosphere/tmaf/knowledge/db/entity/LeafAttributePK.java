@@ -18,10 +18,10 @@ import javax.persistence.Embeddable;
 public class LeafAttributePK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "descriptionId", nullable = false)
+    @Column(name = "descriptionId")
     private int descriptionId;
     @Basic(optional = false)
-    @Column(name = "metricId", nullable = false)
+    @Column(name = "metricId")
     private int metricId;
 
     public LeafAttributePK() {

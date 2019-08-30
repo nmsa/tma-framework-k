@@ -15,29 +15,29 @@ import javax.persistence.Embeddable;
  * @author nmsa
  */
 @Embeddable
-public class QualityModelPK implements Serializable {
+public class PreferencePK implements Serializable {
 
     @Basic(optional = false)
-    @Column(name = "qualityModelId")
-    private int qualityModelId;
+    @Column(name = "configurationProfileID")
+    private int configurationProfileID;
     @Basic(optional = false)
     @Column(name = "metricId")
     private int metricId;
 
-    public QualityModelPK() {
+    public PreferencePK() {
     }
 
-    public QualityModelPK(int qualityModelId, int metricId) {
-        this.qualityModelId = qualityModelId;
+    public PreferencePK(int configurationProfileID, int metricId) {
+        this.configurationProfileID = configurationProfileID;
         this.metricId = metricId;
     }
 
-    public int getQualityModelId() {
-        return qualityModelId;
+    public int getConfigurationProfileID() {
+        return configurationProfileID;
     }
 
-    public void setQualityModelId(int qualityModelId) {
-        this.qualityModelId = qualityModelId;
+    public void setConfigurationProfileID(int configurationProfileID) {
+        this.configurationProfileID = configurationProfileID;
     }
 
     public int getMetricId() {
@@ -51,7 +51,7 @@ public class QualityModelPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) qualityModelId;
+        hash += (int) configurationProfileID;
         hash += (int) metricId;
         return hash;
     }
@@ -59,11 +59,11 @@ public class QualityModelPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof QualityModelPK)) {
+        if (!(object instanceof PreferencePK)) {
             return false;
         }
-        QualityModelPK other = (QualityModelPK) object;
-        if (this.qualityModelId != other.qualityModelId) {
+        PreferencePK other = (PreferencePK) object;
+        if (this.configurationProfileID != other.configurationProfileID) {
             return false;
         }
         if (this.metricId != other.metricId) {
@@ -74,7 +74,7 @@ public class QualityModelPK implements Serializable {
 
     @Override
     public String toString() {
-        return "eu.atmosphere.tmaf.knowledge.db.entity.QualityModelPK[ qualityModelId=" + qualityModelId + ", metricId=" + metricId + " ]";
+        return "eu.atmosphere.tmaf.knowledge.db.entity.PreferencePK[ configurationProfileID=" + configurationProfileID + ", metricId=" + metricId + " ]";
     }
     
 }

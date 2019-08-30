@@ -12,7 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +27,7 @@ import javax.persistence.TemporalType;
  * @author nmsa
  */
 @Entity
-@Table(name = "Probe", catalog = "tmak", schema = "")
+@Table(name = "Probe")
 @NamedQueries({
     @NamedQuery(name = "Probe.findAll", query = "SELECT p FROM Probe p"),
     @NamedQuery(name = "Probe.findByProbeId", query = "SELECT p FROM Probe p WHERE p.probeId = :probeId"),
@@ -43,21 +42,21 @@ public class Probe implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "probeId", nullable = false)
+    @Column(name = "probeId")
     private Integer probeId;
-    @Column(name = "probeName", length = 128)
+    @Column(name = "probeName")
     private String probeName;
-    @Column(name = "password", length = 128)
+    @Column(name = "password")
     private String password;
     @Basic(optional = false)
-    @Column(name = "salt", nullable = false, length = 128)
+    @Column(name = "salt")
     private String salt;
-    @Column(name = "token", length = 256)
+    @Column(name = "token")
     private String token;
     @Column(name = "tokenExpiration")
     @Temporal(TemporalType.TIMESTAMP)
     private Date tokenExpiration;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "probe", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "probe")
     private Collection<Data> dataCollection;
 
     public Probe() {

@@ -18,7 +18,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +38,7 @@ import javax.persistence.Table;
  * @author Nuno Antunes <nmsa@dei.uc.pt>
  */
 @Entity
-@Table(name = "Action", catalog = "tmak", schema = "")
+@Table(name = "Action")
 @NamedQueries({
     @NamedQuery(name = "Action.findAll", query = "SELECT a FROM Action a"),
     @NamedQuery(name = "Action.findByActionId", query = "SELECT a FROM Action a WHERE a.actionId = :actionId"),
@@ -50,19 +49,19 @@ public class Action implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "actionId", nullable = false)
+    @Column(name = "actionId")
     private Integer actionId;
-    @Column(name = "actionName", length = 128)
+    @Column(name = "actionName")
     private String actionName;
-    @JoinColumn(name = "resourceId", referencedColumnName = "resourceId", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceId", referencedColumnName = "resourceId")
+    @ManyToOne(optional = false)
     private Resource resourceId;
-    @JoinColumn(name = "actuatorId", referencedColumnName = "actuatorId", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "actuatorId", referencedColumnName = "actuatorId")
+    @ManyToOne(optional = false)
     private Actuator actuatorId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "action", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "action")
     private Collection<Configuration> configurationCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "action", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "action")
     private Collection<ActionPlan> actionPlanCollection;
 
     public Action() {
@@ -144,4 +143,5 @@ public class Action implements Serializable {
     public String toString() {
         return "eu.atmosphere.tmaf.knowledge.db.entity.Action[ actionId=" + actionId + " ]";
     }
+    
 }

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,7 +20,7 @@ import javax.persistence.Table;
  * @author nmsa
  */
 @Entity
-@Table(name = "QualityModel", catalog = "tmak", schema = "")
+@Table(name = "QualityModel")
 @NamedQueries({
     @NamedQuery(name = "QualityModel.findAll", query = "SELECT q FROM QualityModel q"),
     @NamedQuery(name = "QualityModel.findByQualityModelId", query = "SELECT q FROM QualityModel q WHERE q.qualityModelPK.qualityModelId = :qualityModelId"),
@@ -34,14 +33,14 @@ public class QualityModel implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected QualityModelPK qualityModelPK;
-    @Column(name = "modelName", length = 10)
+    @Column(name = "modelName")
     private String modelName;
     @Column(name = "modelDescriptionReference")
     private Integer modelDescriptionReference;
-    @Column(name = "businessThreshold", length = 10)
+    @Column(name = "businessThreshold")
     private String businessThreshold;
-    @JoinColumn(name = "metricId", referencedColumnName = "metricId", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "metricId", referencedColumnName = "metricId", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Metric metric;
 
     public QualityModel() {
