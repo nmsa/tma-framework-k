@@ -1,7 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
+ * ***
+ * <p>
+ * <b>Trustworthiness Monitoring & Assessment Framework</b>
+ * Component: Knowledge - DB
+ * <p>
+ * Repository: https://github.com/eubr-atmosphere/tma-framework
+ * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * <p>
+ * <p>
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -24,7 +31,12 @@ import javax.persistence.Table;
 
 /**
  *
- * @author nmsa
+ * 
+ * 
+ * @author Jorge Luiz <jorgem@unicamp.br>
+ * @author Breno de França <breno@ic.unicamp.br>
+ * @author José Pereira <josep@dei.uc.pt>
+ * @author Nuno Antunes <nmsa@dei.uc.pt>
  */
 @Entity
 @Table(name = "Action", catalog = "tmak", schema = "")
@@ -132,5 +144,4 @@ public class Action implements Serializable {
     public String toString() {
         return "eu.atmosphere.tmaf.knowledge.db.entity.Action[ actionId=" + actionId + " ]";
     }
-
 }
