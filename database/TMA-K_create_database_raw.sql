@@ -53,15 +53,14 @@ CREATE TABLE Actuator (
 
 CREATE TABLE ConfigurationProfile (
     configurationProfileID INT NOT NULL PRIMARY KEY,
-    profileName VARCHAR(50) NOT NULL
+    profileName VARCHAR(64) NOT NULL
 );
 
 
 CREATE TABLE Metric (
     metricId INT NOT NULL PRIMARY KEY,
-    metricName VARCHAR(10),
-    blockLevel INT,
-    weight DOUBLE PRECISION
+    metricName VARCHAR(64),
+    blockLevel INT
 );
 
 
@@ -90,9 +89,9 @@ CREATE TABLE Probe (
 CREATE TABLE QualityModel (
     qualityModelId INT NOT NULL,
     metricId INT NOT NULL,
-    modelName VARCHAR(10),
+    modelName VARCHAR(64),
     modelDescriptionReference INT,
-    businessThreshold VARCHAR(10),
+    businessThreshold DOUBLE PRECISION,
     PRIMARY KEY (qualityModelId, metricId),
     FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
@@ -156,8 +155,8 @@ CREATE TABLE LeafAttribute (
     metricId INT NOT NULL,
     metricAggregationOperator INT,
     numSamples INT,
-    normalizationMethod VARCHAR(10),
-    normalizationKind VARCHAR(10),
+    normalizationMethod VARCHAR(64),
+    normalizationKind VARCHAR(64),
     minimumThreshold DOUBLE PRECISION,
     maximumThreshold DOUBLE PRECISION,
     PRIMARY KEY (descriptionId,metricId),

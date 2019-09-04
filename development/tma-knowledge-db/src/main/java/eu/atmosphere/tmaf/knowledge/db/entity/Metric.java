@@ -1,7 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
+ * ***
+ * <p>
+ * <b>Trustworthiness Monitoring & Assessment Framework</b>
+ * Component: Knowledge - DB
+ * <p>
+ * Repository: https://github.com/eubr-atmosphere/tma-framework
+ * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
+ * <p>
+ * <p>
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
@@ -21,7 +28,12 @@ import javax.persistence.Table;
 
 /**
  *
- * @author nmsa
+ * 
+ * 
+ * @author Jorge Luiz <jorgem@unicamp.br>
+ * @author Breno de França <breno@ic.unicamp.br>
+ * @author José Pereira <josep@dei.uc.pt>
+ * @author Nuno Antunes <nmsa@dei.uc.pt>
  */
 @Entity
 @Table(name = "Metric")
@@ -29,8 +41,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Metric.findAll", query = "SELECT m FROM Metric m"),
     @NamedQuery(name = "Metric.findByMetricId", query = "SELECT m FROM Metric m WHERE m.metricId = :metricId"),
     @NamedQuery(name = "Metric.findByMetricName", query = "SELECT m FROM Metric m WHERE m.metricName = :metricName"),
-    @NamedQuery(name = "Metric.findByBlockLevel", query = "SELECT m FROM Metric m WHERE m.blockLevel = :blockLevel"),
-    @NamedQuery(name = "Metric.findByWeight", query = "SELECT m FROM Metric m WHERE m.weight = :weight")})
+    @NamedQuery(name = "Metric.findByBlockLevel", query = "SELECT m FROM Metric m WHERE m.blockLevel = :blockLevel")})
 public class Metric implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,9 +54,6 @@ public class Metric implements Serializable {
     private String metricName;
     @Column(name = "blockLevel")
     private Integer blockLevel;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "weight")
-    private Double weight;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<QualityModel> qualityModelCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
@@ -88,14 +96,6 @@ public class Metric implements Serializable {
 
     public void setBlockLevel(Integer blockLevel) {
         this.blockLevel = blockLevel;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
     }
 
     public Collection<QualityModel> getQualityModelCollection() {
