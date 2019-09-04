@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: tma-dataloader
+
+spec:
+  selector:
+    matchLabels:
+      run: tma-dataloader
+  template:
+    metadata:
+      labels:
+        run: tma-dataloader
+    spec:
+      containers:
+      - name: tma-dataloader
+        image: tma-dataloader:0.1

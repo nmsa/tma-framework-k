@@ -1,9 +1,10 @@
 *.class
 /development/tma-admin-console/target/
-
+/development/common/tmak-jpa/target/
+/development/tma-knowledge-db/target/
+/development/data-loader/target/
 .classpath
 .project
 .settings
 logs
-/development/common/tmak-jpa/target/
-/development/tma-knowledge-db/target/
+
