@@ -42,4 +42,4 @@ When running the console, it will display the options that you can perform in th
 
 ## Authors
 
-* Jose Alexandre D'Abruzzo
+* Jose D'Abruzzo Pereira
