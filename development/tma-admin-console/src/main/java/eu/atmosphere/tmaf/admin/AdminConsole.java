@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.atmosphere.tmaf.admin.database.ActionManager;
 import eu.atmosphere.tmaf.admin.database.ActuatorManager;
-import eu.atmosphere.tmaf.admin.database.ProbeManager;
 import eu.atmosphere.tmaf.admin.database.ResourceManager;
 
 public class AdminConsole {
@@ -25,12 +24,10 @@ public class AdminConsole {
         GENERATE_KEY_PAIR,
         ENCRYPT_MESSAGE,
         DECRYPT_MESSAGE,
-        ADD_PROBE,
         ADD_ACTUATOR,
         ADD_RESOURCE,
         CONFIGURE_ACTIONS,
-        EXIT_OPTION,
-        INVALID_OPTION;
+        EXIT_OPTION;
 
         @Override
         public String toString() {
@@ -39,7 +36,7 @@ public class AdminConsole {
 
         public static AdminAction valueOf(int ordinal) {
             return (ordinal < values().length) ? values()[ordinal]
-                    : INVALID_OPTION;
+                    : EXIT_OPTION;
         }
     }
 
@@ -62,20 +59,16 @@ public class AdminConsole {
 
     private static void readUserOption() throws IOException {
         // future we should add an harmless default option.
-        AdminAction option = AdminAction.INVALID_OPTION;
+        AdminAction option = AdminAction.EXIT_OPTION;
         do {
             printMenuOptions();
             String line = reader.readLine();
-            if (!line.isEmpty()) {
-                try {
-                    option = AdminAction.valueOf(Integer.parseInt(line));
-                    performAction(option);
-                } catch (NumberFormatException nfe) {
-                    CLI_LOG.error("Not a valid number!\n");
-                    LOGGER.error("Not a valid number!\n", nfe);
-                }
-            } else {
-                CLI_LOG.error("Not a valid option!\n");
+            try{
+                option = AdminAction.valueOf(Integer.parseInt(line));
+                performAction(option);
+            } catch (NumberFormatException nfe) {
+                CLI_LOG.error("Not a valid number!\n");
+                LOGGER.error("Not a valid number!\n",nfe);
             }
         } while (option != AdminAction.EXIT_OPTION);
     }
@@ -95,10 +88,6 @@ public class AdminConsole {
                 KeyManager.decryptMessage(encMessage);
                 break;
 
-            case ADD_PROBE:
-                addNewProbe();
-                break;
-
             case ADD_ACTUATOR:
                 addNewActuator();
                 break;
@@ -113,10 +102,6 @@ public class AdminConsole {
 
             case EXIT_OPTION:
                 CLI_LOG.info("Bye!");
-                break;
-
-            case INVALID_OPTION:
-                CLI_LOG.info("Invalid Option!");
                 break;
 
             default:
@@ -184,15 +169,6 @@ public class AdminConsole {
         KeyPair keyPair = KeyManager.generateKeyPair();
         KeyManager.savePublicKey(keyPair.getPublic(), pathPublicKey);
         KeyManager.savePrivateKey(keyPair.getPrivate(), pathPrivateKey);
-    }
-
-    private static void addNewProbe() {
-        CLI_LOG.info("Please, inform the name of the Probe: ");
-        String probeName = readFromUser();
-        // TODO: add the remaining fields (password, salt, token)
-        ProbeManager probeManager = new ProbeManager();
-        int probeId = probeManager.saveNewProbe(probeName);
-        CLI_LOG.info("The Probe Id is: " + probeId + "\n");
     }
 
     private static void addNewActuator() {
