@@ -24,7 +24,7 @@ apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 
 In order to use `Kubernetes` two machines (nodes) are required with different IP addresses for deploying all necessary pods.
 These two nodes communicate through network plugin `Flannel`.
-To intialize the `Kubernetes` cluster, run the following commands in the Master machine:
+To initialize the `Kubernetes` cluster, run the following commands in the Master machine:
 
 ```sh
 swapoff -a
