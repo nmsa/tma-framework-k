@@ -59,16 +59,16 @@ public class AdminConsole {
 
     private static void readUserOption() throws IOException {
         // future we should add an harmless default option.
-        AdminAction option = AdminAction.EXIT_OPTION;
+        AdminAction option = AdminAction.EXIT_OPTION; 
         do {
             printMenuOptions();
             String line = reader.readLine();
-            try{
+            try {
                 option = AdminAction.valueOf(Integer.parseInt(line));
                 performAction(option);
             } catch (NumberFormatException nfe) {
                 CLI_LOG.error("Not a valid number!\n");
-                LOGGER.error("Not a valid number!\n",nfe);
+                LOGGER.error("Not a valid number!\n", nfe);
             }
         } while (option != AdminAction.EXIT_OPTION);
     }
