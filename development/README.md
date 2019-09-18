@@ -1,17 +1,18 @@
 # TMA-Knowledge Development
-This component of TMA platform is composed by a DBMS MySQL and a Ceph block-storage persistent volume that stores all data of MySQL database.
+This component of TMA platform is composed by a DBMS `MySQL` and a `Ceph` block-storage persistent volume that stores all data of `MySQL` database.
 The instructions provided below include all steps that are needed to set up this component in your local system for testing purposes.
 
 ## Prerequisites
 The instructions were tested in `ubuntu`, but should work in other `debian`-based distributions, assuming that you are able to install the key dependencies.
 
-The first step is to install the required components: `docker`, and `kubernetes`.
-To install docker, you should execute the following commands:
+The first step is to install the required components: `Docker`, and `Kubernetes`.
+To install `Docker`, you should execute the following commands:
+
 ```sh
 sudo su -
 apt-get install docker.io
 ```
-To install Kubernetes you should execute the following commands:
+To install `Kubernetes` you should execute the following commands:
 
 ```sh
 sudo su -
@@ -21,16 +22,16 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 ```
 
-In order to use Kubernetes two machines (nodes) are required with different IP addresses for deploying all necessary pods.
-These two nodes communicate through network plugin Flannel.
-To inicialize the Kubernetes cluster, run the following commands in the Master machine:
+In order to use `Kubernetes` two machines (nodes) are required with different IP addresses for deploying all necessary pods.
+These two nodes communicate through network plugin `Flannel`.
+To initialize the `Kubernetes` cluster, run the following commands in the Master machine:
 
 ```sh
 swapoff -a
 kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
 
-The output of the command above gives the required commands to complete the setup of Kubernetes cluster. Those commands are:
+The output of the command above gives the required commands to complete the setup of `Kubernetes` cluster. Those commands are:
 
 ```sh
 mkdir -p $HOME/.kube
@@ -50,50 +51,18 @@ ip route add 10.96.0.0/16 dev xxxxxx
 
 Where xxxxxx is the network interface name.
 After these commands, Master node will be at "Ready" state. For joining the other node, paste the last command of the output of the kubeadm init command in that node. One example of this command can be:
+
 ```sh
 kubeadm join --token TOKEN MASTER_IP:6443
 ```
 
 Where TOKEN is the token you were presented after initializing the master and MASTER_IP is the IP address of the master.
-Now, the Kubernetes cluster are ready to deploy containers.
+Now, the `Kubernetes` cluster is ready to deploy containers.
 
+## Deployment Alternatives
 
-## Installation
+In this repository there are two different ways to deploy `MySQL`. 
 
-After completing all steps of the previous section, the first step of project installation is to install  Ceph. Ceph needs to be installed on a separate machine. To deploy Ceph, you need to install Ceph in all three machines. To do that you just need to execute the following script in Ceph machine:
-```sh
-cd ceph/
-sh ceph_installation.sh
-```
-To install Ceph in Kubernetes Master and Worker machines, run the following command:
-```sh
-apt-get -y install ceph
-```
-Next, in the Ceph machine execute the following commands:
-```sh
-cd ceph/
-sh ceph_configuration.sh
-```
-The output of the previous script should be inserted in `key` field of the `ceph-secret.yaml` file. 
-After that, you should deploy this file in Kubernetes. To do that, you need to execute the following the command:
-```sh
-kubectl create -f ceph/ceph-secret.yaml
-```
-With Ceph correctly installed and connected to Kubernetes Cluster, it is time to deploy MySQL. The first step is to build MySQL Docker image. To do that, you just need to execute the following commands on Worker node of Kubernetes Cluster:
-```sh
-cd mysql/
-sh build.sh
-```
-Now, MySQL is ready to be executed inside of a Kubernetes pod. To do that execute the following script in Kubernetes Master node:
-```sh
-cd mysql/
-sh setup_database.sh
-```
+* `MySQL` inegrated with `Ceph` for block-storage - All instructions needed are presented in this [README](mysql/README.md) file;
 
-## Testing
-For testing purposes, there is a script called `TMA-K_insert_example_data.sql` that inserts example data in Probe, Resource, and Description tables.
-To do that, you just need to execute the following SQL script:
-```sh
-kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/TMA-K_insert_example_data.sql"
-```
-If everything runs correctly, you should see the data inserted by script in database tables previously referred.
+* `MySQL` with a persistent host volume - All instructions needed are presented in this [README](mysql-host-volume/README.md) file.

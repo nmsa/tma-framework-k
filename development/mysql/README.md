@@ -1,37 +1,58 @@
 # MySQL
-MySQL is an open-source relational DBMS. This database system has a good performance in almost every scenarios of application. It is compatible with almost every operating systems and program languages. One of the most important characteristics of this software is its documentation that is very good and simple.
+`MySQL` is an open-source relational DBMS. This database system has a good performance in almost every scenarios of application. It is compatible with almost every operating systems and program languages. One of the most important characteristics of this software is its documentation that is very good and simple.
 
 ## Prerequisites
-To deploy MySQL, you need to initialize the Kubernetes cluster and follow the instructions present in `README` file of the development folder of this repository.
-Another requirement is to have Ceph correctly installed in all machines of Kubernetes cluster and running in its machine. All the steps needed to install and to connect Ceph with Kubernetes are described in the `README` file of Ceph folder of this repository.
+To deploy `MySQL`, you need to initialize the `Kubernetes` cluster and follow the instructions present in `README` file of the development folder of this repository.
+Another requirement is to have `Ceph` correctly installed in all machines of `Kubernetes` cluster and running in its machine. All the steps needed to install and to connect `Ceph` with `Kubernetes` are described in the `README` file of `Ceph` folder of this repository.
 
 ## Installation
-The first step is to build the Docker image of MySQL. To do that, the following command needs to be executed in Kubernetes Worker node:
+
+After completing all steps of the previous section, the first step of project installation is to install `Ceph`. `Ceph` needs to be installed on a separate machine. To deploy `Ceph`, you need to install `Ceph` in all three machines. To do that you just need to execute the following script in `Ceph` machine:
+
 ```sh
+cd ceph/
+sh ceph_installation.sh
+```
+
+To install `Ceph` in `Kubernetes` Master and Worker machines, run the following command:
+
+```sh
+apt-get -y install ceph
+```
+
+Next, in the `Ceph` machine execute the following commands:
+
+```sh
+sh ceph_configuration.sh
+```
+The output of the previous script should be inserted in `key` field of the `ceph-secret.yaml` file. 
+After that, you should deploy this file in `Kubernetes`. To do that, you need to execute the following the command:
+
+```sh
+kubectl create -f ceph-secret.yaml
+```
+
+With `Ceph` correctly installed and connected to `Kubernetes` cluster, it is time to deploy `MySQL`. The first step is to build `MySQL` `Docker` image. To do that, you just need to execute the following commands on Worker node of `Kubernetes` cluster:
+
+```sh
+cd ../mysql/
 sh build.sh
 ```
-All commands below of the process of MySQL installation are automated in `setup_database.sh`. All of the following commands must be executed in Kubernetes Master machine.
-The second step is to create a secret that encodes MySQL root password. To do that, the following command needs to be executed:
+
+Now, `MySQL` is ready to be executed inside of a `Kubernetes` pod. To do that execute the following script in `Kubernetes` Master node:
+
 ```sh
-kubectl create secret generic mysql-pass --from-literal=password=passtobereplaced
+sh setup_database.sh
 ```
-The third step of installing MySQL in Kubernetes cluster is to execute the yaml file that creates and deploys MySQL container into Kubernetes Cluster. To do that, you should execute the following command:
- ```sh
-kubectl create -f mysql-deployment.yaml
-```
-After some seconds, MySQL pod should be in "Running" status.
-When MySQL pod is in the "Running" status, the next step is to create a database to store all necessary data. That can be done by executing the following command: 
-```sh
-kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD -e \"CREATE DATABASE knowledge /*\!40100 DEFAULT CHARACTER SET utf8 */;\""
-```
-With the knowledge database created, it is time to create all necessary tables and their relations on it. To do that, you should execute the following command:
- ```sh
-kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/TMA-K_create_database.sql"
-```
+
 ## Testing
-For testing purposes, there is a SQL script that inserts examples of data in the knowledge database tables.
-To insert the example data, you should execute the following command:
+For testing purposes, there is a script called `TMA-K_insert_example_data.sql` that inserts example data in Probe, Resource, and Description tables.
+To do that, you just need to execute the following SQL script:
+
 ```sh
 kubectl exec -ti mysql-0 -- bash -c "mysql -u root --password=\$MYSQL_ROOT_PASSWORD knowledge < /mysql/TMA-K_insert_example_data.sql"
 ```
-This script inserts data in Probe, Resource, and Description tables. More specifically, `TMA-K_insert_example_data.sql` inserts 6 rows in Probe table, 26 rows in Description table, and 7 rows in Resource table.
+
+The script inserts data in Probe, Resource and Description tables. More specifically, `TMA-K_insert_example_data.sql` inserts 6 rows in Probe table, 26 rows in Description table and 7 rows in Resource table.
+
+If everything runs correctly, you should see the data inserted by script in database tables previously referred.
