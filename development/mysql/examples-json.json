@@ -1,3 +1,10 @@
+/**
+*  This is a sample JSON file. It shows examples on how the data are sent 
+*  by the probes to the monitor component (tma-framework-m).
+*  For a real case, both the value of each `descriptionId` should be replaced
+*  and the comments between the objects should be removed.
+*/
+
 
 // WP4 : Cluster CPUs (lines 2 and 3 of the spreadsheet
 
