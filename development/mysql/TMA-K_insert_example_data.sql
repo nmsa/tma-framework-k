@@ -4,6 +4,7 @@ INSERT INTO Probe(probeId,probeName,password,salt,token) VALUES (3,"probe Demo J
 INSERT INTO Probe(probeId,probeName,password,salt,token) VALUES (4,"probe Demo Python", "n/a","n/a","n/a");
 INSERT INTO Probe(probeId,probeName,password,salt,token) VALUES (5,"probe Docker", "n/a","n/a","n/a");
 INSERT INTO Probe(probeId,probeName,password,salt,token) VALUES (6,"probe Kubernetes", "n/a","n/a","n/a");
+INSERT INTO Probe(probeId,probeName,password,salt,token) VALUES (7,"probe K8S", "n/a","n/a","n/a");
 INSERT INTO Description(descriptionId,dataType,descriptionName,unit) VALUES (1,"CPU_Usage", "measurement","Mi");
 INSERT INTO Description(descriptionId,dataType,descriptionName,unit) VALUES (2,"Memory", "measurement","Bytes");
 INSERT INTO Description(descriptionId,dataType,descriptionName,unit) VALUES (3,"Disk", "event","n/a");
@@ -81,3 +82,4 @@ INSERT INTO Resource(resourceId,resourceName,resourceType,resourceAddress) VALUE
 INSERT INTO Resource(resourceId,resourceName,resourceType,resourceAddress) VALUES (5,"Pod Apache Zookeeper", "POD","n/a");
 INSERT INTO Resource(resourceId,resourceName,resourceType,resourceAddress) VALUES (6,"Pod Apache Kafka", "POD","n/a");
 INSERT INTO Resource(resourceId,resourceName,resourceType,resourceAddress) VALUES (7,"Pod Monitor", "POD","n/a");
+INSERT INTO Resource(resourceId,resourceName,resourceType,resourceAddress) VALUES (8,"Apache Kafka", "POD","n/a");
