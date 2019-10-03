@@ -24,12 +24,13 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
  *
- * 
- * 
+ *
+ *
  * @author Jorge Luiz <jorgem@unicamp.br>
  * @author Breno de França <breno@ic.unicamp.br>
  * @author José Pereira <josep@dei.uc.pt>
@@ -62,8 +63,8 @@ public class Metric implements Serializable {
     private Collection<CompositeAttribute> compositeAttributeCollection1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<Preference> preferenceCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
-    private Collection<LeafAttribute> leafAttributeCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "metric")
+    private LeafAttribute leafAttribute;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "metric")
     private Collection<MetricData> metricDataCollection;
 
@@ -130,12 +131,12 @@ public class Metric implements Serializable {
         this.preferenceCollection = preferenceCollection;
     }
 
-    public Collection<LeafAttribute> getLeafAttributeCollection() {
-        return leafAttributeCollection;
+    public LeafAttribute getLeafAttribute() {
+        return leafAttribute;
     }
 
-    public void setLeafAttributeCollection(Collection<LeafAttribute> leafAttributeCollection) {
-        this.leafAttributeCollection = leafAttributeCollection;
+    public void setLeafAttribute(LeafAttribute leafAttribute) {
+        this.leafAttribute = leafAttribute;
     }
 
     public Collection<MetricData> getMetricDataCollection() {
@@ -170,5 +171,5 @@ public class Metric implements Serializable {
     public String toString() {
         return "eu.atmosphere.tmaf.knowledge.db.entity.Metric[ metricId=" + metricId + " ]";
     }
-    
-}
+
+    }

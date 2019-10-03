@@ -159,7 +159,7 @@ CREATE TABLE LeafAttribute (
     normalizationKind VARCHAR(64),
     minimumThreshold DOUBLE PRECISION,
     maximumThreshold DOUBLE PRECISION,
-    PRIMARY KEY (descriptionId,metricId),
+    PRIMARY KEY (metricId),
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
     FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
