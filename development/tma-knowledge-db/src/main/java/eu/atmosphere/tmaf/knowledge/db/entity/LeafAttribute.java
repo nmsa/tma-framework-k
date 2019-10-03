@@ -26,7 +26,12 @@ import javax.persistence.Table;
 
 /**
  *
- * @author nmsa
+ * 
+ * 
+ * @author Jorge Luiz <jorgem@unicamp.br>
+ * @author Breno de França <breno@ic.unicamp.br>
+ * @author José Pereira <josep@dei.uc.pt>
+ * @author Nuno Antunes <nmsa@dei.uc.pt>
  */
 @Entity
 @Table(name = "LeafAttribute")
