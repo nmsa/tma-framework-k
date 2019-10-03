@@ -59,7 +59,7 @@ public class Description implements Serializable {
     private String unit;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "description")
     private Collection<Data> dataCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "description")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "descriptionId")
     private Collection<LeafAttribute> leafAttributeCollection;
 
     public Description() {

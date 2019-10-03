@@ -1,42 +1,31 @@
-/**
- * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- * ***
- * <p>
- * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Knowledge - DB
- * <p>
- * Repository: https://github.com/eubr-atmosphere/tma-framework
- * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
- * <p>
- * <p>
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
  *
- * 
- * 
- * @author Jorge Luiz <jorgem@unicamp.br>
- * @author Breno de França <breno@ic.unicamp.br>
- * @author José Pereira <josep@dei.uc.pt>
- * @author Nuno Antunes <nmsa@dei.uc.pt>
+ * @author nmsa
  */
 @Entity
 @Table(name = "LeafAttribute")
 @NamedQueries({
     @NamedQuery(name = "LeafAttribute.findAll", query = "SELECT l FROM LeafAttribute l"),
-    @NamedQuery(name = "LeafAttribute.findByDescriptionId", query = "SELECT l FROM LeafAttribute l WHERE l.leafAttributePK.descriptionId = :descriptionId"),
-    @NamedQuery(name = "LeafAttribute.findByMetricId", query = "SELECT l FROM LeafAttribute l WHERE l.leafAttributePK.metricId = :metricId"),
+    @NamedQuery(name = "LeafAttribute.findByMetricId", query = "SELECT l FROM LeafAttribute l WHERE l.metricId = :metricId"),
     @NamedQuery(name = "LeafAttribute.findByMetricAggregationOperator", query = "SELECT l FROM LeafAttribute l WHERE l.metricAggregationOperator = :metricAggregationOperator"),
     @NamedQuery(name = "LeafAttribute.findByNumSamples", query = "SELECT l FROM LeafAttribute l WHERE l.numSamples = :numSamples"),
     @NamedQuery(name = "LeafAttribute.findByNormalizationMethod", query = "SELECT l FROM LeafAttribute l WHERE l.normalizationMethod = :normalizationMethod"),
@@ -46,8 +35,10 @@ import javax.persistence.Table;
 public class LeafAttribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected LeafAttributePK leafAttributePK;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "metricId")
+    private Integer metricId;
     @Column(name = "metricAggregationOperator")
     private Integer metricAggregationOperator;
     @Column(name = "numSamples")
@@ -61,30 +52,26 @@ public class LeafAttribute implements Serializable {
     private Double minimumThreshold;
     @Column(name = "maximumThreshold")
     private Double maximumThreshold;
-    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId", insertable = false, updatable = false)
+    @JoinColumn(name = "descriptionId", referencedColumnName = "descriptionId")
     @ManyToOne(optional = false)
-    private Description description;
+    private Description descriptionId;
     @JoinColumn(name = "metricId", referencedColumnName = "metricId", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Metric metric;
 
     public LeafAttribute() {
     }
 
-    public LeafAttribute(LeafAttributePK leafAttributePK) {
-        this.leafAttributePK = leafAttributePK;
+    public LeafAttribute(Integer metricId) {
+        this.metricId = metricId;
     }
 
-    public LeafAttribute(int descriptionId, int metricId) {
-        this.leafAttributePK = new LeafAttributePK(descriptionId, metricId);
+    public Integer getMetricId() {
+        return metricId;
     }
 
-    public LeafAttributePK getLeafAttributePK() {
-        return leafAttributePK;
-    }
-
-    public void setLeafAttributePK(LeafAttributePK leafAttributePK) {
-        this.leafAttributePK = leafAttributePK;
+    public void setMetricId(Integer metricId) {
+        this.metricId = metricId;
     }
 
     public Integer getMetricAggregationOperator() {
@@ -135,12 +122,12 @@ public class LeafAttribute implements Serializable {
         this.maximumThreshold = maximumThreshold;
     }
 
-    public Description getDescription() {
-        return description;
+    public Description getDescriptionId() {
+        return descriptionId;
     }
 
-    public void setDescription(Description description) {
-        this.description = description;
+    public void setDescriptionId(Description descriptionId) {
+        this.descriptionId = descriptionId;
     }
 
     public Metric getMetric() {
@@ -154,7 +141,7 @@ public class LeafAttribute implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (leafAttributePK != null ? leafAttributePK.hashCode() : 0);
+        hash += (metricId != null ? metricId.hashCode() : 0);
         return hash;
     }
 
@@ -165,7 +152,7 @@ public class LeafAttribute implements Serializable {
             return false;
         }
         LeafAttribute other = (LeafAttribute) object;
-        if ((this.leafAttributePK == null && other.leafAttributePK != null) || (this.leafAttributePK != null && !this.leafAttributePK.equals(other.leafAttributePK))) {
+        if ((this.metricId == null && other.metricId != null) || (this.metricId != null && !this.metricId.equals(other.metricId))) {
             return false;
         }
         return true;
@@ -173,7 +160,7 @@ public class LeafAttribute implements Serializable {
 
     @Override
     public String toString() {
-        return "eu.atmosphere.tmaf.knowledge.db.entity.LeafAttribute[ leafAttributePK=" + leafAttributePK + " ]";
+        return "eu.atmosphere.tmaf.knowledge.db.entity.LeafAttribute[ metricId=" + metricId + " ]";
     }
-    
+
 }
