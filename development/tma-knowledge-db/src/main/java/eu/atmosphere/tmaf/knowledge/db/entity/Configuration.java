@@ -19,6 +19,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,8 +28,8 @@ import javax.persistence.Table;
 
 /**
  *
- * 
- * 
+ *
+ *
  * @author Jorge Luiz <jorgem@unicamp.br>
  * @author Breno de França <breno@ic.unicamp.br>
  * @author José Pereira <josep@dei.uc.pt>
@@ -45,6 +46,10 @@ import javax.persistence.Table;
 public class Configuration implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @ManyToMany(mappedBy = "configurationCollection")
+    private Collection<ActionPlan> actionPlanCollection;
+
     @EmbeddedId
     protected ConfigurationPK configurationPK;
     @Column(name = "keyName")
@@ -132,5 +137,13 @@ public class Configuration implements Serializable {
     public String toString() {
         return "eu.atmosphere.tmaf.knowledge.db.entity.Configuration[ configurationPK=" + configurationPK + " ]";
     }
-    
+
+    public Collection<ActionPlan> getActionPlanCollection() {
+        return actionPlanCollection;
+    }
+
+    public void setActionPlanCollection(Collection<ActionPlan> actionPlanCollection) {
+        this.actionPlanCollection = actionPlanCollection;
+    }
+
 }
