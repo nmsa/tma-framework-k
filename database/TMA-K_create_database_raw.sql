@@ -45,185 +45,189 @@ DROP TABLE Preference CASCADE CONSTRAINTS;
 -- DROP TABLE IF EXISTS Time;
 
 CREATE TABLE Actuator (
-    actuatorId INT NOT NULL PRIMARY KEY,
-    address VARCHAR(1024),
-    pubKey VARCHAR(1024)
+ actuatorId INT NOT NULL PRIMARY KEY,
+ address VARCHAR(1024),
+ pubKey VARCHAR(1024)
 );
 
 
 CREATE TABLE ConfigurationProfile (
-    configurationProfileID INT NOT NULL PRIMARY KEY,
-    profileName VARCHAR(64) NOT NULL
+ configurationProfileID INT NOT NULL PRIMARY KEY,
+ profileName VARCHAR(64) NOT NULL
 );
 
 
 CREATE TABLE Metric (
-    metricId INT NOT NULL PRIMARY KEY,
-    metricName VARCHAR(64),
-    blockLevel INT
+ metricId INT NOT NULL PRIMARY KEY,
+ metricName VARCHAR(64),
+ blockLevel INT
 );
 
 
 CREATE TABLE Preference (
-    configurationProfileID INT NOT NULL,
-    metricId INT NOT NULL,
-    weight DOUBLE PRECISION,
-    threshold DOUBLE PRECISION,
+ configurationProfileID INT NOT NULL,
+ metricId INT NOT NULL,
+ weight DOUBLE PRECISION,
+ threshold DOUBLE PRECISION,
 
-    PRIMARY KEY (configurationProfileID,metricId),
+ PRIMARY KEY (configurationProfileID,metricId),
 
-    FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID),
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+ FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID),
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
 CREATE TABLE Probe (
-    probeId INT NOT NULL PRIMARY KEY,
-    probeName VARCHAR(128),
-    password VARCHAR(128),
-    salt VARCHAR(128) NOT NULL,
-    token VARCHAR(256),
-    tokenExpiration TIMESTAMP(6)
+ probeId INT NOT NULL PRIMARY KEY,
+ probeName VARCHAR(128),
+ password VARCHAR(128),
+ salt VARCHAR(128) NOT NULL,
+ token VARCHAR(256),
+ tokenExpiration TIMESTAMP(6)
 );
 
 
 CREATE TABLE QualityModel (
-    qualityModelId INT NOT NULL,
-    metricId INT NOT NULL,
-    modelName VARCHAR(64),
-    modelDescriptionReference INT,
-    businessThreshold DOUBLE PRECISION,
-    PRIMARY KEY (qualityModelId, metricId),
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+ qualityModelId INT NOT NULL,
+ metricId INT NOT NULL,
+ modelName VARCHAR(64),
+ modelDescriptionReference INT,
+ businessThreshold DOUBLE PRECISION,
+ PRIMARY KEY (qualityModelId, metricId),
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
 
 CREATE TABLE Resource (
-    resourceId INT NOT NULL PRIMARY KEY,
-    resourceName VARCHAR(128),
-    resourceType VARCHAR(16),
-    resourceAddress VARCHAR(1024)
+ resourceId INT NOT NULL PRIMARY KEY,
+ resourceName VARCHAR(128),
+ resourceType VARCHAR(16),
+ resourceAddress VARCHAR(1024)
 );
 
 
 CREATE TABLE Time (
-    valueTime TIMESTAMP(6) NOT NULL PRIMARY KEY
+ valueTime TIMESTAMP(6) NOT NULL PRIMARY KEY
 );
 
 
 CREATE TABLE Action (
-    actionId INT NOT NULL PRIMARY KEY,
-    resourceId INT NOT NULL,
-    actionName VARCHAR(128),
-    actuatorId INT NOT NULL,
+ actionId INT NOT NULL PRIMARY KEY,
+ resourceId INT NOT NULL,
+ actionName VARCHAR(128),
+ actuatorId INT NOT NULL,
 
-    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
-    FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId)
+ FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
+ FOREIGN KEY (actuatorId) REFERENCES Actuator (actuatorId)
 );
 
 
 CREATE TABLE CompositeAttribute (
-    parentMetric INT NOT NULL,
-    childMetric INT NOT NULL,
-    attributeAggregationOperator INT,
+ parentMetric INT NOT NULL,
+ childMetric INT NOT NULL,
+ attributeAggregationOperator INT,
 
-    PRIMARY KEY (parentMetric,childMetric),
+ PRIMARY KEY (parentMetric,childMetric),
 
-    FOREIGN KEY (parentMetric) REFERENCES Metric (metricId),
-    FOREIGN KEY (childMetric) REFERENCES Metric (metricId)
+ FOREIGN KEY (parentMetric) REFERENCES Metric (metricId),
+ FOREIGN KEY (childMetric) REFERENCES Metric (metricId)
 );
 
 
 CREATE TABLE Configuration (
-    actionId INT NOT NULL PRIMARY KEY,
-    keyName VARCHAR(128),
-    domain VARCHAR(1024),
+ configurationId INT NOT NULL,
+ actionId INT NOT NULL,
+ keyName VARCHAR(128),
+ domain VARCHAR(1024),
 
-    FOREIGN KEY (actionId) REFERENCES Action (actionId)
+ PRIMARY KEY (configurationId, actionId),
+
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
 
 
 CREATE TABLE Description (
-    descriptionId INT NOT NULL PRIMARY KEY,
-    dataType CHAR(16),
-    descriptionName CHAR(128),
-    unit CHAR(16)
+ descriptionId INT NOT NULL PRIMARY KEY,
+ dataType CHAR(16),
+ descriptionName CHAR(128),
+ unit CHAR(16)
 );
 
 
 CREATE TABLE LeafAttribute (
-    descriptionId INT NOT NULL,
-    metricId INT NOT NULL,
-    metricAggregationOperator INT,
-    numSamples INT,
-    normalizationMethod VARCHAR(64),
-    normalizationKind VARCHAR(64),
-    minimumThreshold DOUBLE PRECISION,
-    maximumThreshold DOUBLE PRECISION,
-    PRIMARY KEY (metricId),
-    FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+ metricId INT NOT NULL PRIMARY KEY,
+ descriptionId INT NOT NULL,
+ metricAggregationOperator INT,
+ numSamples INT,
+ normalizationMethod VARCHAR(64),
+ normalizationKind VARCHAR(64),
+ minimumThreshold DOUBLE PRECISION,
+ maximumThreshold DOUBLE PRECISION,
+
+ FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
 
 CREATE TABLE MetricData (
-    metricId INT NOT NULL,
-    valueTime TIMESTAMP(6) NOT NULL,
-    value DOUBLE PRECISION,
-    resourceId INT,
+ metricId INT NOT NULL,
+ valueTime TIMESTAMP(6) NOT NULL,
+ value DOUBLE PRECISION,
+ resourceId INT,
 
-    PRIMARY KEY (metricId,valueTime),
+ PRIMARY KEY (metricId,valueTime),
 
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId),
-    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
+ FOREIGN KEY (metricId) REFERENCES Metric (metricId),
+ FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
 
 CREATE TABLE Plan (
-    planId INT NOT NULL PRIMARY KEY,
-    metricId INT NOT NULL,
-    valueTime TIMESTAMP(6) NOT NULL,
-    status INT,
+ planId INT NOT NULL PRIMARY KEY,
+ metricId INT NOT NULL,
+ valueTime TIMESTAMP(6) NOT NULL,
+ status INT,
 
-    FOREIGN KEY (metricId,valueTime) REFERENCES MetricData (metricId,valueTime)
+ FOREIGN KEY (metricId,valueTime) REFERENCES MetricData (metricId,valueTime)
 );
 
 
 CREATE TABLE ActionPlan (
-    planId INT NOT NULL,
-    actionId INT NOT NULL,
-    executionOrder INT,
-    status INT,
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ executionOrder INT,
+ status INT,
 
-    PRIMARY KEY (planId,actionId),
+ PRIMARY KEY (planId,actionId),
 
-    FOREIGN KEY (planId) REFERENCES Plan (planId),
-    FOREIGN KEY (actionId) REFERENCES Action (actionId)
+ FOREIGN KEY (planId) REFERENCES Plan (planId),
+ FOREIGN KEY (actionId) REFERENCES Action (actionId)
 );
 
 
 CREATE TABLE ConfigurationData (
-    planId INT NOT NULL,
-    actionId INT NOT NULL,
-    value VARCHAR(1024),
+ planId INT NOT NULL,
+ actionId INT NOT NULL,
+ configurationId INT NOT NULL,
+ value VARCHAR(1024),
 
-    PRIMARY KEY (planId,actionId),
+ PRIMARY KEY (planId,actionId,configurationId),
 
-    FOREIGN KEY (planId,actionId) REFERENCES ActionPlan (planId,actionId),
-    FOREIGN KEY (actionId) REFERENCES Configuration (actionId)
+ FOREIGN KEY (planId,actionId) REFERENCES ActionPlan (planId,actionId),
+ FOREIGN KEY (actionId,configurationId) REFERENCES Configuration (actionId,configurationId)
 );
 
 
 CREATE TABLE Data (
-    probeId INT NOT NULL,
-    descriptionId INT NOT NULL,
-    resourceId INT NOT NULL,
-    valueTime TIMESTAMP(6) NOT NULL,
-    value DOUBLE PRECISION,
-    PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
-    FOREIGN KEY (probeId) REFERENCES Probe (probeId),
-    FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
-    FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
-    FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
+ probeId INT NOT NULL,
+ descriptionId INT NOT NULL,
+ resourceId INT NOT NULL,
+ valueTime TIMESTAMP(6) NOT NULL,
+ value DOUBLE PRECISION,
+ PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
+ FOREIGN KEY (probeId) REFERENCES Probe (probeId),
+ FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
+ FOREIGN KEY (resourceId) REFERENCES Resource (resourceId),
+ FOREIGN KEY (valueTime) REFERENCES Time (valueTime)
 );
 
 
