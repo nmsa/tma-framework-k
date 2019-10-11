@@ -13,11 +13,14 @@
 package eu.atmosphere.tmaf.knowledge.db.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,8 +29,8 @@ import javax.persistence.Table;
 
 /**
  *
- * 
- * 
+ *
+ *
  * @author Jorge Luiz <jorgem@unicamp.br>
  * @author Breno de França <breno@ic.unicamp.br>
  * @author José Pereira <josep@dei.uc.pt>
@@ -42,6 +45,15 @@ import javax.persistence.Table;
     @NamedQuery(name = "ActionPlan.findByExecutionOrder", query = "SELECT a FROM ActionPlan a WHERE a.executionOrder = :executionOrder"),
     @NamedQuery(name = "ActionPlan.findByStatus", query = "SELECT a FROM ActionPlan a WHERE a.status = :status")})
 public class ActionPlan implements Serializable {
+
+    @JoinTable(name = "ConfigurationData", joinColumns = {
+        @JoinColumn(name = "planId", referencedColumnName = "planId"),
+        @JoinColumn(name = "actionId", referencedColumnName = "actionId")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "actionId", referencedColumnName = "actionId"),
+                @JoinColumn(name = "configurationId", referencedColumnName = "configurationId")})
+    @ManyToMany
+    private Collection<Configuration> configurationCollection;
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -142,5 +154,13 @@ public class ActionPlan implements Serializable {
     public String toString() {
         return "eu.atmosphere.tmaf.knowledge.db.entity.ActionPlan[ actionPlanPK=" + actionPlanPK + " ]";
     }
-    
+
+    public Collection<Configuration> getConfigurationCollection() {
+        return configurationCollection;
+    }
+
+    public void setConfigurationCollection(Collection<Configuration> configurationCollection) {
+        this.configurationCollection = configurationCollection;
+    }
+
 }

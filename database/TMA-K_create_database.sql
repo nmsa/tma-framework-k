@@ -173,8 +173,8 @@ CREATE TABLE Description (
 
 
 CREATE TABLE LeafAttribute (
-    descriptionId INT NOT NULL,
     metricId INT NOT NULL,
+    descriptionId INT NOT NULL,
     metricAggregationOperator INT,
     numSamples INT,
     normalizationMethod VARCHAR(64),
@@ -230,12 +230,13 @@ CREATE TABLE ActionPlan (
 CREATE TABLE ConfigurationData (
     planId INT NOT NULL,
     actionId INT NOT NULL,
+    configurationId INT NOT NULL,
     value VARCHAR(1024),
 
-    PRIMARY KEY (planId,actionId),
+    PRIMARY KEY (planId, actionId, configurationId),
 
-    FOREIGN KEY (planId,actionId) REFERENCES ActionPlan (planId,actionId),
-    FOREIGN KEY (actionId) REFERENCES Configuration (actionId)
+    FOREIGN KEY (planId, actionId) REFERENCES ActionPlan (planId,actionId),
+    FOREIGN KEY (actionId, configurationId) REFERENCES Configuration (actionId,configurationId)
 );
 
 
@@ -245,9 +246,7 @@ CREATE TABLE Data (
     resourceId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
     value DOUBLE PRECISION,
-
     PRIMARY KEY (probeId,descriptionId,resourceId,valueTime),
-
     FOREIGN KEY (probeId) REFERENCES Probe (probeId),
     FOREIGN KEY (descriptionId) REFERENCES Description (descriptionId),
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
