@@ -1,0 +1,41 @@
+.inputActuatorAddress{
+    margin: 0;
+    padding: 0;
+    padding-left: 2px;
+    border-width: 1px;
+    border: 1px rgb(169, 169, 169) solid;
+
+	height: 20px;
+	width: 295px;
+}
+
+.buttonChooseFile{
+	width: 10vw;
+}
+
+.inputChooseFile{
+	visibility: hidden;
+	height:0;
+	width:0;
+}
+
+.buttonAddFile{
+	height: 3vh;
+	width: 10vw;
+}
+
+.buttonAddFileText{
+	margin: 0;
+	font-size: 15px;
+}
+
+.inputFile{
+	display: flex;
+}
+
+.fileChosen{
+	width: 1vw;
+	margin-top: 1vh;
+	margin-left: 1vw;
+}
+
