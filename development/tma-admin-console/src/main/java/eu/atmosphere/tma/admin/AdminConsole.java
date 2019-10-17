@@ -1,4 +1,4 @@
-package eu.atmosphere.tmaf.admin;
+package eu.atmosphere.tma.admin;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,9 +9,9 @@ import java.security.KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.atmosphere.tmaf.admin.database.ActionManager;
-import eu.atmosphere.tmaf.admin.database.ActuatorManager;
-import eu.atmosphere.tmaf.admin.database.ResourceManager;
+import eu.atmosphere.tma.admin.database.ActionManager;
+import eu.atmosphere.tma.admin.database.ActuatorManager;
+import eu.atmosphere.tma.admin.database.ResourceManager;
 
 public class AdminConsole {
 

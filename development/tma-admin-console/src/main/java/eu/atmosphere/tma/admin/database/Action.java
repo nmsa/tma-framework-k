@@ -1,4 +1,4 @@
-package eu.atmosphere.tmaf.admin.database;
+package eu.atmosphere.tma.admin.database;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package eu.atmosphere.tmaf.admin.database;
+package eu.atmosphere.tma.admin.database;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

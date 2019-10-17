@@ -1,4 +1,4 @@
-package eu.atmosphere.tmaf.admin.database;
+package eu.atmosphere.tma.admin.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
