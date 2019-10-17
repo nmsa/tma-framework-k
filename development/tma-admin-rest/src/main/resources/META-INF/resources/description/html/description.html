@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html ng-app="description">
+	<head>
+		<title>ATMOSPHERE - TMA Admin</title>
+		<meta charset="utf-8">
+
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://code.angularjs.org/1.7.8/angular.js"></script>
+		<script src="../../commonFiles/js/properties.js"></script>
+		<script src="../../commonFiles/js/status.js"></script>
+		<script src="../../commonFiles/js/partner.js"></script>
+		<script src="../js/description.js"></script>
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+		<!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Product+Sans+Regular">-->
+		<link rel="stylesheet" type="text/css" href="../css/description.css">
+		<link rel="stylesheet" type="text/css" href="../../commonFiles/css/basicContents.css">
+	</head>
+
+	<body ng-controller="descriptionController">
+		<header class="header">
+			<div>
+				<a class="linkAtmosphereHomePage" href="../../index.html">
+					<img class="atmosphereLogo" src="../../commonFiles/img/atmosphereFullLogo.png">
+				</a>
+			</div>
+			<div>
+				<p class="title">Create a measurement or event Menu</p>
+			</div>
+			<div class="menuBar">
+				<button onclick="location.href='../../probe/html/probeDashboard.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Probe</p>
+				</button>
+				<button onclick="location.href='../../resource/html/resource.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Resource</p>
+				</button>
+				<button onclick="location.href='../../description/html/description.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Measurement/Event</p>
+				</button>
+				<button onclick="location.href='../../actuator/html/actuator.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actuator</p>
+				</button>
+				<button onclick="location.href='../../actions/html/actions.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actions</p>
+				</button>
+			</div>
+			<nav class="navigationBar">
+				<a>></a>
+				<a href="../../index.html"> HomePage </a>
+				<a>></a>
+				<a href="../../description/html/description.html"> New Measurement or event </a>
+			</nav>
+		</header>
+		
+		<div>
+			<div id="statusList" class="statusList"></div>
+		</div>
+
+		<div class="inputBoxes">
+			<p class="inputBoxName">Partner:</p>
+			<select id="inputPartner" class="inputPartner" ng-controller="partnerController">
+			</select>
+
+			<p class="inputBoxName">Name:</p>
+			<input class="inputDescriptionName" type="text" placeholder="Name of the new Measurement or event" ng-model="inputDescriptionName">
+
+			<p class="inputBoxName">Data Type:</p>
+			<div class="inputDataTypeRadioBoxes">
+				<input id="inputDataTypeMeasurement" class="inputDataTypeMeasurement" type="radio" name="gender" value="male"> Measurement<br>
+				<input id="inputDataTypeEvent" class="inputDataTypeEvent" type="radio" name="gender" value="female"> Event<br>
+			</div>
+
+			<p class="inputBoxName">Unit:</p>
+			<input class="inputUnit" type="text" placeholder="Unit of the data type" ng-model="inputUnit">
+		</div>
+
+		<button id="mainButton" class="mainButton" type="button" ng-click="createDescription()">
+			<p class="mainButtonText">Create a new measurement or event</p>
+		</button>
+
+			
+		<footer class="footer">
+			<a href="https://www.atmosphere-eubrazil.eu/">ATMOSPHERE</a>
+			<a class="deiFooter" href="https://www.uc.pt/en"> DEI - University of Coimbra - 2019</a>
+		</footer>
+	</body>
+</html>

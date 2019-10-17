@@ -1,0 +1,40 @@
+.inputBoxes{
+	display: grid;
+	align-items: center;
+	justify-content: center;
+  	grid-template-columns: 10vw 20vw;
+
+  	margin: 0;
+  	margin-top: 5vh;
+}
+
+.inputBoxName{
+	text-align: right;
+
+	margin-right: 1vw;
+	margin-block-start: 1em;
+    margin-block-end: 1em;
+
+	height: 2vh;
+}
+
+.inputDescriptionName, .inputUnit{
+    margin: 0;
+    padding: 0;
+    padding-left: 2px;
+    border-width: 1px;
+    border: 1px rgb(169, 169, 169) solid;
+
+	height: 20px;
+	width: 295px;
+}
+
+.inputDataTypeRadioBoxes{
+	width: 10vw;
+	display: flex;
+
+	font-size: 15px;
+	/*font-family: Arial;*/
+	font-family: Product Sans Regular;
+}
+
