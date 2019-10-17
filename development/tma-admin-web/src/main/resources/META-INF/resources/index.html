@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html ng-app="homePage">
+	<head>
+		<title>ATMOSPHERE - TMA Admin</title>
+		<meta charset="utf-8">
+		<script src="https://code.angularjs.org/1.7.8/angular.js"></script>
+		<script src="commonFiles/js/properties.js"></script>
+		<script src="homeResources/js/homePage.js"></script>
+	
+		
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+		<link rel="stylesheet" type="text/css" href="homeResources/css/homePage.css">
+		<link rel="stylesheet" type="text/css" href="commonFiles/css/basicContents.css">
+	</head>
+
+	<body ng-controller="homePageController">
+		<header class="header">
+			<div>
+				<a class="linkAtmosphereHomePage" href="index.html">
+					<img class="atmosphereLogo" src="commonFiles/img/atmosphereFullLogo.png">
+				</a>
+			</div>
+			<div>
+				<p class="title">Welcome to the TMA Admin Dashboard</p>
+			</div>
+			<div class="menuBar">
+				<button onclick="location.href='probe/html/probeDashboard.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Probe</p>
+				</button>
+				<button onclick="location.href='resource/html/resource.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Resource</p>
+				</button>
+				<button onclick="location.href='description/html/description.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Measurement/Event</p>
+				</button>
+				<button onclick="location.href='actuator/html/actuator.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actuator</p>
+				</button>
+				<button onclick="location.href='actions/html/actions.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actions</p>
+				</button>
+			</div>
+			<nav class="navigationBar">
+				<a>></a>
+				<a href="index.html"> HomePage </a>
+			</nav>
+		</header>
+
+		<nav class="navigationButtons">
+			<img class="buttonImg" src="homeResources/img/keys.png"> </img>
+			<button onclick="location.href='http://' + ipToConnect + '/generatekeys';" class="button1 menuButton" ng-click="generatekeys()">
+				<p class="buttonTitle">Generate Keys</p>
+				<p class="buttonMeasurement or event">Generates a key pair that can be used to create a new actuator</p>
+			</button>
+			
+			<img class="buttonImg" src="homeResources/img/probe.png"> </img>
+			<button onclick="location.href='probe/html/probeDashboard.html';" class="button2 menuButton" type="button">
+				<p class="buttonTitle">Probe</p>
+				<p class="buttonMeasurement or event">Creates a new Probe</p>
+			</button>
+
+			<img class="buttonImg" src="homeResources/img/resource.png"> </img>
+			<button onclick="location.href='resource/html/resource.html';" class="button3 menuButton" type="button">
+				<p class="buttonTitle">Resource</p>
+				<p class="buttonMeasurement or event">Creates a new Resource</p>
+			</button>
+			
+			<img class="buttonImg" src="homeResources/img/description.png"> </img>
+			<button onclick="location.href='description/html/description.html';" class="button4 menuButton" type="button">
+				<p class="buttonTitle">Measurement or event</p>
+				<p class="buttonMeasurement or event">Creates a new measurement or event</p>
+			</button>
+
+			<img class="buttonImg" src="homeResources/img/actuator.png"> </img>
+			<button onclick="location.href='actuator/html/actuator.html';" class="button5 menuButton" type="button">
+				<p class="buttonTitle">Actuator</p>
+				<p class="buttonMeasurement or event">Creates a new Actuator</p>
+			</button>
+
+			<img class="buttonImg" src="homeResources/img/action.png"> </img>
+			<button onclick="location.href='actions/html/actions.html';" class="button6 menuButton" type="button">
+				<p class="buttonTitle">Actions</p>
+				<p class="buttonMeasurement or event">Configures Actions of an Actuator</p>
+			</button>
+		</nav>
+
+		<nav id="newActuatorPreControler" class="newActuatorPreControler" ng-hide="hideNewActuator">
+			<p class="newActuatorMeasurement or event"> Your download will start shortly</p>
+			<p class="newActuatorMeasurement or event"> Do you want to add an actuator?</p>
+			<div class="newActuatorButtons" ng-hide="hideWhileWaitingForDownload">
+				<button class="newActuatorButtonYes" onclick="location.href='actuator/actuator.html';">Yes</button>
+				<button class="newActuatorButtonNo" ng-click="return()">No</button>
+			</div>
+		</nav>
+
+		<footer class="footer">
+			<a href="https://www.atmosphere-eubrazil.eu/">ATMOSPHERE</a>
+			<a class="deiFooter" href="https://www.uc.pt/en"> DEI - University of Coimbra - 2019</a>
+		</footer>
+	</body>
+</html>
