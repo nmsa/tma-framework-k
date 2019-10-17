@@ -9,7 +9,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.dto;
+package eu.atmosphere.tma.admin.dto;
 
 /**
  * This class stores the information of a Partner.

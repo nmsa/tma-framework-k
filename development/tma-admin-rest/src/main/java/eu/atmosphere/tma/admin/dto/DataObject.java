@@ -10,7 +10,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.dto;
+package eu.atmosphere.tma.admin.dto;
 
 import java.util.HashMap;
 import java.util.Map;

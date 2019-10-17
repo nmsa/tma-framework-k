@@ -9,11 +9,11 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.dto;
+package eu.atmosphere.tma.admin.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import eu.atmosphere.tmaf.admin.util.Constants;
+import eu.atmosphere.tma.admin.util.Constants;
 
 /**
  * This class stores the information of an Action entry in the Action table.

@@ -10,14 +10,14 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.util;
+package eu.atmosphere.tma.admin.util;
 
-import eu.atmosphere.tmaf.admin.dto.Probe;
-import eu.atmosphere.tmaf.admin.dto.Configuration;
-import eu.atmosphere.tmaf.admin.dto.Action;
-import eu.atmosphere.tmaf.admin.dto.Description;
-import eu.atmosphere.tmaf.admin.dto.Resource;
-import eu.atmosphere.tmaf.admin.dto.Actuator;
+import eu.atmosphere.tma.admin.dto.Probe;
+import eu.atmosphere.tma.admin.dto.Configuration;
+import eu.atmosphere.tma.admin.dto.Action;
+import eu.atmosphere.tma.admin.dto.Description;
+import eu.atmosphere.tma.admin.dto.Resource;
+import eu.atmosphere.tma.admin.dto.Actuator;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

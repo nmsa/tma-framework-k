@@ -10,11 +10,11 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.dto;
+package eu.atmosphere.tma.admin.dto;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import eu.atmosphere.tmaf.admin.util.Constants;
+import eu.atmosphere.tma.admin.util.Constants;
 
 /**
  * This class stores the information of an Actuator entry in the Actuator table.

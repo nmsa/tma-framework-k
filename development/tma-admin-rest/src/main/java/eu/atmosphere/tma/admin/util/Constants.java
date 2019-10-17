@@ -10,7 +10,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.util;
+package eu.atmosphere.tma.admin.util;
 
 /**
  * This class holds the information of all the constants.

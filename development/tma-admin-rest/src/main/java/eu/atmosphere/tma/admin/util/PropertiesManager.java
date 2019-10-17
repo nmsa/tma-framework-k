@@ -10,7 +10,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.util;
+package eu.atmosphere.tma.admin.util;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;

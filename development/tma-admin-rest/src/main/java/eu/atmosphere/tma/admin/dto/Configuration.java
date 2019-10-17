@@ -10,9 +10,9 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.dto;
+package eu.atmosphere.tma.admin.dto;
 
-import eu.atmosphere.tmaf.admin.util.Constants;
+import eu.atmosphere.tma.admin.util.Constants;
 
 /**
  * This class stores the information of a Configuration entry in the

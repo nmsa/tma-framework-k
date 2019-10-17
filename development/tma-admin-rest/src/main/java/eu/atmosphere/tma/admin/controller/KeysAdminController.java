@@ -9,7 +9,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.controller;
+package eu.atmosphere.tma.admin.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.atmosphere.tmaf.admin.util.Constants;
-import eu.atmosphere.tmaf.admin.util.PropertiesManager;
+import eu.atmosphere.tma.admin.util.Constants;
+import eu.atmosphere.tma.admin.util.PropertiesManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

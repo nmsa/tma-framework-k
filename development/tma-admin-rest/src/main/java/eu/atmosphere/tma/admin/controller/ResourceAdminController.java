@@ -9,7 +9,7 @@
  * <p>
  * <p>
  */
-package eu.atmosphere.tmaf.admin.controller;
+package eu.atmosphere.tma.admin.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.atmosphere.tmaf.admin.util.DatabaseManager;
-import eu.atmosphere.tmaf.admin.dto.Resource;
-import eu.atmosphere.tmaf.admin.util.Constants;
+import eu.atmosphere.tma.admin.util.DatabaseManager;
+import eu.atmosphere.tma.admin.dto.Resource;
+import eu.atmosphere.tma.admin.util.Constants;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
