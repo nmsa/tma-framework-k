@@ -33,11 +33,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Configuration
 @PropertySource("classpath:config.properties")
 public class PropertiesManager {
-
-    @Value("${webHostIp}")
-    private String webHostIp;
-    @Value("${webHostPort}")
-    private String webHostPort;
+    
     @Value("#{${partnerList}}")
     private Map<String, Integer> partnerList;
     @Value("${algorithm}")
@@ -50,14 +46,6 @@ public class PropertiesManager {
 
     public String getAlgorithm() {
         return algorithm;
-    }
-
-    public String getWebHostIp() {
-        return webHostIp;
-    }
-
-    public String getWebHostPort() {
-        return webHostPort;
     }
 
     public Map<String, Integer> getPartnerList() {

@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.atmosphere.tmaf.admin.util.Constants;
+import eu.atmosphere.tmaf.admin.util.PropertiesManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -51,12 +53,14 @@ import eu.atmosphere.tmaf.admin.util.Constants;
 public class KeysAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeysAdminController.class);
+    @Autowired
+    public PropertiesManager properties;
 
     
     public KeyPair generateKeyPair() {
         KeyPair keyPair = null;
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(AdminController.properties.getAlgorithm());
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(properties.getAlgorithm());
             keyPairGenerator.initialize(4096, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {

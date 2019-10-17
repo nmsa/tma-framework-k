@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.atmosphere.tmaf.admin.util.Constants;
-import eu.atmosphere.tmaf.admin.util.PropertiesManager;
 
 /**
  * This class is a Rest Controller. It handles general requests made to the
@@ -47,8 +45,6 @@ import eu.atmosphere.tmaf.admin.util.PropertiesManager;
 public class AdminController implements ErrorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
-    @Autowired
-    static public PropertiesManager properties;
 
     static public boolean isInputNotValid(String toBeEvaluated) {
         String forbiddenCaracters = "*;,~^´`+«»?'=)(&%$#\"!|\\<>";

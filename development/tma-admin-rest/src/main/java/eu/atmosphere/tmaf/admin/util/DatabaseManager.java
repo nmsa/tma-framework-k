@@ -138,7 +138,7 @@ public class DatabaseManager {
         }
         // Setup the connection with the DB
         try {
-            Connection c = DriverManager.getConnection(workConnection);
+            Connection c = DriverManager.getConnection(homeConnection);
 
             c.setAutoCommit(false);
             return c;
@@ -164,6 +164,8 @@ public class DatabaseManager {
      * <p>
      */
     public int getIdFromDatabase(int partnerId, String table) {
+        //Selects the highest tableId where the tableId starts with the partnerId
+        //specified followed by 3 characters (numbers) that can be anything else.
         String sql
                 = "SELECT " + table + "Id "
                 + " FROM " + table
@@ -674,8 +676,11 @@ public class DatabaseManager {
 
     //Get Resources
     public ArrayList<Resource> getResources(int actuatorId) {
+        //Gets the partner Id of the actuator
         int partnerId = actuatorId / 1000;
-        /* TODO: Paulo: why is this with LIKE? */
+        //Gets the resources that have the same partner Id as the actuator
+        //Selects every resource where the resourceId starts with the partnerId
+        //of the actuator, followed by 3 characters (numbers) that can be anything else.
         String sql = "SELECT * FROM Resource WHERE resourceId LIKE \"" + partnerId + "___\"";
         Resource newResource;
         ArrayList<Resource> resources = new ArrayList<>();
