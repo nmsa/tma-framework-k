@@ -53,14 +53,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class KeysAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeysAdminController.class);
-    @Autowired
-    public PropertiesManager properties;
-
     
     public KeyPair generateKeyPair() {
         KeyPair keyPair = null;
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(properties.getAlgorithm());
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(PropertiesManager.getInstance().getProperty("algorithm"));
             keyPairGenerator.initialize(4096, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {

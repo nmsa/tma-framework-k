@@ -12,12 +12,9 @@
  */
 package eu.atmosphere.tma.admin.util;
 
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * This class stores the information of the Properties declared in the
@@ -30,26 +27,30 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * @author Nuno Antunes     <nmsa@dei.uc.pt>
  *
  */
-@Configuration
-@PropertySource("classpath:config.properties")
+
 public class PropertiesManager {
-    
-    @Value("#{${partnerList}}")
-    private Map<String, Integer> partnerList;
-    @Value("${algorithm}")
-    private String algorithm;
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
+    private static PropertiesManager instance = null;
+    private static Properties props = null;
+
+    private PropertiesManager() {
+        InputStream inputStream = PropertiesManager.class.getResourceAsStream("/application.properties");
+        props = new Properties();
+        try {
+            props.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getAlgorithm() {
-        return algorithm;
+    public static PropertiesManager getInstance() {
+        if (instance == null) {
+            instance = new PropertiesManager();
+        }
+        return instance;
     }
 
-    public Map<String, Integer> getPartnerList() {
-        return partnerList;
+    public String getProperty(String key) {
+        return props.getProperty(key);
     }
-
 }

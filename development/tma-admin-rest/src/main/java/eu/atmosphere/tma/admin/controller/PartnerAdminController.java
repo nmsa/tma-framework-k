@@ -14,6 +14,8 @@ package eu.atmosphere.tma.admin.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.atmosphere.tma.admin.dto.Partner;
 import eu.atmosphere.tma.admin.util.PropertiesManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -45,13 +46,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PartnerAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PartnerAdminController.class);
-    @Autowired
-    public PropertiesManager properties;
 
     @GetMapping("/getpartners")
     public ResponseEntity<Map> getPartners(HttpServletResponse response) {
         ArrayList<Partner> partnerList = new ArrayList<>();
-        Map<String, Integer> partnersDictionary = properties.getPartnerList();
+        String partnerString = PropertiesManager.getInstance().getProperty("partnerList");
+        
+        Map<String, Integer> partnersDictionary = Arrays.stream(partnerString.split(","))
+                    .map(s -> s.split(":"))
+                    .collect(Collectors.toMap(s -> s[0], s -> Integer.parseInt(s[1])));
+
 
         partnerList.add(new Partner("No Partner", -1));
         partnersDictionary.forEach((partnerName, partnerId) -> {
