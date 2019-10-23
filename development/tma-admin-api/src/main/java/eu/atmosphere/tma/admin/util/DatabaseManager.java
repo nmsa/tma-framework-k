@@ -3,7 +3,7 @@
  **
  * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Admin API API
+ * Component: Admin
  * <p>
  * Repository: https://github.com/eubr-atmosphere/tma-framework License:
  * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
@@ -114,20 +114,15 @@ public class DatabaseManager {
     private static final String homeConnection
             = "jdbc:mysql://localhost/knowledge?"
             + "useLegacyDatetimeCode=false&serverTimezone=UTC&"
-            + "verifyServerCertificate=false&useSSL=true&"
-            + "user=root&password=password";
+            + "verifyServerCertificate=false&useSSL=true";
     //connection used in the work computer
     private static final String workConnection
             = "jdbc:mysql://localhost/knowledge?"
-            + "useLegacyDatetimeCode=false&serverTimezone=UTC&"
-            + "user=root&password=passtobereplaced";
+            + "useLegacyDatetimeCode=false&serverTimezone=UTC&";
     //connection used in the production
     private static final String productionConnection
-            = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge?"
-            + "user=root&password=passtobereplaced";
+            = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
 
-    public DatabaseManager() {
-    }
 
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
@@ -138,7 +133,12 @@ public class DatabaseManager {
         }
         // Setup the connection with the DB
         try {
-            Connection c = DriverManager.getConnection(homeConnection);
+        	
+        	String userDB = PropertiesManager.getInstance().getProperty("userDB");
+    		byte[] decoded = Base64.getDecoder().decode(PropertiesManager.getInstance().getProperty("passwordProduction"));
+			String password = new String(decoded);	
+
+            Connection c = DriverManager.getConnection(productionConnection,userDB, password);
 
             c.setAutoCommit(false);
             return c;
@@ -734,7 +734,7 @@ public class DatabaseManager {
         }
     }
 
-    //Get Actuators
+    //Get Probes
     public ArrayList<Probe> getProbes() {
         Connection con = getConnection();
         try {
@@ -745,7 +745,6 @@ public class DatabaseManager {
                     probes.add(new Probe(
                             resultSet.getInt("probeId"),
                             resultSet.getString("probeName"),
-                            resultSet.getString("salt"),
                             resultSet.getString("token"),
                             resultSet.getTimestamp("tokenExpiration").toString()));
                 }
