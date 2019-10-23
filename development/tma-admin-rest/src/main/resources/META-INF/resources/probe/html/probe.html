@@ -25,7 +25,7 @@
 				</a>
 			</div>
 			<div>
-				<p class="title">Create a probe Menu</p>
+				<p class="title">Create Probe</p>
 			</div>
 			<div class="menuBar">
 				<button onclick="location.href='../../probe/html/probeDashboard.html';" class="headerMenuButtons" type="button">
@@ -67,13 +67,10 @@
 			<input id="inputProbeName" class="inputProbeName" type="text" placeholder="Name of the new Probe" ng-model="inputProbeName">
 			
 			<p class="inputBoxName">Password:</p>
-			<div class="tokenExpiration">
+			<div class="password">
 				<input id="inputPassword" class="inputPassword" type="password" placeholder="Password of the new Probe" ng-model="inputPassword">
-				<img class="showPasswordButton" src=../img/showpassword.png ng-click="onShowPasswordClick()" type="button"></img>
+				<input id="checkShowPassword" type="checkbox" ng-click="onShowPasswordClick()"> Show Password<br>
 			</div>
-
-			<p class="inputBoxName">Salt:</p>
-			<input id="inputSalt" class="inputSalt" type="text" placeholder="Salt for the password" ng-model="inputSalt">
 
 			<p class="inputBoxName">Token:</p>
 			<input id="inputToken" class="inputToken" type="text" placeholder="Token of the probe" ng-model="inputToken">
@@ -122,9 +119,7 @@
 			</div>
 		</div>
 
-		<button id="mainButton" class="mainButton" ng-hide="!calendarHidden" type="button" ng-click="createProbe()">
-			<p class="mainButtonText">Create a new Probe</p>
-		</button>
+		<button id="mainButton" class="mainButton" ng-hide="!calendarHidden" type="button" ng-click="createProbe()">Create a new Probe</button>
 
 		<footer class="footer">
 			<a href="https://www.atmosphere-eubrazil.eu/">ATMOSPHERE</a>

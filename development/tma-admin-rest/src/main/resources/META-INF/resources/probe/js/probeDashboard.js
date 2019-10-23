@@ -89,7 +89,6 @@ function probeController($scope, $http) {
 				"partnerId": inputPartner.value,
 				"probeName": inputProbeName.value,
 			    "password": inputPassword.value,
-			    "salt": inputSalt.value,
 			    "token": inputToken.value,
 			    "tokenExpiration": getTokenExpirationTime()
 			}
@@ -153,5 +152,3 @@ function probeController($scope, $http) {
 var app = angular.module("probe", []);
 
 app.controller("probeController", probeController);
-
-

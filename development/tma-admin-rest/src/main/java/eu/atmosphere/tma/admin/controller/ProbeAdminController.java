@@ -14,6 +14,7 @@ package eu.atmosphere.tma.admin.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.security.SecureRandom;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,6 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import de.mkammerer.argon2.Argon2Advanced;
+import de.mkammerer.argon2.Argon2Factory;
 
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Probe;
@@ -73,6 +77,25 @@ public class ProbeAdminController {
                 LOGGER.warn("[ATMOSPHERE] Code was changed and the feature wasn't completly implemented");
                 return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "Problem with the server, feature not completly implemented");
         }
+
+        Argon2Advanced argon2 = Argon2Factory.createAdvanced(Argon2Factory.Argon2Types.ARGON2id);
+
+        // Generate salt
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[128];
+        random.nextBytes(salt);
+
+        // Hashes a password and returns the raw bytes.
+        // Uses UTF-8 encoding.
+
+        //@param1 - number of iterations
+        //@param2 - memory
+        //@param3 - parallelism
+        //@param4 - password
+        //@param5 - salt
+        byte[] hash = argon2.rawHash(4,1048576,4,probe.getPassword(), salt);
+        probe.setPassword(new String(hash));
+        probe.setSalt(new String(salt));
 
         database.saveNewProbe(probe);
         if (probe.getProbeId() == -1) {

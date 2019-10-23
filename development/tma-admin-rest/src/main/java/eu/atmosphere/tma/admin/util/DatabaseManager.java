@@ -734,7 +734,7 @@ public class DatabaseManager {
         }
     }
 
-    //Get Actuators
+    //Get Probes
     public ArrayList<Probe> getProbes() {
         Connection con = getConnection();
         try {
@@ -745,7 +745,6 @@ public class DatabaseManager {
                     probes.add(new Probe(
                             resultSet.getInt("probeId"),
                             resultSet.getString("probeName"),
-                            resultSet.getString("salt"),
                             resultSet.getString("token"),
                             resultSet.getTimestamp("tokenExpiration").toString()));
                 }

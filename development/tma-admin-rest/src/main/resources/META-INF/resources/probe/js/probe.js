@@ -113,7 +113,6 @@ function probeController($scope, $http) {
 
 	inputProbeName = document.getElementById("inputProbeName");
 	inputPassword = document.getElementById("inputPassword");
-	inputSalt = document.getElementById("inputSalt");
 	inputToken = document.getElementById("inputToken");
 
 	showCalendar = function(month, year) {
@@ -225,10 +224,6 @@ function probeController($scope, $http) {
 			inputPassword.value === ""){
 			return false;
 		}
-		if (inputSalt.value === undefined ||
-			inputSalt.value === ""){
-			return false;
-		}
 		if (inputToken.value === undefined ||
 			inputToken.value === ""){
 			return false;
@@ -250,7 +245,6 @@ function probeController($scope, $http) {
 				"partnerId": inputPartner.value,
 				"probeName": inputProbeName.value,
 			    "password": inputPassword.value,
-			    "salt": inputSalt.value,
 			    "token": inputToken.value,
 			    "tokenExpiration": getTokenExpirationTime()
 			}
@@ -297,5 +291,3 @@ var app = angular.module("probe", []);
 
 app.controller("probeController", probeController);
 app.controller("partnerController", partnerController);
-
-
