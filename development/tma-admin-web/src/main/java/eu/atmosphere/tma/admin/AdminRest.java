@@ -16,7 +16,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * This class is used to run the spring microservice.
+ * This class is used to run the spring microservice to host the web service.
  * <p>
  *
  * @author Paulo Goncalves  <pgoncalves@student.dei.uc.pt>
