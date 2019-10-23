@@ -2,7 +2,7 @@
  * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
  *** <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Admin API
+ * Component: Admin
  * <p>
  * Repository: https://github.com/eubr-atmosphere/tma-framework License:
  * https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE
@@ -38,30 +38,29 @@ public class Probe extends DataObject {
         this.partnerId = -1;
     }
 
-    public Probe(int partnerId, int probeId, String probeName, String password, String salt, String token, long tokenExpiration) {
-        this(partnerId, probeName, password, salt, token, tokenExpiration);
+    public Probe(int partnerId, int probeId, String probeName, String password, String token, long tokenExpiration) {
+        this(partnerId, probeName, password, token, tokenExpiration);
         this.probeId = probeId;
     }
 
-    public Probe(int partnerId, String probeName, String password, String salt, String token, long tokenExpiration) {
-    	this(partnerId, probeName, salt, token);
+    public Probe(int partnerId, String probeName, String password, String token, long tokenExpiration) {
+    	this(partnerId, probeName, token);
         this.password = password;
     }
 
-    public Probe(String probeName, String password, String salt, String token, long tokenExpiration) {
-    	this(-1, probeName, password, salt, token, tokenExpiration);
+    public Probe(String probeName, String password, String token, long tokenExpiration) {
+    	this(-1, probeName, password, token, tokenExpiration);
     }
 
-    public Probe(int probeId, String probeName, String salt, String token, String tokenExpirationString) {
-    	this(-1, probeName, salt, token);
+    public Probe(int probeId, String probeName, String token, String tokenExpirationString) {
+    	this(-1, probeName, token);
     	this.probeId = probeId;
         this.tokenExpirationString = tokenExpirationString;
     }
 
-    public Probe(int partnerId, String probeName, String salt, String token) {
+    public Probe(int partnerId, String probeName, String token) {
         this.partnerId = partnerId;
         this.probeName = probeName;
-        this.salt = salt;
         this.token = token;
     }
 
@@ -78,13 +77,6 @@ public class Probe extends DataObject {
             this.errorLogger = "[ATMOSPHERE] Password isn't valid, either NULL or an empty spring";
             this.statusCode = Constants.HTTPBADREQUEST;
             this.errorMessage = "Password is empty, please enter the password of the Probe";
-            return true;
-        }
-
-        if (this.salt == null || this.salt.compareTo("") == 0) {
-            this.errorLogger = "[ATMOSPHERE] Salt isn't valid, either NULL or an empty spring";
-            this.statusCode = Constants.HTTPBADREQUEST;
-            this.errorMessage = "Salt is empty, please enter the salt of the Probe";
             return true;
         }
 

@@ -9,12 +9,6 @@
 	width: 295px;
 }
 
-.showPasswordButton{
-	padding-left: 1%;
-	width: 25px;
-	cursor: pointer;
-}
-
 .inputTokenExpiration{
 	cursor: pointer;
 	margin-top: 0;
@@ -29,6 +23,11 @@
 .tokenExpiration{
 	display: flex;
 	width: 350px;
+}
+
+.password{
+	display: flex;
+	width: 126%;
 }
 
 .calendar{
@@ -121,4 +120,8 @@ td{
 	font-size: 15px;
 }
 
-
+/* Remove button padding in FF */
+button::-moz-focus-inner {
+    border:0;
+    padding:0;
+}
