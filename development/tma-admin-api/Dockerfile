@@ -12,9 +12,9 @@ RUN     ["mvn", "dependency:resolve"]
 RUN     ["mvn", "verify"]
 
 # Adding source, compile and package into a fat jar
-ADD     src      ${admin}/tma-admin-api/src
+ADD     src      ${adminapi}/tma-admin-api/src
 RUN     ["mvn", "clean", "install"]
 
 RUN     ["cp", "-r", "bin", "/atmosphere/tma/admin-api/bin"]
 
-CMD ["java", "-jar", "/atmosphere/tma/admin-api/bin/tma-admin-rest-web-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/atmosphere/tma/admin-api/bin/tma-admin-rest-0.0.1-SNAPSHOT.jar"]

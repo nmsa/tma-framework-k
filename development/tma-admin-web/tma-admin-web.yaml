@@ -9,7 +9,7 @@ spec:
   ports:
   - port: 80
     nodePort: 32027
-  clusterIP: 10.108.1.36
+  clusterIP: 10.100.112.116
   selector:
     app: tma-admin-web
 ---

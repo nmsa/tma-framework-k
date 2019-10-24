@@ -124,7 +124,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>eu.atmosphere.tma.admin.AdminRest</mainClass>
+                            <mainClass>eu.atmosphere.tma.admin.AdminWeb</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>${basedir}/bin</outputDirectory>

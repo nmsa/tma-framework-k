@@ -17,4 +17,4 @@ RUN     ["mvn", "clean", "install"]
 
 RUN     ["cp", "-r", "bin", "/atmosphere/tma/admin-web/bin"]
 
-CMD ["java", "-jar", "/atmosphere/tma/admin-web/bin/tma-admin-rest-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/atmosphere/tma/admin-web/bin/tma-admin-web-0.0.1-SNAPSHOT.jar"]

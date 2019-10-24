@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.atmosphere.tma</groupId>
-    <artifactId>tma-admin-web</artifactId>
+    <artifactId>tma-admin-rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -128,7 +128,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>eu.atmosphere.tma.admin.AdminWeb</mainClass>
+                            <mainClass>eu.atmosphere.tma.admin.AdminRest</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>${basedir}/bin</outputDirectory>
@@ -212,5 +212,5 @@
             </plugins>
         </pluginManagement>
     </build>
-    <name>tma-admin-web</name>
+    <name>tma-admin-rest</name>
 </project>
