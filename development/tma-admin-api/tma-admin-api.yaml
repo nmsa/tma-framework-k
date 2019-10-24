@@ -28,5 +28,5 @@ spec:
         app: tma-admin-api # has to match .spec.selector.matchLabels
     spec:
       containers:
-      - name: tma-admin
-        image: tma-admin:0.1
+      - name: tma-admin-api
+        image: tma-admin-api:0.1

@@ -26,9 +26,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class AdminRest {
+public class AdminWeb {
 
     public static void main(String[] args) {
-        SpringApplication.run(AdminRest.class, args);
+        SpringApplication.run(AdminWeb.class, args);
     }
 }

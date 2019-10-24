@@ -1,1 +1,1 @@
-docker build -t tma-admin:0.1 .
+docker build -t tma-admin-api:0.1 .
