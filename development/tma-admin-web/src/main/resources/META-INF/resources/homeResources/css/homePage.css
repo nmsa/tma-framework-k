@@ -113,32 +113,3 @@
 
 	height: 125px;
 }
-
-.newActuatorMeasurement or event{
-	width: 100%;
-
-	font-size: 90%;
-}
-
-.newActuatorButtons{
-	height: 5vh;
-}
-
-.newActuatorButtonYes, .newActuatorButtonNo{
-	position: absolute;
-	text-align: center;
-
-	margin-top: 10px;
-
-	width: 10vw;
-	height: 30px;
-}
-
-.newActuatorButtonYes{
-	left: 10px;
-}
-
-.newActuatorButtonNo{
-	right: 10px;
-}
-
