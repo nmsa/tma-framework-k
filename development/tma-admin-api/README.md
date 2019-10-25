@@ -1,14 +1,16 @@
+
 # TMA Admin Rest API
 
 This tool allows you to:
 
 -   Generate public-private key pair to be used in the encryption process;
--   Add a new actuator to the database;
--   Add a new resource to the database;
--   Add a new description to the database;
--   Add a new probe to the database;
--   Add a new action to the database;
--   Add a new configuration to the database;
+-   Get the partners;
+-   Add and delete an action and get actions;
+-   Add a new actuator and get actuators;
+-   Add and delete a configuration and get configurations;
+-   Add a new description;
+-   Add and delete a probe and get probes;
+-   Add a new resource and get resources;
 -   Configure Actions (check details on  [Message Format for Actions Registration](https://github.com/eubr-atmosphere/tma-framework-k/tree/master#message-format-for-actions-registration)).
 
 
@@ -16,18 +18,34 @@ This tool allows you to:
 
  -   [Installation](#Installation)
  -   [Execution](#Execution)
+ -   [Properties](#Properties)
  -   [API Calls](#API-Calls)
 	  -  [Introduction](#Introduction)
+      *   [Partner](#Partner)
+	       -   [Get Partners](#Get-Partners)
       *   [Keys](#Keys)
 	       -   [Generate a new Public - Private key pair](#Generate-a-new-Public---Private-key-pair)
-      *   [Add to the Database](#Add-to-the-Database)
-	       -   [Add a new Actuator to the Database](#Add-a-new-Actuator-to-the-Database)
-	       -   [Add a new Description to the Database](#Add-a-new-Description-to-the-Database)
-	       -   [Add a new Probe to the Database](#Add-a-new-Probe-to-the-Database)
-	       -   [Add a new Resource to the Database](#Add-a-new-Resource-to-the-Database)
-	       -   [Add a new Action to the Database](#Add-a-new-Action-to-the-Database)
-	       -   [Add a new Configuration to the Database](#Add-a-new-Configuration-to-the-Database)
-	       -   [Configure actions](#Configure-Actions)
+      *   [Actions](#Actions)
+	       -   [Add a new Action](#Add-a-new-Action)
+	       -   [Get Actions](#Get-Actions)
+	       -   [Remove an Action](#Remove-an-Action)
+      *   [Actuators](#Actuators)
+	       -   [Add a new Actuator](#Add-a-new-Actuator)
+	       -   [Get Actuators](#Get-Actuators)
+      *   [Configurations](#Configurations)
+	       -   [Add a new Configuration](#Add-a-new-Configuration)
+	       -   [Get Configurations](#Get-Configurations)
+	       -   [Remove an Configuration](#Remove-an-Configuration)
+      *   [Descriptions](#Descriptions)
+	       -   [Add a new Description](#Add-a-new-Description)
+      *   [Probes](#Probes)
+	       -   [Add a new Probe](#Add-a-new-Probe)
+	       -   [Get Probes](#Get-Probes)
+	       -   [Remove a Probe](#Remove-a-Probe)
+      *   [Resources](#Resources)
+	       -   [Add a new Resource](#Add-a-new-Resource)
+	       -   [Get Resources](#Get-Resources)
+	  *  [Configure Actions](#Configure-Actions)
  -	 [GUI](#GUI)
  -   [Implementation Details](#Implementation-Details)
 
@@ -43,7 +61,7 @@ sh build.sh
 To deploy the pod in the cluster, you should run the following command on the master node:
 
 ```
-kubectl create -f tma-admin-rest.yaml
+kubectl create -f tma-admin-api.yaml
 ```
 
 With TMA Admin correctly deployed and running, it is accessible through the IP of Kubernetes Master machine in port 32026. 
@@ -51,6 +69,14 @@ With TMA Admin correctly deployed and running, it is accessible through the IP o
 # Execution
 
 There is an example on how to execute each of the features refered in the beggining in the corresponding section bellow.
+
+# Properties
+
+Properties are specified in the following directory:
+```
+...\tma-admin-api\src\main\resources\application.properties
+```
+
 
 # API Calls
 
@@ -106,6 +132,49 @@ Every API Call will return a json with this base configuration:
 |status|String|Status of the HTTP Request|
 - - -
 
+## Partners
+
+### Get Partners
+
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getpartners
+```
+
+Model:
+```
+curl -X GET http://IP_MASTER:32026/getpartners
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getpartners
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|partnerList|HashMap|Partner hashmap|
+- - -
+
+PartnerList is an HashMap with the partner name as a key and the id as the value.
+
+Example:
+|Key|Value|
+|--|--|--|
+|UPV|10|
+- - -
+
+
+
 ## Keys
 
 ### Generate a new Public - Private key pair
@@ -142,9 +211,114 @@ If the call is sucessfull the status code will be 201 which means the keys were 
 
 If the call is unsucessfull the status code will be 500, it is due to an error while creating the keys or while creating the zip file.
 
-## Add to the Database
 
-### Add a new Actuator to the Database
+## Actions
+
+### Add a new Action
+---
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/addaction
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/addaction -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+
+```
+curl -X POST http://IP_MASTER:32026/addaction -H 'Content-Type: application/json' -d '{"actionName": "test","actuatorId": 99001,"resourceId": 99001}'
+```
+
+##### Note: the partnerId of the actuator and the resource have to match. In the example, both have the default 99.
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|actuatorId|String|Id of the actuator|99001|
+|resourceId|String|Id of the resource|99001|
+|actionName|String|name of the action|work|
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Get Actions
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getactions
+```
+
+Model:
+```
+curl -X GET http://IP_MASTER:32026/getactions
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getactions
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|actions|Array|Array of actions|
+
+
+### Delete Action
+---
+#### Method - DELETE
+
+URI:
+
+```
+http://IP_MASTER:32026/deleteaction?actionIdString=
+```
+
+Model:
+```
+curl -X DELETE http://IP_MASTER:32026/deleteaction?actionIdString=actionId
+```
+
+Example:
+
+```
+curl -X DELETE http://IP_MASTER:32026/deleteaction?actionIdString=22
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+
+- - -
+## Actuators
+
+### Add a new Actuator
 - - -
 #### Method - POST
 
@@ -186,8 +360,144 @@ The 4 possible status are 201, 400, 415 and 500. In the table bellow there is so
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
+### Get Actuators
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getactuators
+```
+
+Model:
+```
+curl -X GET http://IP_MASTER:32026/getactuators
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getactuators
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|actuators|Array|Array of actuators|
+
+
+---
+## Configurations
+
+### Add a new Configuration 
+---
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/addconfiguration
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/addconfiguration -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+
+```
+curl -X POST http://IP_MASTER:32026/addconfiguration -H 'Content-Type: application/json' -d '{"actionId": 99001,"keyName": "test","domain": "fill"}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|keyName|String|String with the name of the Key|conf|
+|domain|String|String with the Domain|2|
+|actionId|String|Id of the action|99001|
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+
+### Get Configurations
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getconfigurations?actionIdString=
+```
+
+Model:
+```
+curl -X GET http://IP_MASTER:32026/getconfigurations?actionIdString=actionId
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getconfigurations?actionIdString=22
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|configurations|Array|Array of configurations|
+
+
+### Delete Configuration
+---
+#### Method - DELETE
+
+URI:
+
+```
+http://IP_MASTER:32026/deleteconfiguration?configurationIdString=
+```
+
+Model:
+```
+curl -X DELETE http://IP_MASTER:32026/deleteconfiguration?configurationIdString=configurationId
+```
+
+Example:
+
+```
+curl -X DELETE http://IP_MASTER:32026/deleteconfiguration?configurationIdString=22
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+
 - - -
-### Add a new Description to the Database
+## Descriptions
+
+### Add a new Description
 - - -
 #### Method - POST
 
@@ -231,8 +541,10 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
-## Add a new Probe to the Database
+## Probes 
 
+### Add a new Probe 
+- - -
 #### Method - POST
 
 URI:
@@ -277,8 +589,72 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
-## Add a new Resource to the Database
 
+
+### Get Probes
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getprobes
+```
+
+Model:
+```
+curl -X GET http://IP_MASTER:32026/getprobes
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getprobes
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|probes|Array|Array of probes|
+
+
+### Delete Probe
+---
+#### Method - DELETE
+
+URI:
+
+```
+http://IP_MASTER:32026/deleteprobe?probeIdString=
+```
+
+Model:
+```
+curl -X DELETE http://IP_MASTER:32026/deleteprobe?probeIdString=probeId
+```
+
+Example:
+
+```
+curl -X DELETE http://IP_MASTER:32026/deleteprobe?probeIdString=22
+```
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+
+
+
+## Resources
+
+### Add a new Resource
+- - -
 #### Method - POST
 
 URI:
@@ -322,94 +698,40 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |status|String|Status of the HTTP Request|
 
 
-## Add a new Action to the Database
-
-#### Method - POST
+### Get Resources
+---
+#### Method - GET
 
 URI:
 
 ```
-http://IP_MASTER:32026/addaction
+http://IP_MASTER:32026/getresources?actuatorIdString=
 ```
 
 Model:
-Body: json
 ```
-curl -X POST http://IP_MASTER:32026/addaction -H 'Content-Type: application/json' -d 'json'
+curl -X GET http://IP_MASTER:32026/getresources?actuatorIdString=actuatorId
 ```
 
 Example:
 
 ```
-curl -X POST http://IP_MASTER:32026/addaction -H 'Content-Type: application/json' -d '{"actionName": "test","actuatorId": 99001,"resourceId": 99001}'
+curl -X GET http://IP_MASTER:32026/getresources?actuatorIdString=22
 ```
 
-##### Note: the partnerId of the actuator and the resource have to match. In the example, both have the default 99.
 
-### Input
+### Success 200
 
-The following table shows some information about the json configuration.
+If the call is sucessfull the status code will be 200.
 
-|Key|Type|Description|Example|
-|--|--|--|--|
-|actuatorId|String|Id of the actuator|99001|
-|resourceId|String|Id of the resource|99001|
-|actionName|String|name of the action|work|
-
-### Success 201 & Error 400, 500
-
-The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
-
-|Field|Type|Description|
+|Key|Type|Value description|
 |--|--|--|
-|message|String|Message about the status of the call|
-|status|String|Status of the HTTP Request|
+|resources|Array|Array of resources|
 
-
-## Add a new Configuration to the Database
-
-#### Method - POST
-
-URI:
-
-```
-http://IP_MASTER:32026/addconfiguration
-```
-
-Model:
-Body: json
-```
-curl -X POST http://IP_MASTER:32026/addconfiguration -H 'Content-Type: application/json' -d 'json'
-```
-
-Example:
-
-```
-curl -X POST http://IP_MASTER:32026/addconfiguration -H 'Content-Type: application/json' -d '{"actionId": 99001,"keyName": "test","domain": "fill"}'
-```
-
-### Input
-
-The following table shows some information about the json configuration.
-
-|Key|Type|Description|Example|
-|--|--|--|--|
-|keyName|String|String with the name of the Key|conf|
-|domain|String|String with the Domain|2|
-|actionId|String|Id of the action|99001|
-
-### Success 201 & Error 400, 500
-
-The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
-
-|Field|Type|Description|
-|--|--|--|
-|message|String|Message about the status of the call|
-|status|String|Status of the HTTP Request|
 
 
 ## Configure Actions
-- - -
+
 
 #### Method - POST
 
@@ -456,16 +778,12 @@ The 3 possible status are 201, 400 and 500. The json that is returned will alway
 |status|String|Status of the HTTP Request|
 - - -
 
-## GUI
-
-There is an integrated GUI that can be accessed on http://IP_MASTER:32026/
-
 ## Implementation Details
 
 To implement this API it was used [SpringBoot](https://spring.io/projects/spring-boot)  with [log4j](https://logging.apache.org/log4j/2.x/) to help with the logging.
 
 ## Authors
 
-* Jose Alexandre D'Abruzzo
-* Paulo Alexandre da Silva Gonçalves
-* Rui Filipe Rama Silva
+* Jose D'Abruzzo Pereira
+* Paulo Gonçalves
+* Rui Silva
