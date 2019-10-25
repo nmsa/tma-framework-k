@@ -165,9 +165,9 @@ CREATE TABLE Configuration (
 
 CREATE TABLE Description (
     descriptionId INT NOT NULL AUTO_INCREMENT,
-    dataType CHAR(16),
+    dataType VARCHAR(16),
     descriptionName CHAR(128),
-    unit CHAR(16),
+    unit VARCHAR(16),
     PRIMARY KEY (descriptionId)
 );
 
@@ -252,4 +252,6 @@ CREATE TABLE Data (
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
+CREATE VIEW CompositeAttributeView AS SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute where parentMetric = childMetric;
 
+CREATE VIEW MetricAttributeView AS SELECT m.metricId as metricId, ca.parentMetric as compositeAttributeId, m.metricName as name FROM Metric m join CompositeAttribute ca on m.metricId = ca.childMetric;
