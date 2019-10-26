@@ -38,7 +38,7 @@ public class Resource extends DataObject {
     }
 
     public Resource(int partnerId, int resourceId, String resourceName, String resourceType, String resourceAddress) {
-    	this(partnerId, resourceName, resourceType, resourceAddress);
+        this(partnerId, resourceName, resourceType, resourceAddress);
         this.resourceId = resourceId;
     }
 
@@ -50,11 +50,14 @@ public class Resource extends DataObject {
     }
 
     public Resource(String resourceName, String resourceType, String resourceAddress) {
-    	this(-1, resourceName, resourceType, resourceAddress);
+        this(-1, resourceName, resourceType, resourceAddress);
     }
 
     public boolean invalidInputs() {
-
+        /**
+         * TODO: Paulo
+         * We should use secure defaults and positive validation. *
+         */
         if (this.resourceName == null || this.resourceName.compareTo("") == 0) {
             this.errorLogger = "[ATMOSPHERE] ResourceName isn't valid, either NULL or an empty spring";
             this.statusCode = Constants.HTTPBADREQUEST;

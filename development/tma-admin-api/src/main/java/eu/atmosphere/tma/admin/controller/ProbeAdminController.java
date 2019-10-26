@@ -54,17 +54,22 @@ public class ProbeAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProbeAdminController.class);
 
-    
     @PostMapping("/addprobe")
     public ResponseEntity<Map> addProbe(@RequestBody Probe probe, HttpServletResponse response) {
-    	
+        /**
+         * TODO: Paulo, Rui
+         * this needs to be discussed for v1.1
+         */
         if (probe.invalidInputs()) {
             return probe.errorHandler(LOGGER);
         }
 
         //creates a new probe
         DatabaseManager database = new DatabaseManager();
-
+        /**
+         * TODO: Paulo, Rui
+         * we need to improve all these interactions with the DB
+         */
         switch (database.isProbeNameRepeated(probe.getProbeName())) {
             case -1:
                 return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
@@ -87,13 +92,12 @@ public class ProbeAdminController {
 
         // Hashes a password and returns the raw bytes.
         // Uses UTF-8 encoding.
-
         //@param1 - number of iterations
         //@param2 - memory
         //@param3 - parallelism
         //@param4 - password
         //@param5 - salt
-        byte[] hash = argon2.rawHash(4,1048576,4,probe.getPassword(), salt);
+        byte[] hash = argon2.rawHash(4, 1048576, 4, probe.getPassword(), salt);
         probe.setPassword(new String(hash));
         probe.setSalt(new String(salt));
 
@@ -111,7 +115,8 @@ public class ProbeAdminController {
         ArrayList<Probe> probes = database.getProbes();
 
         if (probes == null) {
-            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
         }
 
         HashMap<String, ArrayList<Probe>> probesJson = new HashMap<>();
@@ -123,26 +128,29 @@ public class ProbeAdminController {
         );
     }
 
-	@DeleteMapping("/deleteprobe")
+    @DeleteMapping("/deleteprobe")
     public ResponseEntity<Map> deleteProbe(@RequestParam(required = true) String probeIdString, HttpServletResponse response) {
         int probeId;
 
         if (AdminController.isInputNotValid(probeIdString)) {
             LOGGER.warn("[ATMOSPHERE] Input has special characters, may be dangerous to the system. Refusing the request");
-            return AdminController.genericResponseEntity(Constants.HTTPBADREQUEST, Constants.ERROR, "Forbidden characters in the action id. Don't use characters like *, +, etc..");
+            return AdminController.genericResponseEntity(Constants.HTTPBADREQUEST,
+                    Constants.ERROR, "Forbidden characters in the action id. Don't use characters like *, +, etc..");
         }
         try {
             probeId = Integer.parseInt(probeIdString);
         } catch (NumberFormatException ex) {
             LOGGER.warn("[ATMOSPHERE] Invalid Parameter input - ProbeId needs to be a number", ex);
-            return AdminController.genericResponseEntity(Constants.HTTPBADREQUEST, Constants.WARNING, "Probe id needs to be a number");
+            return AdminController.genericResponseEntity(Constants.HTTPBADREQUEST,
+                    Constants.WARNING, "Probe id needs to be a number");
         }
 
         DatabaseManager database = new DatabaseManager();
         if (!database.deleteProbe(probeId)) {
-            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
         }
-        return AdminController.genericResponseEntity(Constants.HTTPSUCESSCREATED, Constants.SUCCESS, "Probe deleted sucessfully");
+        return AdminController.genericResponseEntity(Constants.HTTPSUCESSCREATED,
+                Constants.SUCCESS, "Probe deleted sucessfully");
     }
-
 }

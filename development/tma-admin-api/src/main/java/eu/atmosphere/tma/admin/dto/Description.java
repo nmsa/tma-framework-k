@@ -1,6 +1,7 @@
 /**
  * <b>ATMOSPHERE</b> - http://www.atmosphere-eubrazil.eu/
- *** <p>
+ ***
+ * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
  * Component: Admin API
  * <p>
@@ -37,7 +38,7 @@ public class Description extends DataObject {
     }
 
     public Description(int partnerId, int descriptionId, String dataType, String descriptionName, String unit) {
-    	this(partnerId, dataType, descriptionName, unit);
+        this(partnerId, dataType, descriptionName, unit);
         this.descriptionId = descriptionId;
     }
 
@@ -49,11 +50,14 @@ public class Description extends DataObject {
     }
 
     public Description(String dataType, String descriptionName, String unit) {
-    	this(-1, dataType, descriptionName, unit);
+        this(-1, dataType, descriptionName, unit);
     }
 
     public boolean invalidInputs() {
-
+        /**
+         * TODO: Paulo
+         * We should use secure defaults and positive validation. *
+         */
         if (this.dataType == null || this.dataType.compareTo("") == 0) {
             this.errorLogger = "[ATMOSPHERE] DataType isn't valid, either NULL or an empty spring";
             this.statusCode = Constants.HTTPBADREQUEST;
@@ -117,5 +121,4 @@ public class Description extends DataObject {
     public void setUnit(String unit) {
         this.unit = unit;
     }
-
 }

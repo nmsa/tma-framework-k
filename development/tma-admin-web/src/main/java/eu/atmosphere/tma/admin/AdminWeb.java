@@ -3,7 +3,7 @@
  ***
  * <p>
  * <b>Trustworthiness Monitoring & Assessment Framework</b>
- * Component: Admin
+ * Component: Admin Web Interface
  * <p>
  * Repository: https://github.com/eubr-atmosphere/tma-framework
  * License: https://github.com/eubr-atmosphere/tma-framework/blob/master/LICENSE

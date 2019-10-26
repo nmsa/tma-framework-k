@@ -60,7 +60,10 @@ public class Actuator extends DataObject {
     }
 
     public boolean invalidInputs() {
-
+        /**
+         * TODO: Paulo
+         * We should use secure defaults and positive validation. *
+         */
         if (this.address == null || this.address.compareTo("") == 0) {
             this.errorLogger = "[ATMOSPHERE] Address isn't valid, either NULL or an empty spring";
             this.statusCode = Constants.HTTPBADREQUEST;
@@ -127,5 +130,4 @@ public class Actuator extends DataObject {
     public void setPubKey(String pubKey) {
         this.pubKey = pubKey;
     }
-
 }

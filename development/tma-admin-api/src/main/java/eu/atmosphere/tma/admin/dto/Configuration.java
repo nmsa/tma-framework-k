@@ -34,7 +34,10 @@ public class Configuration extends DataObject {
     private String domain;
 
     public boolean invalidInputs() {
-
+        /**
+         * TODO: Paulo
+         * We should use secure defaults and positive validation. *
+         */
         if (this.actionId <= 0) {
             this.errorLogger = "[ATMOSPHERE] ActionId isn't valid, it is either 0 or a negative ";
             this.statusCode = Constants.HTTPBADREQUEST;

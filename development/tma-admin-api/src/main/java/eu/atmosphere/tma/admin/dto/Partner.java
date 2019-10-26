@@ -46,5 +46,4 @@ public class Partner {
     public void setPartnerId(int partnerId) {
         this.partnerId = partnerId;
     }
-
 }

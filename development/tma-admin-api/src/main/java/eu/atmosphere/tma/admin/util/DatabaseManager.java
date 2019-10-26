@@ -123,7 +123,6 @@ public class DatabaseManager {
     private static final String productionConnection
             = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
 
-
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
         try {
@@ -133,12 +132,12 @@ public class DatabaseManager {
         }
         // Setup the connection with the DB
         try {
-        	
-        	String userDB = PropertiesManager.getInstance().getProperty("userDB");
-    		byte[] decoded = Base64.getDecoder().decode(PropertiesManager.getInstance().getProperty("passwordProduction"));
-			String password = new String(decoded);	
 
-            Connection c = DriverManager.getConnection(productionConnection,userDB, password);
+            String userDB = PropertiesManager.getInstance().getProperty("userDB");
+            byte[] decoded = Base64.getDecoder().decode(PropertiesManager.getInstance().getProperty("passwordProduction"));
+            String password = new String(decoded);
+
+            Connection c = DriverManager.getConnection(productionConnection, userDB, password);
 
             c.setAutoCommit(false);
             return c;

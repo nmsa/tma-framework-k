@@ -28,6 +28,10 @@ public class Probe extends DataObject {
     private int partnerId;
     private int probeId;
     private String probeName;
+    /**
+     * TODO: Paulo, Rui
+     * Esta password vive demasiado tempo
+     */
     private String password;
     private String salt;
     private String token;
@@ -44,17 +48,17 @@ public class Probe extends DataObject {
     }
 
     public Probe(int partnerId, String probeName, String password, String token, long tokenExpiration) {
-    	this(partnerId, probeName, token);
+        this(partnerId, probeName, token);
         this.password = password;
     }
 
     public Probe(String probeName, String password, String token, long tokenExpiration) {
-    	this(-1, probeName, password, token, tokenExpiration);
+        this(-1, probeName, password, token, tokenExpiration);
     }
 
     public Probe(int probeId, String probeName, String token, String tokenExpirationString) {
-    	this(-1, probeName, token);
-    	this.probeId = probeId;
+        this(-1, probeName, token);
+        this.probeId = probeId;
         this.tokenExpirationString = tokenExpirationString;
     }
 
