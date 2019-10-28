@@ -4,17 +4,17 @@ ENV     adminapi /atmosphere/tma/admin-api
 
 
 #Adding TMA-Admin
-WORKDIR ${adminapi}/tma-admin-api
+WORKDIR ${adminapi}
 
 # Prepare by downloading dependencies
-ADD     pom.xml  ${adminapi}/tma-admin-api/pom.xml
+ADD     pom.xml  ${adminapi}/pom.xml
 RUN     ["mvn", "dependency:resolve"]
 RUN     ["mvn", "verify"]
 
 # Adding source, compile and package into a fat jar
-ADD     src      ${adminapi}/tma-admin-api/src
+ADD     src      ${adminapi}/src
 RUN     ["mvn", "clean", "install"]
 
-RUN     ["cp", "-r", "bin", "/atmosphere/tma/admin-api/bin"]
+#RUN     ["cp", "-r", "bin", "/atmosphere/tma/admin-api/bin"]
 
 CMD ["java", "-jar", "/atmosphere/tma/admin-api/bin/tma-admin-rest-0.0.1-SNAPSHOT.jar"]
