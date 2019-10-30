@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.util.Constants;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -71,7 +73,6 @@ public class ResourceAdminController {
     public ResponseEntity<Map> getResources(
             @RequestParam(required = true) String actuatorIdString,
             HttpServletResponse response) {
-
         int actuatorId;
 
         if (AdminController.isInputNotValid(actuatorIdString)) {
@@ -86,9 +87,11 @@ public class ResourceAdminController {
         }
 
         DatabaseManager database = new DatabaseManager();
-        ArrayList<Resource> resources = database.getResources(actuatorId);
-
-        if (resources == null) {
+        ArrayList<Resource> resources;
+        try {
+            resources = database.getResources(actuatorId);
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
         }
 

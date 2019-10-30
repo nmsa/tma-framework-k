@@ -12,6 +12,8 @@
  */
 package eu.atmosphere.tma.admin.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import eu.atmosphere.tma.admin.dto.Probe;
 import eu.atmosphere.tma.admin.dto.Configuration;
 import eu.atmosphere.tma.admin.dto.Action;
@@ -19,7 +21,6 @@ import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Jose A. D. Pereira  <josep@dei.uc.pt>
  * @author Rui Silva <rfsilva@student.dei.uc.pt>
  * @author Nuno Antunes     <nmsa@dei.uc.pt>
- *
+ *  
  */
 public class DatabaseManager {
 
@@ -53,7 +54,35 @@ public class DatabaseManager {
     private static final String ACTION = "Action";
     private static final String ACTUATOR = "Actuator";
     private static final String PROBE = "Probe";
-
+    
+    private static final String connectionString
+            = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
+    
+    //Connection pool
+    private static final HikariConfig CONFIG = new HikariConfig();
+    private static final HikariDataSource DS;
+     
+    static {
+        CONFIG.setJdbcUrl(connectionString);
+        String userDB = PropertiesManager.getInstance().getProperty("userDB");
+        byte[] decoded = Base64.getDecoder().decode(
+                PropertiesManager.getInstance().getProperty("passwordProduction"));
+        String password = new String(decoded);
+        CONFIG.setUsername(userDB);
+        CONFIG.setPassword(password);
+        CONFIG.addDataSourceProperty("cachePrepStmts", "true");
+        CONFIG.addDataSourceProperty("prepStmtCacheSize", "250");
+        CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        CONFIG.setAutoCommit(false);
+        CONFIG.setMaximumPoolSize(Integer.parseInt(
+                PropertiesManager.getInstance().getProperty("maxNumbeOfDatabaseConnections")));
+        DS = new HikariDataSource(CONFIG);
+    }
+     
+    public static Connection getConnectionFromPool() throws SQLException {
+        return DS.getConnection();
+    }
+    
     /**
      * *
      * Prepared statements
@@ -109,20 +138,6 @@ public class DatabaseManager {
     private static final String SQL_SELECT_PROBE
             = "SELECT * FROM Probe";
 
-    /* TODO: Rui: find a better strategy */
-    //connection used in the home computer
-    private static final String homeConnection
-            = "jdbc:mysql://localhost/knowledge?"
-            + "useLegacyDatetimeCode=false&serverTimezone=UTC&"
-            + "verifyServerCertificate=false&useSSL=true";
-    //connection used in the work computer
-    private static final String workConnection
-            = "jdbc:mysql://localhost/knowledge?"
-            + "useLegacyDatetimeCode=false&serverTimezone=UTC&";
-    //connection used in the production
-    private static final String productionConnection
-            = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
-
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
         try {
@@ -137,7 +152,8 @@ public class DatabaseManager {
             byte[] decoded = Base64.getDecoder().decode(PropertiesManager.getInstance().getProperty("passwordProduction"));
             String password = new String(decoded);
 
-            Connection c = DriverManager.getConnection(productionConnection, userDB, password);
+            //Connection c = DatabaseManager getConnection(productionConnection, userDB, password);
+            Connection c = DatabaseManager.getConnectionFromPool();
 
             c.setAutoCommit(false);
             return c;
@@ -173,7 +189,13 @@ public class DatabaseManager {
                 + "___\"ORDER BY " + table + "Id"
                 + " DESC LIMIT 1";
 
-        Connection con = getConnection();
+        Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         try {
             try (Statement stat = con.createStatement()) {
                 ResultSet resultSet = stat.executeQuery(sql);
@@ -192,7 +214,13 @@ public class DatabaseManager {
     }
 
     public int isActuatorAddressRepeated(String address) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         try {
 
             try (PreparedStatement ps = con.prepareStatement(SQL_GET_ACTUATOR_BY_ADDRESS)) {
@@ -213,7 +241,13 @@ public class DatabaseManager {
     }
 
     public int isProbeNameRepeated(String probeName) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         try {
 
             try (PreparedStatement ps = con.prepareStatement(SQL_GET_PROBE_NAME)) {
@@ -234,7 +268,13 @@ public class DatabaseManager {
     }
 
     public int isActionNameRepeated(Action action) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(SQL_GET_ACTION_NAME_BY_ACTUATORID)) {
                 ps.setInt(1, action.getActuatorId());
@@ -255,7 +295,13 @@ public class DatabaseManager {
     }
 
     public int isConfigurationNameRepeated(Configuration configuration) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(SQL_GET_KEY_NAME_BY_ACTIONID)) {
                 ps.setInt(1, configuration.getActionId());
@@ -287,7 +333,13 @@ public class DatabaseManager {
     }
 
     public boolean saveNewResourceWithPartnerId(Resource resource) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(SQL_NEW_RESOURCE_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, resource.getResourceId());
@@ -328,7 +380,13 @@ public class DatabaseManager {
     }
 
     public boolean saveNewDescriptionWithPartnerId(Description description) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_NEW_DESCRIPTION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
@@ -375,7 +433,13 @@ public class DatabaseManager {
 
     //Action Manager
     public boolean saveNewActionWithPartnerId(Action action) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_NEW_ACTION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
@@ -421,7 +485,13 @@ public class DatabaseManager {
     }
 
     public boolean saveNewConfigurationWithPartnerId(Configuration configuration) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_NEW_CONFIGURATION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
@@ -462,7 +532,13 @@ public class DatabaseManager {
     }
 
     public int saveNewActuatorWithPartnerId(Actuator actuator) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return -1;
+        }
         int key;
         try {
             try (PreparedStatement ps = con.prepareStatement(
@@ -502,7 +578,13 @@ public class DatabaseManager {
     }
 
     public boolean saveNewProbeWithPartnerId(Probe probe) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_NEW_PROBE_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
@@ -534,7 +616,13 @@ public class DatabaseManager {
     }
 
     public boolean deleteAction(int actionId) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_DELETE_CONFIGURATION_WITH_ACTION_ID)) {
@@ -564,7 +652,13 @@ public class DatabaseManager {
     }
 
     public boolean deleteProbe(int probeId) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(SQL_DELETE_PROBE)) {
                 ps.setInt(1, probeId);
@@ -582,7 +676,13 @@ public class DatabaseManager {
     }
 
     public boolean deleteConfiguration(int configurationId) {
-        Connection con = getConnection();
+                Connection con;
+        try {
+            con = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
+            return false;
+        }
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_DELETE_CONFIGURATION_ID)) {
@@ -600,11 +700,12 @@ public class DatabaseManager {
         }
     }
 
-    public ArrayList<Action> getActions(int actuatorId) {
+    public ArrayList<Action> getActions(int actuatorId) throws SQLException {
         Action newAction;
         ArrayList<Action> actions = new ArrayList<>();
 
-        Connection con = getConnection();
+        Connection con = DatabaseManager.getConnectionFromPool();
+        
         try {
             try (PreparedStatement ps = con.prepareStatement(SQL_SELECT_ACTION)) {
                 ps.setInt(1, actuatorId);
@@ -642,11 +743,12 @@ public class DatabaseManager {
         }
     }
 
-    public ArrayList<Configuration> getConfigurations(int actionId) {
+    public ArrayList<Configuration> getConfigurations(int actionId) throws SQLException {
         Configuration newConfiguration;
         ArrayList<Configuration> configurations = new ArrayList<>();
 
-        Connection con = getConnection();
+        
+        Connection con = DatabaseManager.getConnectionFromPool();
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     SQL_SELECT_CONFIGURATION)) {
@@ -674,7 +776,7 @@ public class DatabaseManager {
     }
 
     //Get Resources
-    public ArrayList<Resource> getResources(int actuatorId) {
+    public ArrayList<Resource> getResources(int actuatorId) throws SQLException {
         //Gets the partner Id of the actuator
         int partnerId = actuatorId / 1000;
         //Gets the resources that have the same partner Id as the actuator
@@ -684,7 +786,8 @@ public class DatabaseManager {
         Resource newResource;
         ArrayList<Resource> resources = new ArrayList<>();
 
-        Connection con = getConnection();
+        
+        Connection con = DatabaseManager.getConnectionFromPool();
         try {
             try (Statement statement = con.createStatement()) {
                 ResultSet rs = statement.executeQuery(sql);
@@ -708,11 +811,12 @@ public class DatabaseManager {
     }
 
     //Get Actuators
-    public ArrayList<Actuator> getActuators() {
+    public ArrayList<Actuator> getActuators() throws SQLException {
         Actuator newActuator;
         ArrayList<Actuator> actuators = new ArrayList<>();
 
-        Connection con = getConnection();
+        
+        Connection con = DatabaseManager.getConnectionFromPool();
         try {
             try (Statement statement = con.createStatement()) {
                 ResultSet resultSet = statement.executeQuery(SQL_SELECT_ACTUATOR);
@@ -734,13 +838,15 @@ public class DatabaseManager {
     }
 
     //Get Probes
-    public ArrayList<Probe> getProbes() {
-        Connection con = getConnection();
+    public ArrayList<Probe> getProbes() throws SQLException {
+        
+        Connection con = DatabaseManager.getConnectionFromPool();
         try {
             ArrayList<Probe> probes = new ArrayList<>();
             try (Statement statement = con.createStatement()) {
                 ResultSet resultSet = statement.executeQuery(SQL_SELECT_PROBE);
                 while (resultSet.next()) {
+                    System.out.println(resultSet.getTimestamp("tokenExpiration"));
                     probes.add(new Probe(
                             resultSet.getInt("probeId"),
                             resultSet.getString("probeName"),

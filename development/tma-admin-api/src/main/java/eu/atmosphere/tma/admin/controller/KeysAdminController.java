@@ -55,13 +55,14 @@ public class KeysAdminController {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeysAdminController.class);
     
     public KeyPair generateKeyPair() {
-        KeyPair keyPair = null;
+        KeyPair keyPair;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(PropertiesManager.getInstance().getProperty("algorithm"));
             keyPairGenerator.initialize(4096, SecureRandom.getInstance("SHA1PRNG"));
             keyPair = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("[ATMOSPHERE] Error generating the KeyPair", e);
+            return null;
         }
 
         return keyPair;

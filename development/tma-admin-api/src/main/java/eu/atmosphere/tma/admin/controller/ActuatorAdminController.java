@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Actuator;
 import eu.atmosphere.tma.admin.util.Constants;
+import java.sql.SQLException;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -148,9 +149,11 @@ public class ActuatorAdminController {
     @GetMapping("/getactuators")
     public ResponseEntity<Map> getActuators(HttpServletResponse response) {
         DatabaseManager database = new DatabaseManager();
-        ArrayList<Actuator> actuators = database.getActuators();
-
-        if (actuators == null) {
+        ArrayList<Actuator> actuators;
+        try {
+            actuators = database.getActuators();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
         }
 

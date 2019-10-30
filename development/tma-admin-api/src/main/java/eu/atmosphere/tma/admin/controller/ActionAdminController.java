@@ -34,6 +34,8 @@ import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Action;
 import eu.atmosphere.tma.admin.dto.Configuration;
 import eu.atmosphere.tma.admin.util.Constants;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 /**
  * This class is a Rest Controller.
@@ -190,9 +192,11 @@ public class ActionAdminController {
         }
 
         DatabaseManager database = new DatabaseManager();
-        ArrayList<Action> actions = database.getActions(actuatorId);
-
-        if (actions == null) {
+        ArrayList<Action> actions;
+        try {
+            actions = database.getActions(actuatorId);
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
         }
 
@@ -222,12 +226,14 @@ public class ActionAdminController {
         }
 
         DatabaseManager database = new DatabaseManager();
-        ArrayList<Configuration> configurations = database.getConfigurations(actionId);
-
-        if (configurations == null) {
+        ArrayList<Configuration> configurations;
+        try {
+            configurations = database.getConfigurations(actionId);
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
         }
-
+        
         HashMap<String, ArrayList<Configuration>> configurationsJson = new HashMap<>();
         configurationsJson.put("configurations", configurations);
 

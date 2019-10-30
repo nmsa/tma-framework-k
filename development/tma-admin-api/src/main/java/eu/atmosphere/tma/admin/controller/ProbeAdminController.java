@@ -36,6 +36,8 @@ import de.mkammerer.argon2.Argon2Factory;
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Probe;
 import eu.atmosphere.tma.admin.util.Constants;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -112,9 +114,11 @@ public class ProbeAdminController {
     @GetMapping("/getprobes")
     public ResponseEntity<Map> getProbes(HttpServletResponse response) {
         DatabaseManager database = new DatabaseManager();
-        ArrayList<Probe> probes = database.getProbes();
-
-        if (probes == null) {
+        ArrayList<Probe> probes;
+        try {
+            probes = database.getProbes();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
                     Constants.ERROR, "There was a problem with the connection to the database");
         }
