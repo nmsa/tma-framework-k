@@ -75,7 +75,7 @@ public class DatabaseManager {
         CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         CONFIG.setAutoCommit(false);
         CONFIG.setMaximumPoolSize(Integer.parseInt(
-                PropertiesManager.getInstance().getProperty("maxNumbeOfDatabaseConnections")));
+                PropertiesManager.getInstance().getProperty("maxNumberOfDatabaseConnections")));
         DS = new HikariDataSource(CONFIG);
     }
      
@@ -148,11 +148,6 @@ public class DatabaseManager {
         // Setup the connection with the DB
         try {
 
-            String userDB = PropertiesManager.getInstance().getProperty("userDB");
-            byte[] decoded = Base64.getDecoder().decode(PropertiesManager.getInstance().getProperty("passwordProduction"));
-            String password = new String(decoded);
-
-            //Connection c = DatabaseManager getConnection(productionConnection, userDB, password);
             Connection c = DatabaseManager.getConnectionFromPool();
 
             c.setAutoCommit(false);
@@ -163,10 +158,10 @@ public class DatabaseManager {
         return null;
     }
 
-    private static void close(Connection con) {
-        if (con != null) {
+    private static void close(Connection conn) {
+        if (conn != null) {
             try {
-                con.close();
+                conn.close();
             } catch (SQLException ex) {
                 LOGGER.error("[ATMOSPHERE] Error when closing the connection to the database.", ex);
             }
@@ -189,15 +184,15 @@ public class DatabaseManager {
                 + "___\"ORDER BY " + table + "Id"
                 + " DESC LIMIT 1";
 
-        Connection con;
+        Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         try {
-            try (Statement stat = con.createStatement()) {
+            try (Statement stat = conn.createStatement()) {
                 ResultSet resultSet = stat.executeQuery(sql);
                 if (resultSet.next()) {
                     return resultSet.getInt(table + "Id") + 1;
@@ -209,21 +204,21 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", sqlex);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public int isActuatorAddressRepeated(String address) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         try {
 
-            try (PreparedStatement ps = con.prepareStatement(SQL_GET_ACTUATOR_BY_ADDRESS)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_ACTUATOR_BY_ADDRESS)) {
                 ps.setString(1, address);
                 ResultSet resultSet = ps.executeQuery();
                 if (resultSet.next()) {
@@ -236,21 +231,21 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when checking the repeated Item.", sqlex);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public int isProbeNameRepeated(String probeName) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         try {
 
-            try (PreparedStatement ps = con.prepareStatement(SQL_GET_PROBE_NAME)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_PROBE_NAME)) {
                 ps.setString(1, probeName);
                 ResultSet resultSet = ps.executeQuery();
                 if (resultSet.next()) {
@@ -263,20 +258,20 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when checking the repeated Item.", sqlex);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public int isActionNameRepeated(Action action) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(SQL_GET_ACTION_NAME_BY_ACTUATORID)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_ACTION_NAME_BY_ACTUATORID)) {
                 ps.setInt(1, action.getActuatorId());
                 ps.setString(2, action.getActionName());
                 ResultSet resultSet = ps.executeQuery();
@@ -290,20 +285,20 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when checking the repeated Item.", sqlex);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public int isConfigurationNameRepeated(Configuration configuration) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(SQL_GET_KEY_NAME_BY_ACTIONID)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_KEY_NAME_BY_ACTIONID)) {
                 ps.setInt(1, configuration.getActionId());
                 ps.setString(2, configuration.getKeyName());
                 ResultSet resultSet = ps.executeQuery();
@@ -317,7 +312,7 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when checking the repeated Item.", sqlex);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -333,15 +328,15 @@ public class DatabaseManager {
     }
 
     public boolean saveNewResourceWithPartnerId(Resource resource) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(SQL_NEW_RESOURCE_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_NEW_RESOURCE_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, resource.getResourceId());
                 ps.setString(2, resource.getResourceName());
                 ps.setString(3, resource.getResourceType());
@@ -355,7 +350,7 @@ public class DatabaseManager {
                 } else {
                     resource.setResourceId(INVALID_KEY);
                 }
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException e) {
@@ -363,7 +358,7 @@ public class DatabaseManager {
             resource.setResourceId(INVALID_KEY);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
 
     }
@@ -380,15 +375,15 @@ public class DatabaseManager {
     }
 
     public boolean saveNewDescriptionWithPartnerId(Description description) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_NEW_DESCRIPTION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, description.getDescriptionId());
                 ps.setString(2, description.getDataType());
@@ -403,7 +398,7 @@ public class DatabaseManager {
                 } else {
                     description.setDescriptionId(INVALID_KEY);
                 }
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException e) {
@@ -411,7 +406,7 @@ public class DatabaseManager {
             description.setDescriptionId(-1);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -433,15 +428,15 @@ public class DatabaseManager {
 
     //Action Manager
     public boolean saveNewActionWithPartnerId(Action action) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_NEW_ACTION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, action.getActionId());
                 ps.setInt(2, action.getActuatorId());
@@ -456,7 +451,7 @@ public class DatabaseManager {
                 } else {
                     action.setActionId(INVALID_KEY);
                 }
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException e) {
@@ -464,7 +459,7 @@ public class DatabaseManager {
             action.setActionId(-1);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -485,15 +480,15 @@ public class DatabaseManager {
     }
 
     public boolean saveNewConfigurationWithPartnerId(Configuration configuration) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_NEW_CONFIGURATION_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, configuration.getConfigurationId());
                 ps.setInt(2, configuration.getActionId());
@@ -508,7 +503,7 @@ public class DatabaseManager {
                 } else {
                     configuration.setConfigurationId(INVALID_KEY);
                 }
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException e) {
@@ -516,7 +511,7 @@ public class DatabaseManager {
             configuration.setConfigurationId(-1);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -532,16 +527,16 @@ public class DatabaseManager {
     }
 
     public int saveNewActuatorWithPartnerId(Actuator actuator) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return -1;
         }
         int key;
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_NEW_ACTUATOR_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, actuator.getActuatorId());
                 ps.setString(2, actuator.getAddress());
@@ -555,14 +550,14 @@ public class DatabaseManager {
                 } else {
                     key = INVALID_KEY;
                 }
-                con.commit();
+                conn.commit();
                 return key;
             }
         } catch (SQLException e) {
             LOGGER.error("[ATMOSPHERE] Error when inserting an actuator in the database.", e);
             return -1;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -578,15 +573,15 @@ public class DatabaseManager {
     }
 
     public boolean saveNewProbeWithPartnerId(Probe probe) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_NEW_PROBE_WITH_ID, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1, probe.getProbeId());
                 ps.setString(2, probe.getProbeName());
@@ -603,7 +598,7 @@ public class DatabaseManager {
                 } else {
                     probe.setProbeId(INVALID_KEY);
                 }
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException e) {
@@ -611,20 +606,20 @@ public class DatabaseManager {
             probe.setProbeId(-1);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public boolean deleteAction(int actionId) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_DELETE_CONFIGURATION_WITH_ACTION_ID)) {
                 ps.setInt(1, actionId);
                 ps.executeUpdate();
@@ -635,68 +630,68 @@ public class DatabaseManager {
         }
 
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_DELETE_ACTION)) {
                 ps.setInt(1, actionId);
                 ps.executeUpdate();
 
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when deleting the action.", ex);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public boolean deleteProbe(int probeId) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(SQL_DELETE_PROBE)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_DELETE_PROBE)) {
                 ps.setInt(1, probeId);
                 ps.executeUpdate();
 
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when deleting the probe.", ex);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     public boolean deleteConfiguration(int configurationId) {
-                Connection con;
+                Connection conn;
         try {
-            con = DatabaseManager.getConnectionFromPool();
+            conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when getting the Id associated to the partner.", ex);
             return false;
         }
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_DELETE_CONFIGURATION_ID)) {
                 ps.setInt(1, configurationId);
                 ps.executeUpdate();
 
-                con.commit();
+                conn.commit();
                 return true;
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when deleting the configuration.", ex);
             return false;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -704,10 +699,10 @@ public class DatabaseManager {
         Action newAction;
         ArrayList<Action> actions = new ArrayList<>();
 
-        Connection con = DatabaseManager.getConnectionFromPool();
+        Connection conn = DatabaseManager.getConnectionFromPool();
         
         try {
-            try (PreparedStatement ps = con.prepareStatement(SQL_SELECT_ACTION)) {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ACTION)) {
                 ps.setInt(1, actuatorId);
                 ResultSet resultSet = ps.executeQuery();
 
@@ -718,7 +713,7 @@ public class DatabaseManager {
                             resultSet.getString("actionName"));
                     newAction.setActionId(resultSet.getInt("actionId"));
 
-                    try (PreparedStatement psResource = con.prepareStatement(
+                    try (PreparedStatement psResource = conn.prepareStatement(
                             SQL_SELECT_RESOURCE)) {
                         ResultSet resResource;
 
@@ -739,7 +734,7 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when reading the actions from the database.", ex);
             return null;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -748,9 +743,9 @@ public class DatabaseManager {
         ArrayList<Configuration> configurations = new ArrayList<>();
 
         
-        Connection con = DatabaseManager.getConnectionFromPool();
+        Connection conn = DatabaseManager.getConnectionFromPool();
         try {
-            try (PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = conn.prepareStatement(
                     SQL_SELECT_CONFIGURATION)) {
                 ps.setInt(1, actionId);
                 ResultSet rs = ps.executeQuery();
@@ -771,7 +766,7 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when reading the configurations from the database.", ex);
             return null;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -787,9 +782,9 @@ public class DatabaseManager {
         ArrayList<Resource> resources = new ArrayList<>();
 
         
-        Connection con = DatabaseManager.getConnectionFromPool();
+        Connection conn = DatabaseManager.getConnectionFromPool();
         try {
-            try (Statement statement = con.createStatement()) {
+            try (Statement statement = conn.createStatement()) {
                 ResultSet rs = statement.executeQuery(sql);
 
                 while (rs.next()) {
@@ -806,7 +801,7 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when reading the actuators from the database.", ex);
             return null;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
@@ -816,9 +811,9 @@ public class DatabaseManager {
         ArrayList<Actuator> actuators = new ArrayList<>();
 
         
-        Connection con = DatabaseManager.getConnectionFromPool();
+        Connection conn = DatabaseManager.getConnectionFromPool();
         try {
-            try (Statement statement = con.createStatement()) {
+            try (Statement statement = conn.createStatement()) {
                 ResultSet resultSet = statement.executeQuery(SQL_SELECT_ACTUATOR);
                 while (resultSet.next()) {
                     newActuator = new Actuator(
@@ -833,20 +828,19 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when reading the actuators from the database.", ex);
             return null;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 
     //Get Probes
     public ArrayList<Probe> getProbes() throws SQLException {
         
-        Connection con = DatabaseManager.getConnectionFromPool();
+        Connection conn = DatabaseManager.getConnectionFromPool();
         try {
             ArrayList<Probe> probes = new ArrayList<>();
-            try (Statement statement = con.createStatement()) {
+            try (Statement statement = conn.createStatement()) {
                 ResultSet resultSet = statement.executeQuery(SQL_SELECT_PROBE);
                 while (resultSet.next()) {
-                    System.out.println(resultSet.getTimestamp("tokenExpiration"));
                     probes.add(new Probe(
                             resultSet.getInt("probeId"),
                             resultSet.getString("probeName"),
@@ -859,7 +853,7 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Error when reading the probes from the database.", ex);
             return null;
         } finally {
-            close(con);
+            close(conn);
         }
     }
 }

@@ -37,7 +37,6 @@ import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Probe;
 import eu.atmosphere.tma.admin.util.Constants;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -68,10 +67,6 @@ public class ProbeAdminController {
 
         //creates a new probe
         DatabaseManager database = new DatabaseManager();
-        /**
-         * TODO: Paulo, Rui
-         * we need to improve all these interactions with the DB
-         */
         switch (database.isProbeNameRepeated(probe.getProbeName())) {
             case -1:
                 return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
