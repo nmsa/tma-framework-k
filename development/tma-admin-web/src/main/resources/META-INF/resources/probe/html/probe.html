@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html ng-app="probe">
+	<head>
+		<title>ATMOSPHERE - TMA Admin</title>
+		<meta charset="utf-8">
+
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://code.angularjs.org/1.7.8/angular.js"></script>
+		<script src="../../commonFiles/js/properties.js"></script>
+		<script src="../../commonFiles/js/status.js"></script>
+		<script src="../../commonFiles/js/partner.js"></script>
+		<script src="../js/probe.js"></script>
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+		<link rel="stylesheet" type="text/css" href="../css/probe.css">
+		<link rel="stylesheet" type="text/css" href="../../commonFiles/css/basicContents.css">
+	</head>
+
+	<body ng-controller="probeController">
+		<header class="header">
+			<div>
+				<a class="linkAtmosphereHomePage" href="../../index.html">
+					<img class="atmosphereLogo" src="../../commonFiles/img/atmosphereFullLogo.png">
+				</a>
+			</div>
+			<div>
+				<p class="title">Create Probe</p>
+			</div>
+			<div class="menuBar">
+				<button onclick="location.href='../../probe/html/probeDashboard.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Probe</p>
+				</button>
+				<button onclick="location.href='../../resource/html/resource.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Resource</p>
+				</button>
+				<button onclick="location.href='../../description/html/description.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Measurement/Event</p>
+				</button>
+				<button onclick="location.href='../../actuator/html/actuator.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actuator</p>
+				</button>
+				<button onclick="location.href='../../actions/html/actions.html';" class="headerMenuButtons" type="button">
+					<p class="menus">Actions</p>
+				</button>
+			</div>
+			<nav class="navigationBar">
+				<a>></a>
+				<a href="../../index.html"> HomePage </a>
+				<a>></a>
+				<a href="../../probe/html/probeDashboard.html"> Probe Dashboard </a>
+				<a>></a>
+				<a href="../../probe/html/probe.html"> New Probe </a>
+			</nav>
+		</header>
+		
+		<div>
+			<div id="statusList" class="statusList"></div>
+		</div>
+
+		<div class="inputBoxes">
+			<p class="inputBoxName">Partner:</p>
+			<select id="inputPartner" class="inputPartner" ng-controller="partnerController">
+			</select>
+
+			<p class="inputBoxName">Name:</p>
+			<input id="inputProbeName" class="inputProbeName" type="text" placeholder="Name of the new Probe" ng-model="inputProbeName">
+			
+			<p class="inputBoxName">Password:</p>
+			<div class="password">
+				<input id="inputPassword" class="inputPassword" type="password" placeholder="Password of the new Probe" ng-model="inputPassword">
+				<input id="checkShowPassword" type="checkbox" ng-click="onShowPasswordClick()"> Show Password<br>
+			</div>
+
+			<p class="inputBoxName">Token:</p>
+			<input id="inputToken" class="inputToken" type="text" placeholder="Token of the probe" ng-model="inputToken">
+
+			<p class="inputBoxName">Token Expiration:</p>
+			<div class="tokenExpiration">
+				<input id="inputTokenExpiration" class="inputTokenExpiration" ng-click="onCalendarClick()" type="button" value="">
+				<img class="calendarButton" src=../img/calendar.png ng-click="onCalendarClick()" type="button"></img>
+			</div>
+
+			<div></div>
+			<div id="calendarBeforeController" class="calendar" ng-hide="calendarHidden">
+			    <div>
+			        <h3 id="calendarTitle" class="calendarTitle"></h3>
+			        <table class="month">
+			            <thead class="headRow">
+				            <tr>
+				                <th>Sun</th>
+				                <th>Mon</th>
+				                <th>Tue</th>
+				                <th>Wed</th>
+				                <th>Thu</th>
+				                <th>Fri</th>
+				                <th>Sat</th>
+				            </tr>
+			            </thead>
+
+			            <tbody id="calendarTable" class="calendarTable">
+			            </tbody>
+			        </table>
+
+			        <div class="calendarNavigationButtons">
+			            <button class="previous" ng-click="previous()">Previous</button>
+			            <button class="next" ng-click="next()">Next</button>
+			        </div>
+
+			        <form class="jumpTo" >
+			            <a>Jump To: </a>
+			            <select name="month" id="selectMonth" class="selectMonth">
+			            </select>
+
+			            <select name="year" id="selectYear" class="selectYear">
+			        	</select>
+			    	</form>
+			    </div>
+			</div>
+		</div>
+
+		<button id="mainButton" class="mainButton" ng-hide="!calendarHidden" type="button" ng-click="createProbe()">Create a new Probe</button>
+
+		<footer class="footer">
+			<a href="https://www.atmosphere-eubrazil.eu/">ATMOSPHERE</a>
+			<a class="deiFooter" href="https://www.uc.pt/en"> DEI - University of Coimbra - 2019</a>
+		</footer>
+	</body>
+</html>
