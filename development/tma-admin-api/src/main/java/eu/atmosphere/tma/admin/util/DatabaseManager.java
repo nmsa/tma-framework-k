@@ -20,6 +20,8 @@ import eu.atmosphere.tma.admin.dto.Action;
 import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
+import eu.atmosphere.tma.admin.dto.Metric;
+import eu.atmosphere.tma.admin.dto.Score;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -137,6 +139,9 @@ public class DatabaseManager {
             = "SELECT * FROM Actuator";
     private static final String SQL_SELECT_PROBE
             = "SELECT * FROM Probe";
+    private static final String SQL_GET_SCORES
+            = "SELECT * FROM "
+            + "metricdata WHERE metricId = ? and valueTime >= ?";
 
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
@@ -851,6 +856,37 @@ public class DatabaseManager {
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when reading the probes from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+    }
+
+    //Get Scores
+    public ArrayList<Score> getScores(Metric metric) throws SQLException {
+        
+        Connection conn = DatabaseManager.getConnectionFromPool();
+        try {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    SQL_GET_SCORES)) {
+                ArrayList<Score> scores = new ArrayList<>();
+                Score newScore;
+                ps.setInt(1, metric.getMetricId());
+                ps.setLong(2, metric.getTimestamp());
+                ResultSet rs = ps.executeQuery();
+                
+                while (rs.next()) {
+                    newScore = new Score(
+                            rs.getInt("value"),
+                            rs.getInt("resourceId"),
+                            rs.getTimestamp("valueTime").getTime() 
+                    );
+                    scores.add(newScore);
+                }
+                return scores;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the scores from the database.", ex);
             return null;
         } finally {
             close(conn);
