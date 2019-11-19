@@ -12,6 +12,7 @@ This tool allows you to:
 -   Add and delete a probe and get probes;
 -   Add a new resource and get resources;
 -   Configure Actions (check details on  [Message Format for Actions Registration](https://github.com/eubr-atmosphere/tma-framework-k/tree/master#message-format-for-actions-registration)).
+-   Get the scores, associated to a metric, with a valueTime after the given timestamp.
 
 
 # Index
@@ -46,6 +47,7 @@ This tool allows you to:
 	       -   [Add a new Resource](#Add-a-new-Resource)
 	       -   [Get Resources](#Get-Resources)
 	  *  [Configure Actions](#Configure-Actions)
+	  *  [Get Scores](#Get-Scores)
  -	 [GUI](#GUI)
  -   [Implementation Details](#Implementation-Details)
 
@@ -771,6 +773,51 @@ The following table shows some information about the json configuration.
 ### Success 201 & Error 400, 500
 
 The 3 possible status are 201, 400 and 500. The json that is returned will always have the same keys. In the table bellow there is some information about each key.
+
+|Key|Type|Value description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+
+## Get Scores
+
+
+#### Method - Get
+
+URI:
+```
+http://IP_MASTER:32026/get_scores?metricId=&timestamp=
+```
+
+Model:
+```
+curl -X GET "http://IP_MASTER:32026/get_scores?metricId=metricId&timestamp=timestamp"
+```
+
+Example:
+
+```
+curl -X GET "http://IP_MASTER:32026/get_scores?metricId=4&timestamp=1562213821040"
+```
+
+### Input
+
+The metricId needs to be an Integer with the ID of the metric which we want to get the scores from (example: 4).
+
+The timestamp needs to be a long.
+
+All the scores returned will have a valueTime after the given timestamp.
+
+The following table shows information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|scores|Array with jsons|Array with all the scores|[{"value": 0.011,"resourceId" : 2,"timestamp": 1562213835760}, {"value": 0.015,"resourceId" : 2,"timestamp": 1562213843670}]|
+
+### Success 200 & Error 400, 500
+
+The 3 possible status are 200, 400 and 500. In case the status is different than 200, the returned json will have the following configuration.
 
 |Key|Type|Value description|
 |--|--|--|
