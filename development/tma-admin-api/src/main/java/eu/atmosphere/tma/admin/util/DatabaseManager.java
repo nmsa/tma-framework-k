@@ -57,11 +57,6 @@ public class DatabaseManager {
     private static final String ACTUATOR = "Actuator";
     private static final String PROBE = "Probe";
     
-    private static final String homeConnection
-            = "jdbc:mysql://localhost/knowledge?"
-            + "useLegacyDatetimeCode=false&serverTimezone=UTC&"
-            + "verifyServerCertificate=false&useSSL=true&"
-            + "user=root&password=password";
     private static final String connectionString
             = "jdbc:mysql://mysql-0.mysql.default.svc.cluster.local:3306/knowledge";
     
@@ -70,13 +65,13 @@ public class DatabaseManager {
     private static final HikariDataSource DS;
      
     static {
-        CONFIG.setJdbcUrl(homeConnection);
+        CONFIG.setJdbcUrl(connectionString);
         String userDB = PropertiesManager.getInstance().getProperty("userDB");
         byte[] decoded = Base64.getDecoder().decode(
                 PropertiesManager.getInstance().getProperty("passwordProduction"));
         String password = new String(decoded);
-        CONFIG.setUsername("root");
-        CONFIG.setPassword("password");
+        CONFIG.setUsername(userDB);
+        CONFIG.setPassword(password);
         CONFIG.addDataSourceProperty("cachePrepStmts", "true");
         CONFIG.addDataSourceProperty("prepStmtCacheSize", "250");
         CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
