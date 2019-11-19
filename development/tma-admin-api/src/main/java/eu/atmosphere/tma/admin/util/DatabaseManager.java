@@ -20,6 +20,8 @@ import eu.atmosphere.tma.admin.dto.Action;
 import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
+import eu.atmosphere.tma.admin.dto.Metric;
+import eu.atmosphere.tma.admin.dto.Score;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -95,6 +97,11 @@ public class DatabaseManager {
             = "SELECT actionName FROM Action WHERE actuatorId = ? AND actionName = ? ";
     private static final String SQL_GET_KEY_NAME_BY_ACTIONID
             = "SELECT keyName FROM Configuration WHERE actionId = ? AND keyName = ? ";
+    private static final String SQL_GET_SCORES
+            = "SELECT * FROM "
+            + "MetricData WHERE metricId = ? and valueTime >= ? "
+            + "ORDER BY valueTime "
+            + "LIMIT 100;";
     private static final String SQL_NEW_RESOURCE_WITH_ID
             = "INSERT INTO "
             + "Resource(resourceId, resourceName, resourceType, resourceAddress) "
@@ -851,6 +858,37 @@ public class DatabaseManager {
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when reading the probes from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+    }
+
+    //Get Scores
+    public ArrayList<Score> getScores(Metric metric) throws SQLException {
+        
+        Connection conn = DatabaseManager.getConnectionFromPool();
+        try {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    SQL_GET_SCORES)) {
+                ArrayList<Score> scores = new ArrayList<>();
+                Score newScore;
+                ps.setInt(1, metric.getMetricId());
+                ps.setLong(2, metric.getTimestamp());
+                ResultSet rs = ps.executeQuery();
+                
+                while (rs.next()) {
+                    newScore = new Score(
+                            rs.getDouble("value"),
+                            rs.getInt("resourceId"),
+                            rs.getTimestamp("valueTime").getTime() 
+                    );
+                    scores.add(newScore);
+                }
+                return scores;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when getting the scores from the database.", ex);
             return null;
         } finally {
             close(conn);
