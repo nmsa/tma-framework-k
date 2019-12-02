@@ -526,7 +526,23 @@ INSERT INTO Actuator(actuatorId, address) VALUES
 (30001, 'http://10.3.2.148:8080/k8sActuator'), 
 (15001, 'http://10.3.2.148:8080/mailActuator'), 
 (25001, 'https://atm.lemonade.org.br/seed/actuators'), 
-(35001, 'http://localhost:8080/kAnonymity'); 
+(35001, 'http://localhost:8080/kAnonymity'),
+(80001, 'BASE_URL/ActuatorAPI'); 
+
+-- Actions
+INSERT INTO Action(actionId, actuatorId, resourceId, actionName) VALUES 
+(80001, 80001, 80101, 'createCase');
+
+-- Configuration
+INSERT INTO Configuration(configurationId, actionId, keyName, domain) VALUES 
+(80001, 80001, 'incidentId', 'string'),
+(80002, 80001, 'incidentSource', 'string'),
+(80003, 80001, 'subject', 'string'),
+(80004, 80001, 'summary', 'string'),
+(80005, 80001, 'is_public', 'string'),
+(80006, 80001, 'caseType', 'string'),
+(80007, 80001, 'aggregatedDomain', 'string');
+
 
 -- Metrics
 INSERT INTO Metric(metricId, metricName, blockLevel) VALUES 
