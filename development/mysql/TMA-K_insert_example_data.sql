@@ -566,7 +566,38 @@ insert into Preference (metricId, configurationProfileID, weight, threshold) val
 insert into Preference (metricId, configurationProfileID, weight, threshold) values (35002, 35001, 0.1, 0.7); -- INFORMATIONLOSS
 insert into Preference (metricId, configurationProfileID, weight, threshold) values (35003, 35001, 0.9, 0.05); -- REIDENTIFICATIONRISK
 
+-- Description
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35030, int, K, ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35031, double, riskP, ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35032, double, riskJ, ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35033, double, riskM, ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35034, double, Score, ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, double, id, ''); 
+
 --LeafAttribute
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35001, 35030, 0, 1,'PRIVACY', 0, 0, 0.5); -- PRIVACY
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35002, 35034, 0, 1,'INFORMATIONLOSS', 0, 0, 0.7); -- INFORMATIONLOSS
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35003, 35031, 0, 1,'REIDENTIFICATIONRISK', 0, 0, 0.5); -- REIDENTIFICATIONRISK
+
+--MetricData
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-07-22 00:52:33.000000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:12:35.199000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:12:40.046000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:12:45.019000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:12:50.029000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:12:55.021000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35001, 2019-10-10 02:13:00.043000, 0.47708418060831753, NULL);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-07-22 00:52:33.000000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:12:35.199000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:12:40.046000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:12:45.019000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:12:50.029000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:12:55.021000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35002, 2019-10-10 02:13:00.043000, 0.270841806083175, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-07-22 00:52:33.000000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:12:35.199000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:12:40.046000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:12:45.019000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:12:50.029000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:12:55.021000, 0.5, 8);
+insert into LeafAttribute (metricId, valueTime, value, resourceId) values(35003, 2019-10-10 02:13:00.043000, 0.5, 8);
