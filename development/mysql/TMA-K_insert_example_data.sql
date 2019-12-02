@@ -567,12 +567,12 @@ insert into Preference (metricId, configurationProfileID, weight, threshold) val
 insert into Preference (metricId, configurationProfileID, weight, threshold) values (35003, 35001, 0.9, 0.05); -- REIDENTIFICATIONRISK
 
 -- Description
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35030, 'int', 'K', ''); 
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35031, 'double', 'riskP', ''); 
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35032, 'double', 'riskJ', ''); 
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35033, 'double', 'riskM', ''); 
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35034, 'double', 'Score', ''); 
-insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, 'double', 'id', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35030, 'measurement', 'K', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35031, 'measurement', 'riskP', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35032, 'measurement', 'riskJ', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35033, 'measurement', 'riskM', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35034, 'measurement', 'Score', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, 'measurement', 'id', ''); 
 
 -- LeafAttribute
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35001, 35030, 0, 1,'PRIVACY', 0, 0, 0.5); -- PRIVACY
