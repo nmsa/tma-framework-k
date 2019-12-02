@@ -545,3 +545,28 @@ INSERT INTO Metric(metricId, metricName, blockLevel) VALUES
 (80012, 'Availability Level (A)', '-1'), 
 (80013, 'Confidentiality Level (C)', '-1'), 
 (80014, 'Security (Thrustworthiness) Level', '-1');
+
+/**** UNICAMP QMs ****/
+
+-- Metric
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35001, 'PRIVACY', 1);
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35002, 'INFORMATIONLOSS', 1);
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35003, 'REIDENTIFICATIONRISK', 1);
+
+-- CompositeAttribute 
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35001,0); -- PRIVACY
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35002,0); -- INFORMATIONLOSS
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35003,0); -- REIDENTIFICATIONRISK
+
+-- ConfigurationProfile
+INSERT INTO ConfigurationProfile (configurationProfileID, profileName) values (35001, 'Privacy Profile'); -- PRIVACY
+
+-- Preference
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35001, 35001, 0.2, 0.05); -- PRIVACY
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35002, 35001, 0.1, 0.7); -- INFORMATIONLOSS
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35003, 35001, 0.9, 0.05); -- REIDENTIFICATIONRISK
+
+--LeafAttribute
+insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35001, 35030, 0, 1,'PRIVACY', 0, 0, 0.5); -- PRIVACY
+insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35002, 35034, 0, 1,'INFORMATIONLOSS', 0, 0, 0.7); -- INFORMATIONLOSS
+insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35003, 35031, 0, 1,'REIDENTIFICATIONRISK', 0, 0, 0.5); -- REIDENTIFICATIONRISK
