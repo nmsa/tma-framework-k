@@ -166,7 +166,7 @@ CREATE TABLE Configuration (
 CREATE TABLE Description (
     descriptionId INT NOT NULL AUTO_INCREMENT,
     dataType VARCHAR(16),
-    descriptionName CHAR(128),
+    descriptionName VARCHAR(255),
     unit VARCHAR(16),
     PRIMARY KEY (descriptionId)
 );
@@ -178,7 +178,7 @@ CREATE TABLE LeafAttribute (
     metricAggregationOperator INT,
     numSamples INT,
     normalizationMethod VARCHAR(64),
-    normalizationKind VARCHAR(64),
+    normalizationKind INT,
     minimumThreshold DOUBLE PRECISION,
     maximumThreshold DOUBLE PRECISION,
 
