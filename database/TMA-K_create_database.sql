@@ -252,6 +252,8 @@ CREATE TABLE Data (
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
-CREATE VIEW CompositeAttributeView AS SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute ca where not exists (select * from LeafAttribute la where ca.childMetric = la.metricId);
+CREATE VIEW CompositeAttributeView AS SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute where parentMetric = childMetric 
+UNION 
+SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute ca where not exists (select * from LeafAttribute la where ca.childMetric = la.metricId);
 
 CREATE VIEW MetricAttributeView AS SELECT m.metricId as metricId, ca.parentMetric as compositeAttributeId, m.metricName as name FROM Metric m join CompositeAttribute ca on m.metricId = ca.childMetric;
