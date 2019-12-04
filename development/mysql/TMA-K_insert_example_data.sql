@@ -603,7 +603,6 @@ insert into Description (descriptionId, dataType, descriptionName, unit) values 
 insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, 'measurement', 'id', ''); 
 
 -- LeafAttribute
-insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35001, 35030, 0, 1,'PRIVACY', 0, 0, 0.5); -- PRIVACY
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35002, 35034, 0, 1,'INFORMATIONLOSS', 0, 0, 0.7); -- INFORMATIONLOSS
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35003, 35031, 0, 1,'REIDENTIFICATIONRISK', 0, 0, 0.5); -- REIDENTIFICATIONRISK
 
