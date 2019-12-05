@@ -506,6 +506,7 @@ INSERT INTO Resource(resourceId, resourceName, resourceType, resourceAddress) VA
 (40240, 'virtual link-240', 'link', 'n/a'), 
 (45001, 'MariaDB', 'DBMS', 'n/a'), 
 (45002, 'HDFS', 'Storage', 'n/a'), 
+(80000, 'CloudEA', 'Cloud', 'n/a'), 
 (80001, 'CloudEA', 'Cloud', 'n/a'), 
 (80101, 'Clam', 'n/a', 'n/a'), 
 (80102, 'McAfee', 'n/a', 'n/a'), 
