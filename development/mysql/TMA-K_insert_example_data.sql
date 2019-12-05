@@ -539,7 +539,7 @@ INSERT INTO Actuator(actuatorId, address) VALUES
 (30001, 'http://10.3.2.148:8080/k8sActuator'), 
 (15001, 'http://10.3.2.148:8080/mailActuator'), 
 (25001, 'https://atm.lemonade.org.br/seed/actuators'), 
-(35001, 'http://localhost:8080/kAnonymity'),
+(35001, 'http://143.106.73.48'),
 (80001, 'https://158.42.104.30:32080/ActuatorAPI'); 
 
 -- Actions
@@ -604,7 +604,6 @@ insert into Description (descriptionId, dataType, descriptionName, unit) values 
 insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, 'measurement', 'id', ''); 
 
 -- LeafAttribute
-insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35001, 35030, 0, 1,'PRIVACY', 0, 0, 0.5); -- PRIVACY
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35002, 35034, 0, 1,'INFORMATIONLOSS', 0, 0, 0.7); -- INFORMATIONLOSS
 insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35003, 35031, 0, 1,'REIDENTIFICATIONRISK', 0, 0, 0.5); -- REIDENTIFICATIONRISK
 
