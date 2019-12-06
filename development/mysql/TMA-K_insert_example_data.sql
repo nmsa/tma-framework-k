@@ -540,7 +540,7 @@ INSERT INTO Actuator(actuatorId, address) VALUES
 (15001, 'http://10.3.2.148:8080/mailActuator'), 
 (25001, 'https://atm.lemonade.org.br/seed/actuators'), 
 (35001, 'http://143.106.73.48'),
-(80001, 'https://158.42.104.30:32080/ActuatorAPI'); 
+(80001, 'http://158.42.104.30:32080/ActuatorAPI'); 
 
 -- Actions
 INSERT INTO Action(actionId, actuatorId, resourceId, actionName) VALUES 
