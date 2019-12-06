@@ -198,6 +198,18 @@ INSERT INTO Resource(resourceId, resourceName, resourceType, resourceAddress) VA
 (10003, 'upv-cloud.i3m.upv.es', 'Network', 'n/a'), 
 (10004, 'Cluster', 'System', 'n/a'), 
 (10005, 'CLUES', 'Service', 'http://localhost:8000/reports/cluesdata.json?secret=not_very_secret_token'), 
+(10006, 'clusterworker-0', 'Node', ''), 
+(10007, 'clusterworker-1', 'Node', ''), 
+(10008, 'clusterworker-2', 'Node', ''), 
+(10009, 'clusterworker-3', 'Node', ''), 
+(10010, 'wn1.localdomain', 'Node', ''), 
+(10011, 'wn2.localdomain', 'Node', ''), 
+(10012, 'wn1.localdomain', 'Node', ''), 
+(10013, 'wn2.localdomain', 'Node', ''), 
+(10014, 'wn1.localdomain', 'Node', ''), 
+(10015, 'wn2.localdomain', 'Node', ''), 
+(10016, 'wn1.localdomain', 'Node', ''), 
+(10017, 'wn8.localdomain', 'Node', ''), 
 (15001, 'atm-prod.lsd.ufcg.edu.br', 'Compute', 'n/a'), 
 (15002, 'atm-prod.lsd.ufcg.edu.br', 'Volume', 'n/a'), 
 (15003, 'atm-prod.lsd.ufcg.edu.br', 'Network', 'n/a'), 
@@ -252,6 +264,40 @@ INSERT INTO Resource(resourceId, resourceName, resourceType, resourceAddress) VA
 (25048, 'Workflow 48', 'workflow', 'n/a'), 
 (25049, 'Workflow 49', 'workflow', 'n/a'), 
 (25050, 'Workflow 50', 'workflow', 'n/a'), 
+(40001, 'virtual link-001', 'link', 'n/a'),
+(40002, 'virtual link-002', 'link', 'n/a'),
+(40003, 'virtual link-003', 'link', 'n/a'),
+(40004, 'virtual link-004', 'link', 'n/a'),
+(40005, 'virtual link-005', 'link', 'n/a'),
+(40006, 'virtual link-006', 'link', 'n/a'),
+(40007, 'virtual link-007', 'link', 'n/a'),
+(40008, 'virtual link-008', 'link', 'n/a'),
+(40009, 'virtual link-009', 'link', 'n/a'),
+(40010, 'virtual link-010', 'link', 'n/a'),
+(40011, 'virtual link-011', 'link', 'n/a'),
+(40012, 'virtual link-012', 'link', 'n/a'),
+(40013, 'virtual link-013', 'link', 'n/a'),
+(40014, 'virtual link-014', 'link', 'n/a'),
+(40015, 'virtual link-015', 'link', 'n/a'),
+(40016, 'virtual link-016', 'link', 'n/a'),
+(40017, 'virtual link-017', 'link', 'n/a'),
+(40018, 'virtual link-018', 'link', 'n/a'),
+(40019, 'virtual link-019', 'link', 'n/a'),
+(40020, 'virtual link-020', 'link', 'n/a'),
+(40021, 'virtual link-021', 'link', 'n/a'),
+(40022, 'virtual link-022', 'link', 'n/a'),
+(40023, 'virtual link-023', 'link', 'n/a'),
+(40024, 'virtual link-024', 'link', 'n/a'),
+(40025, 'virtual link-025', 'link', 'n/a'),
+(40026, 'virtual link-026', 'link', 'n/a'),
+(40027, 'virtual link-027', 'link', 'n/a'),
+(40028, 'virtual link-028', 'link', 'n/a'),
+(40029, 'virtual link-029', 'link', 'n/a'),
+(40030, 'virtual link-030', 'link', 'n/a'),
+(40031, 'virtual link-031', 'link', 'n/a'),
+(40032, 'virtual link-032', 'link', 'n/a'),
+(40033, 'virtual link-033', 'link', 'n/a'),
+(40034, 'virtual link-034', 'link', 'n/a'),
 (40035, 'virtual link-035', 'link', 'n/a'), 
 (40036, 'virtual link-036', 'link', 'n/a'), 
 (40037, 'virtual link-037', 'link', 'n/a'), 
@@ -460,6 +506,7 @@ INSERT INTO Resource(resourceId, resourceName, resourceType, resourceAddress) VA
 (40240, 'virtual link-240', 'link', 'n/a'), 
 (45001, 'MariaDB', 'DBMS', 'n/a'), 
 (45002, 'HDFS', 'Storage', 'n/a'), 
+(80000, 'CloudEA', 'Cloud', 'n/a'), 
 (80001, 'CloudEA', 'Cloud', 'n/a'), 
 (80101, 'Clam', 'n/a', 'n/a'), 
 (80102, 'McAfee', 'n/a', 'n/a'), 
@@ -492,7 +539,23 @@ INSERT INTO Actuator(actuatorId, address) VALUES
 (30001, 'http://10.3.2.148:8080/k8sActuator'), 
 (15001, 'http://10.3.2.148:8080/mailActuator'), 
 (25001, 'https://atm.lemonade.org.br/seed/actuators'), 
-(35001, 'http://localhost:8080/kAnonymity'); 
+(35001, 'http://143.106.73.48'),
+(80001, 'http://158.42.104.30:32080/ActuatorAPI'); 
+
+-- Actions
+INSERT INTO Action(actionId, actuatorId, resourceId, actionName) VALUES 
+(80001, 80001, 80101, 'createCase');
+
+-- Configuration
+INSERT INTO Configuration(configurationId, actionId, keyName, domain) VALUES 
+(80001, 80001, 'incidentId', 'string'),
+(80002, 80001, 'incidentSource', 'string'),
+(80003, 80001, 'subject', 'string'),
+(80004, 80001, 'summary', 'string'),
+(80005, 80001, 'is_public', 'string'),
+(80006, 80001, 'caseType', 'string'),
+(80007, 80001, 'aggregatedDomain', 'string');
+
 
 -- Metrics
 INSERT INTO Metric(metricId, metricName, blockLevel) VALUES 
@@ -511,3 +574,61 @@ INSERT INTO Metric(metricId, metricName, blockLevel) VALUES
 (80012, 'Availability Level (A)', '-1'), 
 (80013, 'Confidentiality Level (C)', '-1'), 
 (80014, 'Security (Thrustworthiness) Level', '-1');
+
+/**** UNICAMP QMs ****/
+
+-- Metric
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35001, 'PRIVACY', 1);
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35002, 'INFORMATIONLOSS', 1);
+INSERT INTO Metric(metricId, metricName, blockLevel) VALUES (35003, 'REIDENTIFICATIONRISK', 1);
+
+-- CompositeAttribute 
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35001,0); -- PRIVACY
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35002,0); -- INFORMATIONLOSS
+insert into CompositeAttribute (parentMetric, childMetric, attributeAggregationOperator) values (35001,35003,0); -- REIDENTIFICATIONRISK
+
+-- ConfigurationProfile
+INSERT INTO ConfigurationProfile (configurationProfileID, profileName) values (35001, 'Privacy Profile'); -- PRIVACY
+
+-- Preference
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35001, 35001, 0.2, 0.05); -- PRIVACY
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35002, 35001, 0.1, 0.7); -- INFORMATIONLOSS
+insert into Preference (metricId, configurationProfileID, weight, threshold) values (35003, 35001, 0.9, 0.05); -- REIDENTIFICATIONRISK
+
+-- Description
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35030, 'measurement', 'K', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35031, 'measurement', 'riskP', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35032, 'measurement', 'riskJ', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35033, 'measurement', 'riskM', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35034, 'measurement', 'Score', ''); 
+insert into Description (descriptionId, dataType, descriptionName, unit) values (35035, 'measurement', 'id', ''); 
+
+-- LeafAttribute
+insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35002, 35034, 0, 1,'INFORMATIONLOSS', 0, 0, 0.7); -- INFORMATIONLOSS
+insert into LeafAttribute (metricId, descriptionId, metricAggregationOperator, numSamples, normalizationMethod, normalizationKind, minimumThreshold, maximumThreshold) values (35003, 35031, 0, 1,'REIDENTIFICATIONRISK', 0, 0, 0.5); -- REIDENTIFICATIONRISK
+
+-- Resource
+insert into Resource(resourceId, resourceName, resourceType, resourceAddress) values (35008, 'PRIVAaaS', 'Privacy', '');
+
+-- MetricData
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-07-22 00:52:33.000000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:12:35.199000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:12:40.046000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:12:45.019000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:12:50.029000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:12:55.021000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35001, '2019-10-10 02:13:00.043000', 0.47708418060831753, NULL);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-07-22 00:52:33.000000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:12:35.199000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:12:40.046000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:12:45.019000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:12:50.029000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:12:55.021000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35002, '2019-10-10 02:13:00.043000', 0.270841806083175, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-07-22 00:52:33.000000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:12:35.199000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:12:40.046000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:12:45.019000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:12:50.029000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:12:55.021000', 0.5, 35008);
+insert into MetricData (metricId, valueTime, value, resourceId) values (35003, '2019-10-10 02:13:00.043000', 0.5, 35008);

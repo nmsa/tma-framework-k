@@ -166,7 +166,7 @@ CREATE TABLE Configuration (
 CREATE TABLE Description (
     descriptionId INT NOT NULL AUTO_INCREMENT,
     dataType VARCHAR(16),
-    descriptionName CHAR(128),
+    descriptionName VARCHAR(255),
     unit VARCHAR(16),
     PRIMARY KEY (descriptionId)
 );
@@ -178,7 +178,7 @@ CREATE TABLE LeafAttribute (
     metricAggregationOperator INT,
     numSamples INT,
     normalizationMethod VARCHAR(64),
-    normalizationKind VARCHAR(64),
+    normalizationKind INT,
     minimumThreshold DOUBLE PRECISION,
     maximumThreshold DOUBLE PRECISION,
 
@@ -252,6 +252,8 @@ CREATE TABLE Data (
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
 );
 
-CREATE VIEW CompositeAttributeView AS SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute where parentMetric = childMetric;
+CREATE VIEW CompositeAttributeView AS SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute where parentMetric = childMetric 
+UNION 
+SELECT childMetric AS metricId, attributeAggregationOperator as attributeAggregationOperator FROM CompositeAttribute ca where not exists (select * from LeafAttribute la where ca.childMetric = la.metricId);
 
 CREATE VIEW MetricAttributeView AS SELECT m.metricId as metricId, ca.parentMetric as compositeAttributeId, m.metricName as name FROM Metric m join CompositeAttribute ca on m.metricId = ca.childMetric;
