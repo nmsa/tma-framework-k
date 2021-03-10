@@ -1,4 +1,5 @@
 CREATE TABLE logs (
+	id		 INTEGER,
 	logtime	 TIMESTAMP NOT NULL,
 	origin	 VARCHAR(512) NOT NULL,
 	originid	 INTEGER,
@@ -9,5 +10,5 @@ CREATE TABLE logs (
 	loggroupid	 INTEGER,
 	target	 VARCHAR(512),
 	targetid	 INTEGER,
-	PRIMARY KEY(logtime)
+	PRIMARY KEY(id)
 );
