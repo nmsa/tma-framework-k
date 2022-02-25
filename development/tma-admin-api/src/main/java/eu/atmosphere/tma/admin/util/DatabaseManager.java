@@ -146,7 +146,7 @@ public class DatabaseManager {
     private static final String SQL_SELECT_PROBE
             = "SELECT * FROM Probe";
     private static final String SQL_GET_METRICS
-            = "SELECT * FROM Metric WHERE metricId LIKE '%?%' or metricName LIKE '%?%' ";
+            = "SELECT * FROM Metric WHERE metricId LIKE ? or metricName LIKE ? ";
     private static final String SQL_GET_METRIC_BY_ID
             = "SELECT * FROM Metric WHERE metricId = ?";
 
@@ -913,8 +913,8 @@ public class DatabaseManager {
         try {
             ArrayList<MetricDashboard> metrics = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRICS)) {
-                ps.setString(1, filter);
-                ps.setString(2, filter);
+                ps.setString(1, "%" + filter + "%");
+                ps.setString(2, "%" + filter + "%");
                 ResultSet resultSet = ps.executeQuery();
                 while (resultSet.next()) {
                     metrics.add(new MetricDashboard(
@@ -925,7 +925,7 @@ public class DatabaseManager {
                 return metrics;
             }
         } catch (SQLException ex) {
-            LOGGER.error("[ATMOSPHERE] Error when reading the probes from the database.", ex);
+            LOGGER.error("[ATMOSPHERE] Error when reading the metrics from the database.", ex);
             return null;
         } finally {
             close(conn);

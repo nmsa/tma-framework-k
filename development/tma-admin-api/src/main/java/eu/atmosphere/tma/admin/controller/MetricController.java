@@ -39,7 +39,7 @@ public class MetricController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricController.class);
 
     @GetMapping("/getMetrics")
-    public ResponseEntity<Map> getMetrics(@RequestParam(name = "filter") String filter, HttpServletResponse response) {
+    public ResponseEntity<Map> getMetrics(@RequestParam(required = false, defaultValue="",name = "filter") String filter, HttpServletResponse response) {
         DatabaseManager database = new DatabaseManager();
         ArrayList<MetricDashboard> metrics;
         try {
