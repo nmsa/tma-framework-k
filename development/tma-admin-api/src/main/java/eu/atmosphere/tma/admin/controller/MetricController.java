@@ -50,11 +50,11 @@ public class MetricController {
                     Constants.ERROR, "There was a problem with the connection to the database");
         }
 
-        HashMap<String, ArrayList<MetricDashboard>> probesJson = new HashMap<>();
-        probesJson.put("metrics", metrics);
+        HashMap<String, ArrayList<MetricDashboard>> metricsJson = new HashMap<>();
+        metricsJson.put("metrics", metrics);
 
         return new ResponseEntity<>(
-                probesJson,
+                metricsJson,
                 HttpStatus.valueOf(response.getStatus())
         );
     }
