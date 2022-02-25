@@ -21,6 +21,7 @@ import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
 import eu.atmosphere.tma.admin.dto.Metric;
+import eu.atmosphere.tma.admin.dto.MetricDashboard;
 import eu.atmosphere.tma.admin.dto.Score;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -144,6 +145,10 @@ public class DatabaseManager {
             = "SELECT * FROM Actuator";
     private static final String SQL_SELECT_PROBE
             = "SELECT * FROM Probe";
+    private static final String SQL_GET_METRICS
+            = "SELECT * FROM Metric WHERE metricId LIKE '%?%' or metricName LIKE '%?%' ";
+    private static final String SQL_GET_METRIC_BY_ID
+            = "SELECT * FROM Metric WHERE metricId = ?";
 
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
@@ -893,5 +898,67 @@ public class DatabaseManager {
         } finally {
             close(conn);
         }
+    }
+
+    //Get Metrics - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ArrayList<MetricDashboard> getMetrics(String filter) throws SQLException {
+        
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            ArrayList<MetricDashboard> metrics = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRICS)) {
+                ps.setString(1, filter);
+                ps.setString(2, filter);
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    metrics.add(new MetricDashboard(
+                            resultSet.getInt("metricId"),
+                            resultSet.getString("metricName"),
+                            resultSet.getInt("blockLevel")));
+                }
+                return metrics;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the probes from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    //Get Metric by Id - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public MetricDashboard getMetricById(int metricId) throws SQLException {
+        
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            MetricDashboard metric = new MetricDashboard();
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRIC_BY_ID)) {
+                ps.setInt(1, metricId);
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                metric.setMetricId(resultSet.getInt("metricId"));
+                metric.setMetricName(resultSet.getString("metricName"));
+                metric.setBlockLevel(resultSet.getInt("blockLevel"));
+                return metric;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the metric from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        
     }
 }
