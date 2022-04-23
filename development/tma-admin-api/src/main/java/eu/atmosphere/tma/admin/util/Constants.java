@@ -26,7 +26,7 @@ package eu.atmosphere.tma.admin.util;
 public class Constants {
 
     public static final int HTTPSUCESSCREATED = 201;
-    public static final int HTTPSUCESS = 201;
+    public static final int HTTPSUCESS = 200;
     public static final int HTTPBADREQUEST = 400;
     public static final int HTTPMETHODNOTALLOWED = 405;
     public static final int HTTPURLNOTFOUND = 404;

@@ -20,8 +20,16 @@ import eu.atmosphere.tma.admin.dto.Action;
 import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
+import eu.atmosphere.tma.admin.dto.ConfigurationProfile;
+import eu.atmosphere.tma.admin.dto.DataSetElem;
+import eu.atmosphere.tma.admin.dto.DataSetPlot;
+import eu.atmosphere.tma.admin.dto.LeafAttribute;
 import eu.atmosphere.tma.admin.dto.Metric;
 import eu.atmosphere.tma.admin.dto.MetricDashboard;
+import eu.atmosphere.tma.admin.dto.PlanInfo;
+import eu.atmosphere.tma.admin.dto.PlotConfig;
+import eu.atmosphere.tma.admin.dto.Preference;
+import eu.atmosphere.tma.admin.dto.QualityModel;
 import eu.atmosphere.tma.admin.dto.Score;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -145,11 +153,117 @@ public class DatabaseManager {
             = "SELECT * FROM Actuator";
     private static final String SQL_SELECT_PROBE
             = "SELECT * FROM Probe";
+    
+    //================================ DASHBOARD ADDED SQLS ====================================================//
+    
     private static final String SQL_GET_METRICS
             = "SELECT * FROM Metric WHERE metricId LIKE ? or metricName LIKE ? ";
+    private static final String SQL_GET_QUALITY_MODELS
+            = "SELECT qm.*, m.metricName FROM QualityModel as qm, Metric as m "
+            + "WHERE qm.metricId = m.metricId AND (qualityModelId LIKE ? or modelName LIKE ?) AND "
+            + "(qm.metricId LIKE ? or m.metricName LIKE ?)";
+    private static final String SQL_GET_DESCRIPTIONS
+            = "SELECT * FROM Description WHERE descriptionId LIKE ? or descriptionName LIKE ? ";
+    //could be named as SQL_GET_CONFIGURATION_PROFILES, but in the dashboard they are listed for a Quality Model
+    private static final String SQL_GET_QUALITY_MODEL_CONFIGURATION_PROFILES
+            = "SELECT configurationProfileId, profileName FROM ConfigurationProfile WHERE qualityModelId = ?";
+    //the same as SQL_GET_METRICS but the outcome represents metrics not associated to Quality Models
+    private static final String SQL_GET_METRICS_TO_CREATE_QUALITY_MODEL
+            = "SELECT * FROM Metric m "
+            + "LEFT JOIN QualityModel qm on m.metricId = qm.metricId "
+            + "WHERE qm.qualityModelId is NULL";
+    private static final String SQL_GET_ACTIVE_RESOURCES
+            = "SELECT * FROM Resource WHERE active = true";
+    private static final String SQL_GET_PLOTS_CONFIGS
+            = "SELECT * FROM PlotConfig";
+    
+    
+    
     private static final String SQL_GET_METRIC_BY_ID
             = "SELECT * FROM Metric WHERE metricId = ?";
-
+    private static final String SQL_GET_CHILD_METRICS_OF_PARENT_METRIC_BY_ID
+            = "SELECT childMetric, metricName, attributeAggregationOperator, blockLevel "
+            + "FROM CompositeAttribute, Metric WHERE parentMetric  = ? "
+            + "and metricId = childMetric";
+    private static final String SQL_GET_QUALITY_MODEL_BY_ID
+            = "SELECT * FROM QualityModel WHERE qualityModelId = ?";
+    private static final String SQL_GET_CONFIGURATION_PROFILE_BY_ID
+            = "SELECT * FROM Configurationprofile WHERE configurationProfileId = ?";
+    private static final String SQL_GET_PREFERENCES_BY_CONFIGURATION_PROFILE_ID
+            = "SELECT * FROM Preference WHERE configurationProfileId = ?";
+    private static final String SQL_GET_LEAF_ATTRIBUTE_BY_METRIC_ID
+            = "SELECT LA.*, M.metricName, M.blockLevel, D.descriptionName, D.unit "
+            + "FROM LeafAttribute LA, Metric M, Description D "
+            + "WHERE D.descriptionId = LA.descriptionId AND M.metricId = LA.metricId AND M.metricId = ?";
+    private static final String SQL_GET_CONFIGURATION_PROFILE_ID_BY_RESOURCE_ID
+            = "SELECT configurationProfileID FROM Resource WHERE resourceId = ?";
+    private static final String SQL_GET_QUALITY_MODEL_ID_BY_CONFIGURATION_PROFILE_ID
+            = "SELECT qualityModelId FROM ConfigurationProfile WHERE configurationProfileID = ?";
+    private static final String SQL_GET_LIST_OF_METRICS_NOT_LEAF_BY_CONFIGURATION_PROFILE_ID
+            = "SELECT m.metricId, m.metricName from Metric m join Preference p on m.metricId = p.metricId "
+            + "WHERE p.configurationProfileID = ?";
+    private static final String SQL_GET_LIST_OF_LEAF_METRICS_BY_CONFIGURATION_PROFILE_ID
+            = "SELECT m.metricId, m.metricName from Metric m "
+            + "join Preference p on m.metricId = p.metricId "
+            + "join LeafAttribute la on m.metricId = la.metricId "
+            + "WHERE p.configurationProfileID = ?";
+    private static final String SQL_GET_DESCRIPTION_INFO_BY_METRIC_ID
+            = "SELECT d.* From Description d JOIN LeafAttribute la on d.descriptionId = la.descriptionId "
+            + "WHERE la.metricId = ?";
+    private static final String SQL_GET_TIME_SLOT_RAW_DATA_BY_RESOURCE_ID_AND_DESCRIPTION_ID
+            = "SELECT value, UNIX_TIMESTAMP(valueTime) as valueTime FROM Data WHERE resourceId = ?  "
+            + "AND descriptionId = ? AND valueTime >= FROM_UNIXTIME(?) AND valueTime <= FROM_UNIXTIME(?) "
+            + "ORDER BY valueTime ASC";
+    private static final String SQL_GET_TIME_SLOT_METRIC_DATA_BY_RESOURCE_ID_AND_BY_METRIC_ID
+            = "SELECT value, UNIX_TIMESTAMP(valueTime) as valueTime FROM MetricData WHERE resourceId = ?  "
+            + "AND metricId = ? AND valueTime >= FROM_UNIXTIME(?) AND valueTime <= FROM_UNIXTIME(?) "
+            + "ORDER BY valueTime ASC";
+    private static final String SQL_GET_TIME_SLOT_PLANS_IDS_BY_RESOURCE_ID_AND_METRIC_ID
+            = "SELECT planId, UNIX_TIMESTAMP(valueTime) as valueTime FROM Plan WHERE status = 2 AND resourceId = ? AND metricId = ? "
+            + "AND valueTime >= FROM_UNIXTIME(?) AND valueTime <= FROM_UNIXTIME(?) ORDER BY valueTime ASC";
+    
+    
+    
+    private static final String SQL_NEW_QUALITY_MODEL
+            = "INSERT "
+            + "INTO QualityModel(modelName, modelDescriptionReference, businessThreshold, metricId)"
+            + "VALUES (?, ?, ?, ?)";
+    private static final String SQL_NEW_CONFIGURATION_PROFILE
+            = "INSERT "
+            + "INTO ConfigurationProfile(profileName, qualityModelId)"
+            + "VALUES (?, ?)";
+    private static final String SQL_NEW_PREFERENCE
+            = "INSERT INTO Preference VALUES (?, ?, ?, ?)";
+    private static final String SQL_NEW_METRIC
+            = "INSERT INTO Metric(metricName) VALUES (?)";
+    private static final String SQL_NEW_LEAF_ATTRIBUTE
+            = "INSERT INTO LeafAttribute  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_NEW_COMPOSITE_ATTRIBUTE
+            = "INSERT INTO CompositeAttribute VALUES (?, ?, ?)";
+    private static final String SQL_NEW_PLOT_CONFIG
+            = "INSERT INTO PlotConfig (configObject, plotConfigName) VALUES (?, ?)";
+    
+    
+    
+    private static final String SQL_UPDATE_PLOT_CONFIG_BY_ID
+            = "UPDATE PlotConfig SET configObject = ?, plotConfigName = ? WHERE plotConfigId = ?";
+    
+    
+    
+    
+    private static final String SQL_GET_PLOT_CONFIG_NAME
+            = "SELECT plotConfigName FROM PlotConfig WHERE plotConfigName = ? ";
+    private static final String SQL_GET_QUALITY_MODEL_NAME
+            = "SELECT modelName FROM QualityModel WHERE modelName = ? ";
+    private static final String SQL_GET_CONFIGURATION_PROFILE_NAME_FOR_QUALITY_MODEL_ID
+            = "SELECT profileName FROM ConfigurationProfile WHERE profileName = ? and qualityModelId = ? ";
+    private static final String SQL_GET_METRIC_NAME
+            = "SELECT metricName FROM Metric WHERE metricName = ? ";
+    //this sql is the base for extension when searching for a metric with the same number of and same child metrics,
+    //when it is wanted to create a new metric that isn't a leat attribute
+    private static final String SQL_BASE_GET_NUMBER_OF_CHILD_METRICS
+            = "SELECT parentMetric FROM CompositeAttribute ca WHERE (ca.childMetric = ?";
+    
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
         try {
@@ -900,8 +1014,11 @@ public class DatabaseManager {
         }
     }
 
+    
+    //=====================================  DASHBOARD IMPLEMENTATION =============================================
+    
     //Get Metrics - João Ribeiro <jdribeiro@student.dei.uc.pt>
-    public ArrayList<MetricDashboard> getMetrics(String filter) throws SQLException {
+    public ArrayList<MetricDashboard> getMetrics(String filter, boolean createQualityModel) throws SQLException {
         
         Connection conn;
         try {
@@ -910,24 +1027,34 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
             return null;
         }
+        PreparedStatement ps = null;
         try {
             ArrayList<MetricDashboard> metrics = new ArrayList<>();
-            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRICS)) {
+            //if the request wants the metrics available for creating quality models,
+            //send those which are not yet associated to quality models
+            if(createQualityModel){
+                ps = conn.prepareStatement(SQL_GET_METRICS_TO_CREATE_QUALITY_MODEL);
+            }
+            else{
+                ps = conn.prepareStatement(SQL_GET_METRICS);
                 ps.setString(1, "%" + filter + "%");
                 ps.setString(2, "%" + filter + "%");
-                ResultSet resultSet = ps.executeQuery();
-                while (resultSet.next()) {
-                    metrics.add(new MetricDashboard(
-                            resultSet.getInt("metricId"),
-                            resultSet.getString("metricName"),
-                            resultSet.getInt("blockLevel")));
-                }
-                return metrics;
             }
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                metrics.add(new MetricDashboard(
+                        resultSet.getInt("metricId"),
+                        resultSet.getString("metricName"),
+                        resultSet.getInt("blockLevel")));
+            }
+            return metrics;
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when reading the metrics from the database.", ex);
             return null;
         } finally {
+            if(ps != null){
+                ps.close();
+            }
             close(conn);
         }
     }
@@ -936,6 +1063,7 @@ public class DatabaseManager {
     public MetricDashboard getMetricById(int metricId) throws SQLException {
         
         Connection conn;
+        MetricDashboard metric = new MetricDashboard();
         try {
             conn = DatabaseManager.getConnectionFromPool();
         } catch (SQLException ex) {
@@ -943,15 +1071,46 @@ public class DatabaseManager {
             return null;
         }
         try {
-            MetricDashboard metric = new MetricDashboard();
-            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRIC_BY_ID)) {
+            //get the metric considering it is a leaf attribute
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_LEAF_ATTRIBUTE_BY_METRIC_ID)){
+                
                 ps.setInt(1, metricId);
                 ResultSet resultSet = ps.executeQuery();
-                resultSet.next();
-                metric.setMetricId(resultSet.getInt("metricId"));
-                metric.setMetricName(resultSet.getString("metricName"));
-                metric.setBlockLevel(resultSet.getInt("blockLevel"));
-                return metric;
+                
+                //if there was a result, then it is because the metric is a leaf attribute
+                if(resultSet.next()){
+                    metric.setLeafAttribute(new LeafAttribute(
+                            resultSet.getInt("metricId"),
+                            new Description(
+                                    resultSet.getInt("descriptionId"),
+                                    resultSet.getString("descriptionName"),
+                                    resultSet.getString("unit")
+                            ),
+                            resultSet.getInt("metricAggregationOperator"),
+                            resultSet.getInt("numSamples"),
+                            resultSet.getString("normalizationMethod"),
+                            resultSet.getInt("normalizationKind"),
+                            resultSet.getFloat("minimumThreshold"),
+                            resultSet.getFloat("maximumThreshold")
+                    ));
+                    metric.setChildMetrics(new ArrayList());
+                    
+                    metric.setMetricId(resultSet.getInt("metricId"));
+                    metric.setMetricName(resultSet.getString("metricName"));
+                    metric.setBlockLevel(resultSet.getInt("blockLevel"));
+                }
+                //otherwise, it is a parent metric
+                else{
+                    try( PreparedStatement ps2 = conn.prepareStatement(SQL_GET_METRIC_BY_ID)){
+                        ps2.setInt(1, metricId);
+                        ResultSet resultSet2 = ps2.executeQuery();
+                        resultSet2.next();
+
+                        metric.setMetricId(resultSet2.getInt("metricId"));
+                        metric.setMetricName(resultSet2.getString("metricName"));
+                        metric.setBlockLevel(resultSet2.getInt("blockLevel"));
+                    }
+                } 
             }
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Error when reading the metric from the database.", ex);
@@ -959,6 +1118,929 @@ public class DatabaseManager {
         } finally {
             close(conn);
         }
+        if(metric.getLeafAttribute() == null){
+            //If it isn't a Leaf Attribute, find childs of a Metric, and then the childs of its childs and so on...
+            metric.setChildMetrics(getChildMetrics(metric));
+        }
+        return metric;
         
     }
+    
+    //Function to use recursively to get child metrics of another metric - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    private ArrayList<MetricDashboard> getChildMetrics(MetricDashboard parent) throws SQLException {
+        Connection conn;
+        ArrayList<MetricDashboard> childMetrics = new ArrayList<>();
+        
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_CHILD_METRICS_OF_PARENT_METRIC_BY_ID)){
+                //get child metrics from a "parent" metric and save them on "childMetrics" ArrayList
+                ps.setInt(1, parent.getMetricId());
+                ResultSet resultSet = ps.executeQuery();
+                
+                while(resultSet.next()){
+                    MetricDashboard metricToAdd = new MetricDashboard();
+                    metricToAdd.setMetricId(resultSet.getInt("childMetric"));
+                    metricToAdd.setMetricName(resultSet.getString("metricName"));
+                    metricToAdd.setBlockLevel(resultSet.getInt("blockLevel"));
+                    childMetrics.add(metricToAdd);
+                }
+            }
+                    
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the metric from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        
+        //for each child metric execute this function recursively to find the childs of the parent's childs
+        for(MetricDashboard m : childMetrics){
+            m.setChildMetrics(getChildMetrics(m));
+        }
+        return childMetrics;
+    }
+    
+    //Get Descriptions - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ArrayList<Description> getDescriptions(String filter) throws SQLException {
+        
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            ArrayList<Description> descriptions = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_DESCRIPTIONS)) {
+                ps.setString(1, "%" + filter + "%");
+                ps.setString(2, "%" + filter + "%");
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    descriptions.add(new Description(-1,
+                            resultSet.getInt("descriptionId"),
+                            resultSet.getString("dataType"),
+                            resultSet.getString("descriptionName"),
+                            resultSet.getString("unit")));
+                }
+                return descriptions;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the descriptions from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    //Get Quality Models - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ArrayList<QualityModel> getQualityModels(String qualityModelsFilter, 
+            String metricsFilter) throws SQLException {
+        
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            ArrayList<QualityModel> qualityModels = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_QUALITY_MODELS)) {
+                ps.setString(1, "%" + qualityModelsFilter + "%");
+                ps.setString(2, "%" + qualityModelsFilter + "%");
+                ps.setString(3, "%" + metricsFilter + "%");
+                ps.setString(4, "%" + metricsFilter + "%");
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    qualityModels.add(new QualityModel(
+                            resultSet.getInt("qualityModelId"),
+                            new MetricDashboard(resultSet.getInt("metricId"),resultSet.getString("metricName")),
+                            resultSet.getString("modelName"),
+                            resultSet.getInt("modelDescriptionReference"),
+                            resultSet.getFloat("businessThreshold")));
+                }
+                return qualityModels;
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the Quality Models from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    //Get Quality Models by Id - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public QualityModel getQualityModelById(int qualityModelId) throws SQLException {
+        
+        Connection conn;
+        QualityModel qualityModel;
+        int metricId;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_QUALITY_MODEL_BY_ID)) {
+                ps.setInt(1,qualityModelId);
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                qualityModel = new QualityModel(
+                            resultSet.getInt("qualityModelId"),
+                            resultSet.getString("modelName"),
+                            resultSet.getInt("modelDescriptionReference"),
+                            resultSet.getFloat("businessThreshold"));
+                metricId = resultSet.getInt("metricId");
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the Quality Model from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        qualityModel.setMetric(getMetricById(metricId));
+        qualityModel.setConfigurationProfiles(getQualityModelConfigurationProfiles(qualityModel.getQualityModelId()));
+        return qualityModel;
+    }
+    
+    //Get Quality Model Configuration Profiles - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ArrayList<ConfigurationProfile> getQualityModelConfigurationProfiles(int qualityModelId) 
+            throws SQLException {
+        
+        Connection conn;
+        ArrayList<ConfigurationProfile> configurationProfiles = new ArrayList<>();
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_QUALITY_MODEL_CONFIGURATION_PROFILES)) {
+                ps.setInt(1,qualityModelId);
+                ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next()){
+                    configurationProfiles.add(
+                            new ConfigurationProfile(
+                                    resultSet.getInt("configurationProfileId"),
+                                    resultSet.getString("profileName")));
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the Quality Model from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        return configurationProfiles;
+    }
+    
+    //Get Configuration Profile and its preferences by configuration profile Id - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ConfigurationProfile getConfigurationProfileById(int configurationProfileId) throws SQLException {
+        
+        Connection conn;
+        ConfigurationProfile configurationProfile;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_CONFIGURATION_PROFILE_BY_ID)){
+                ps.setInt(1,configurationProfileId);
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                configurationProfile = new ConfigurationProfile(configurationProfileId, resultSet.getString("profileName"));
+            }
+            
+            ArrayList<Preference> preferences = new ArrayList();
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_PREFERENCES_BY_CONFIGURATION_PROFILE_ID)){
+                ps.setInt(1,configurationProfileId);
+                ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next()){
+                    preferences.add(
+                            new Preference(
+                                    resultSet.getInt("metricId"),
+                                    resultSet.getFloat("weight"),
+                                    resultSet.getFloat("threshold")
+                            )
+                    );
+                }
+                configurationProfile.setPreferences(preferences);
+            }
+            
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the Quality Model from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        return configurationProfile;
+    }
+    
+    public ArrayList<MetricDashboard> getConfigurationProfileListOfMetrics (int configurationProfileId, 
+            boolean leafAttributes) throws SQLException{
+        
+        Connection conn;
+        ArrayList<MetricDashboard> listOfMetrics = new ArrayList();
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        String sql;
+        if(leafAttributes){
+            sql = SQL_GET_LIST_OF_LEAF_METRICS_BY_CONFIGURATION_PROFILE_ID;
+        }
+        else{
+            sql = SQL_GET_LIST_OF_METRICS_NOT_LEAF_BY_CONFIGURATION_PROFILE_ID;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setInt(1,configurationProfileId );
+                ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next()){
+                    listOfMetrics.add(
+                            new MetricDashboard(
+                                    resultSet.getInt("metricId"),
+                                    resultSet.getString("metricName")
+                            )
+                    );
+                }
+            }   
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the list of metrics from the database using"
+                    + "configuration profile id.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        return listOfMetrics; 
+    }
+            
+    public ArrayList<Resource> getMonitoredResources() throws SQLException{
+        Connection conn;
+        ArrayList<Resource> resources = new ArrayList();
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_ACTIVE_RESOURCES)){
+                ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next()){
+                    resources.add(
+                            new Resource(
+                                    -1,
+                                    resultSet.getInt("resourceId"),
+                                    resultSet.getString("resourceName"),
+                                    resultSet.getString("resourceType"),
+                                    resultSet.getString("resourceAddress")
+                            )
+                    );
+                }
+            }   
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the active Resources from the database.", ex);
+            return null;
+        } finally {
+            close(conn);
+        }
+        return resources;
+    }
+    
+    public int getConfigurationProfileIdByResourceId(int resourceId) throws SQLException{
+        Connection conn;
+        int configurationProfileId = -1;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return configurationProfileId;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_CONFIGURATION_PROFILE_ID_BY_RESOURCE_ID)){
+                ps.setInt(1,resourceId );
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                configurationProfileId = resultSet.getInt("configurationProfileID");
+            }   
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the configuration profile id from the database using"
+                    + "resource id.", ex);
+        } finally {
+            close(conn);
+        }
+        return configurationProfileId;
+    }
+    
+    public int getQualityModelIdByConfigurationProfileId(int configurationProfileId) throws SQLException{
+        Connection conn;
+        int qualityModelId = -1;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return qualityModelId;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_QUALITY_MODEL_ID_BY_CONFIGURATION_PROFILE_ID)){
+                ps.setInt(1,configurationProfileId );
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                qualityModelId = resultSet.getInt("qualityModelId");
+            }   
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the quality model id from the database using"
+                    + "configuration profile id.", ex);
+            return -1;
+        } finally {
+            close(conn);
+        }
+        return qualityModelId;
+    }
+    
+    public ArrayList<DataSetPlot> getPlotData(int resourceId, int metricId, String dataType, long startDate, 
+            long endDate, boolean addPlansInfo) throws SQLException{
+        Connection conn;
+        ArrayList<DataSetPlot> plotData = new ArrayList();
+        
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        
+        try {
+            //always get the first dataSet which corresponds to the raw data or metric data
+            DataSetPlot dataSet = new DataSetPlot();
+            //if the request is to get rawData, firstly get associated description Info and then the data
+            if(dataType.equals("raw")){
+                int descriptionId;
+                try(PreparedStatement ps = conn.prepareStatement(SQL_GET_DESCRIPTION_INFO_BY_METRIC_ID)){
+                    ps.setInt(1, metricId);
+                    ResultSet resultSet = ps.executeQuery();
+                    resultSet.next();
+                    dataSet.setDescriptionInfo(
+                            resultSet.getString("descriptionName") + " (" + 
+                            resultSet.getString("unit") + ")"
+                    
+                    );
+                    descriptionId = resultSet.getInt("descriptionId");
+                }
+                
+                try(PreparedStatement ps = 
+                        conn.prepareStatement(SQL_GET_TIME_SLOT_RAW_DATA_BY_RESOURCE_ID_AND_DESCRIPTION_ID)){
+                    ps.setInt(1, resourceId);
+                    ps.setInt(2, descriptionId);
+                    //divide millis by 1000 to get result in seconds, which is the format accepted by the database
+                    //using the function FROM_UNIXTIME()
+                    ps.setLong(3, startDate);
+                    ps.setLong(4, endDate);
+                    System.out.println(ps.toString());
+                    ResultSet resultSet = ps.executeQuery();
+                    ArrayList <DataSetElem> dataPoints = new ArrayList();
+                    while(resultSet.next()){
+                        dataPoints.add(
+                                new DataSetElem(
+                                        resultSet.getDouble("value"),
+                                        //multiply by 1000 to get result in milliseconds and ease the conversio n
+                                        //into Date in the web page
+                                        resultSet.getLong("valueTime") * 1000  
+                                )
+                        );
+                    }
+                    dataSet.setListOfDataPoints(dataPoints);
+                }
+            }
+            //if the request is to get MetricData, directly get it
+            else{
+                try(PreparedStatement ps = 
+                        conn.prepareStatement(SQL_GET_TIME_SLOT_METRIC_DATA_BY_RESOURCE_ID_AND_BY_METRIC_ID)){
+                    ps.setInt(1, resourceId);
+                    ps.setInt(2, metricId);
+                    ps.setLong(3, startDate);
+                    ps.setLong(4, endDate);
+                    ResultSet resultSet = ps.executeQuery();
+                    ArrayList <DataSetElem> dataPoints = new ArrayList();
+                    while(resultSet.next()){
+                        dataPoints.add(
+                                new DataSetElem(
+                                        resultSet.getDouble("value"),
+                                        resultSet.getLong("valueTime") * 1000
+                                )
+                        );
+                    }
+                    dataSet.setListOfDataPoints(dataPoints);
+                }
+            }
+            
+            //If the request has to show adaptation plans info, add a new DataSet which holds plans' info            
+            if(addPlansInfo){
+                try(PreparedStatement ps = 
+                        conn.prepareStatement(SQL_GET_TIME_SLOT_PLANS_IDS_BY_RESOURCE_ID_AND_METRIC_ID)){
+                    ps.setInt(1, resourceId);
+                    ps.setInt(2, metricId);
+                    ps.setLong(3, startDate);
+                    ps.setLong(4, endDate);
+                    ResultSet resultSet = ps.executeQuery();
+                    ArrayList <PlanInfo> plansInfoPoints = new ArrayList();
+                    while(resultSet.next()){
+                        plansInfoPoints.add(
+                                new PlanInfo(
+                                        resultSet.getInt("planId"),
+                                        resultSet.getLong("valueTime") * 1000
+                                )
+                        );
+                    }
+                    dataSet.setListOfPlansInfo(plansInfoPoints);
+                }
+            }
+            plotData.add(dataSet);
+            
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the data to plot from the database.", ex);
+            return null;
+        } finally {
+            conn.commit();
+            close(conn);
+        }
+        return plotData; 
+    }
+    
+    public void getSimulationData(ArrayList<DataSetElem> simulationData, int resourceId, 
+            long startDate, long endDate, int metricId, double traversalWeight) throws SQLException{
+        Connection conn = null;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return;
+        }
+        
+        try {
+            try(PreparedStatement ps = 
+                    conn.prepareStatement(SQL_GET_TIME_SLOT_METRIC_DATA_BY_RESOURCE_ID_AND_BY_METRIC_ID)){
+                ps.setInt(1, resourceId);
+                ps.setInt(2, metricId);
+                ps.setLong(3, startDate);
+                ps.setLong(4, endDate);
+                ResultSet resultSet = ps.executeQuery();
+                int iterator = 0;
+                boolean firstLeafFound = simulationData.isEmpty();
+                while(resultSet.next()){
+                    if(firstLeafFound){
+                        simulationData.add(
+                            new DataSetElem(
+                                resultSet.getDouble("value") * traversalWeight,
+                                resultSet.getLong("valueTime") * 1000
+                            )
+                        );
+                    }
+                    else{
+                        DataSetElem elem = simulationData.get(iterator);
+                        elem.setValue(  elem.getValue() + (resultSet.getDouble("value") * traversalWeight)  );
+                        iterator++;
+                    }
+                }
+                conn.commit();
+            }
+            
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the data from the database to simulate a plot.", ex);
+            return;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public ArrayList<PlotConfig> getPlotsConfigs() throws SQLException{
+        Connection conn;
+        ArrayList<PlotConfig> plotsConfigs = new ArrayList();
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_PLOTS_CONFIGS)){
+                ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next()){
+                    plotsConfigs.add(
+                            new PlotConfig(
+                                    resultSet.getString("plotConfigName"),
+                                    resultSet.getBytes("configObject"),
+                                    resultSet.getInt("plotConfigId")
+                            )
+                    );
+                }
+            }   
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading Plot configurations from the database.", ex);
+            plotsConfigs = null;
+        } finally {
+            close(conn);
+        }
+        return plotsConfigs;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public boolean saveNewQualityModel(QualityModel qualityModel) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return false;
+        }
+        try {
+            try (PreparedStatement ps = conn.prepareStatement(SQL_NEW_QUALITY_MODEL, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, qualityModel.getModelName());
+                ps.setInt(2, qualityModel.getModelDescriptionReference());
+                ps.setFloat(3, qualityModel.getBusinessThreshold());
+                ps.setInt(4, qualityModel.getMetric().getMetricId());
+                ps.execute();
+
+                ResultSet generatedKeys = ps.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    qualityModel.setQualityModelId(generatedKeys.getInt(1));
+                } else {
+                    qualityModel.setQualityModelId(INVALID_KEY);
+                    return false;
+                }
+                conn.commit();
+                return true;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when inserting a Quality Model in the database.", e);
+            qualityModel.setQualityModelId(INVALID_KEY);
+            return false;
+        } finally {
+            close(conn);
+        }
+
+    }
+    
+    public boolean saveNewConfigurationProfile(ConfigurationProfile configurationProfile) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return false;
+        }
+        try {
+            // start transaction
+            
+            //Firstly, create configuration profile database entry
+            try( PreparedStatement ps = 
+                    conn.prepareStatement(SQL_NEW_CONFIGURATION_PROFILE, Statement.RETURN_GENERATED_KEYS)){
+                
+                ps.setString(1, configurationProfile.getProfileName());
+                ps.setInt(2, configurationProfile.getQualityModelId());
+                ps.executeUpdate();
+                ResultSet generatedKeys = ps.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    configurationProfile.setConfigurationProfileId(generatedKeys.getInt(1));
+                } else {
+                    configurationProfile.setConfigurationProfileId(INVALID_KEY);
+                    return false;
+                }
+            }
+            
+            //for each of the preferences, create the corresponding database entry
+            try( PreparedStatement ps = conn.prepareStatement(SQL_NEW_PREFERENCE)){
+                for(Preference preference : configurationProfile.getPreferences()){
+                    ps.setInt(1, configurationProfile.getConfigurationProfileId());
+                    ps.setInt(2, preference.getMetricId());
+                    ps.setFloat(3, preference.getWeight());
+                    ps.setFloat(4, preference.getThreshold());
+                    ps.executeUpdate();
+                }
+            }
+            
+            //end transaction
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when inserting a Configuration Profile in the database.", e);
+            configurationProfile.setConfigurationProfileId(INVALID_KEY);
+            if (conn != null) {
+                try {
+                  LOGGER.error("Transaction is being rolled back");
+                  conn.rollback();
+                } catch (SQLException excep) {
+                  LOGGER.error("[ATMOSPHERE] Error when inserting a Configuration Profile in the database.", excep);
+                }
+            }
+            return false;
+            
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public boolean saveNewMetric(MetricDashboard metric) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return false;
+        }
+        try {
+            // start transaction
+            
+            //firstly create metric
+            try(PreparedStatement ps = conn.prepareStatement(SQL_NEW_METRIC, Statement.RETURN_GENERATED_KEYS)){
+                ps.setString(1, metric.getMetricName());
+                ps.executeUpdate();
+
+                ResultSet generatedKeys = ps.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    metric.setMetricId(generatedKeys.getInt(1));
+                } else {
+                    metric.setMetricId(INVALID_KEY);
+                    return false;
+                }
+            }
+            
+            //If child metrics array is empty, then this metric is a leaf attribute
+            if(metric.getChildMetrics().isEmpty()){
+                try(PreparedStatement ps = conn.prepareStatement(SQL_NEW_LEAF_ATTRIBUTE)){
+                    ps.setInt(1, metric.getMetricId());
+                    ps.setInt(2, metric.getLeafAttribute().getDescription().getDescriptionId());
+                    ps.setInt(3, metric.getLeafAttribute().getMetricAggregationOperator());
+                    ps.setInt(4, metric.getLeafAttribute().getNumSamples());
+                    ps.setString(5, metric.getLeafAttribute().getNormalizationMethod());
+                    ps.setInt(6, metric.getLeafAttribute().getNormalizationKind());
+                    ps.setFloat(7, metric.getLeafAttribute().getMinimumThreshold());
+                    ps.setFloat(8, metric.getLeafAttribute().getMaximumThreshold());
+                    ps.executeUpdate();
+                }
+            }
+            //otherwise, it is a parent metric and thereby relationships with other metrics must be saved 
+            //in the Composite Attribute table
+            else{
+                try(PreparedStatement ps = conn.prepareStatement(SQL_NEW_COMPOSITE_ATTRIBUTE)){
+                    for(MetricDashboard child : metric.getChildMetrics()){
+                        ps.setInt(1,metric.getMetricId());
+                        ps.setInt(2,child.getMetricId());
+                        ps.setInt(3,metric.getAttributeAggregationOperator());
+                        ps.executeUpdate();
+                    }
+                }
+            }
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when inserting a Metric in the database.", e);
+            metric.setMetricId(INVALID_KEY);
+            return false;
+        } finally {
+            close(conn);
+        }
+
+    }
+    
+    public void saveNewPlotConfig(PlotConfig plotConfig) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            plotConfig.setPlotConfigId(INVALID_KEY);
+            return;
+        }
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_NEW_PLOT_CONFIG, Statement.RETURN_GENERATED_KEYS)){
+                ps.setBytes(1, plotConfig.getConfigObject());
+                ps.setString(2, plotConfig.getPlotConfigName());
+                ps.executeUpdate();
+
+                ResultSet generatedKeys = ps.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    plotConfig.setPlotConfigId(generatedKeys.getInt(1));
+                } else {
+                    plotConfig.setPlotConfigId(INVALID_KEY);
+                }
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when inserting a plot configuration in the database.", e);
+            plotConfig.setPlotConfigId(INVALID_KEY);
+        } finally {
+            close(conn);
+        }
+
+    }
+    
+    
+    
+    public boolean updatePlotConfig(PlotConfig plotConfig) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return false;
+        }
+        boolean successful = true;
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_PLOT_CONFIG_BY_ID)){
+                ps.setBytes(1, plotConfig.getConfigObject());
+                ps.setString(2, plotConfig.getPlotConfigName());
+                ps.setInt(3, plotConfig.getPlotConfigId());
+                ps.executeUpdate();
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when updating a plot configuration in the database.", e);
+            successful = false;
+        } finally {
+            close(conn);
+        }
+        return successful;
+    }
+    
+    
+    
+    public int isQualityModelNameRepeated(String qualityModelName) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return -1;
+        }
+        try {
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_QUALITY_MODEL_NAME)) {
+                ps.setString(1, qualityModelName);
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        } catch (SQLException sqlex) {
+            LOGGER.error("[ATMOSPHERE] Error when checking the if quality model name is repeated.", sqlex);
+            return -1;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public int isConfigurationProfileNameRepeatedForQualityModel(String configurationProfileName, int qualityModelId) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return -1;
+        }
+        try {
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_CONFIGURATION_PROFILE_NAME_FOR_QUALITY_MODEL_ID)) {
+                ps.setString(1, configurationProfileName);
+                ps.setInt(2, qualityModelId);
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        } catch (SQLException sqlex) {
+            LOGGER.error("[ATMOSPHERE] Error when checking the if configuration profile name is repeated for given quality model.", sqlex);
+            return -1;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public int isMetricNameRepeated(String metricName) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return -1;
+        }
+        try {
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_METRIC_NAME)) {
+                ps.setString(1, metricName);
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        } catch (SQLException sqlex) {
+            LOGGER.error("[ATMOSPHERE] Error when checking if metric name is repeated.", sqlex);
+            return -1;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public int isMetricAlreadyExisting(ArrayList<MetricDashboard> childMetrics) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return -1;
+        }
+
+        /*========================= BASE SQL (SQL_BASE_GET_NUMBER_OF_CHILD_METRICS) =======================
+            "SELECT parentMetric FROM CompositeAttribute ca WHERE (ca.childMetric = ?"          
+        */
+        
+        String sql_extension = " OR ca.childMetric = ?";
+        String sql_statement = SQL_BASE_GET_NUMBER_OF_CHILD_METRICS;
+        
+        for(int i = 1; i < childMetrics.size(); i++){
+            sql_statement += sql_extension;
+        }
+        
+        sql_statement += ") GROUP BY parentMetric HAVING count(*) = ?" ;
+        
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(sql_statement)){
+                int c = 1;
+                for(MetricDashboard child: childMetrics){
+                    ps.setInt(c++, child.getMetricId());
+                }
+                ps.setInt(c,childMetrics.size());
+
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+           
+        } catch (SQLException sqlex) {
+            LOGGER.error("[ATMOSPHERE] Error when checking if exact set of metrics childs is repeated.", sqlex);
+            return -1;
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public int isPlotConfigNameRepeated(String plotConfigName) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return -1;
+        }
+        int found = 0;
+        try {
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_GET_PLOT_CONFIG_NAME)) {
+                ps.setString(1, plotConfigName);
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    found = 1;
+                }
+            }
+        } catch (SQLException sqlex) {
+            LOGGER.error("[ATMOSPHERE] Error when checking the if plot configuration name is repeated.", sqlex);
+            found = -1;
+        } finally {
+            close(conn);
+        }
+        return found;
+    }
+    
 }
+

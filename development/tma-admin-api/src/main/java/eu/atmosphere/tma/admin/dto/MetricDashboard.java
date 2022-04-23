@@ -1,9 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.atmosphere.tma.admin.dto;
+
+import java.util.ArrayList;
 
 /**
  * This class stores the information from an entry on the Metric database table.
@@ -14,8 +11,15 @@ public class MetricDashboard extends DataObject{
     private int metricId;
     private String metricName;
     private int blockLevel;
+    private int attributeAggregationOperator;
+    private ArrayList<MetricDashboard> childMetrics;
+    private LeafAttribute leafAttribute;
 
     public MetricDashboard() {
+    }
+    
+    public MetricDashboard(int metricId) {
+    this.metricId = metricId;
     }
 
     public MetricDashboard(int metricId, String metricName) {
@@ -55,5 +59,30 @@ public class MetricDashboard extends DataObject{
     public void setBlockLevel(int blockLevel) {
         this.blockLevel = blockLevel;
     }
+
+    public int getAttributeAggregationOperator() {
+        return attributeAggregationOperator;
+    }
+
+    public void setAttributeAggregationOperator(int attributeAggregationOperator) {
+        this.attributeAggregationOperator = attributeAggregationOperator;
+    }
+    
+    public ArrayList<MetricDashboard> getChildMetrics() {
+        return childMetrics;
+    }
+
+    public void setChildMetrics(ArrayList<MetricDashboard> childMetrics) {
+        this.childMetrics = childMetrics;
+    }
+
+    public LeafAttribute getLeafAttribute() {
+        return leafAttribute;
+    }
+
+    public void setLeafAttribute(LeafAttribute leafAttribute) {
+        this.leafAttribute = leafAttribute;
+    }
+    
     
 }
