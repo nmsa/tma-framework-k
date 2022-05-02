@@ -156,6 +156,7 @@ public class DatabaseManager {
     
     //================================ DASHBOARD ADDED SQLS ====================================================//
     
+                                //++++++++ GET EVERYTHING SQL COMMANDS ++++++++
     private static final String SQL_GET_METRICS
             = "SELECT * FROM Metric WHERE metricId LIKE ? or metricName LIKE ? ";
     private static final String SQL_GET_QUALITY_MODELS
@@ -178,7 +179,7 @@ public class DatabaseManager {
             = "SELECT * FROM PlotConfig";
     
     
-    
+                                //++++++++ GET BY SOME ATTRIBUTES (FILTERS) SQL COMMANDS ++++++++
     private static final String SQL_GET_METRIC_BY_ID
             = "SELECT * FROM Metric WHERE metricId = ?";
     private static final String SQL_GET_CHILD_METRICS_OF_PARENT_METRIC_BY_ID
@@ -223,7 +224,7 @@ public class DatabaseManager {
             + "AND valueTime >= FROM_UNIXTIME(?) AND valueTime <= FROM_UNIXTIME(?) ORDER BY valueTime ASC";
     
     
-    
+                                //++++++++ INSERT/CREATE SQL COMMANDS ++++++++
     private static final String SQL_NEW_QUALITY_MODEL
             = "INSERT "
             + "INTO QualityModel(modelName, modelDescriptionReference, businessThreshold, metricId)"
@@ -244,13 +245,13 @@ public class DatabaseManager {
             = "INSERT INTO PlotConfig (configObject, plotConfigName) VALUES (?, ?)";
     
     
-    
+                                //++++++++ UPDATE SQL COMMANDS ++++++++
     private static final String SQL_UPDATE_PLOT_CONFIG_BY_ID
             = "UPDATE PlotConfig SET configObject = ?, plotConfigName = ? WHERE plotConfigId = ?";
     
     
     
-    
+                                //++++++++ VERIFICATIONS SQL COMMANDS ++++++++
     private static final String SQL_GET_PLOT_CONFIG_NAME
             = "SELECT plotConfigName FROM PlotConfig WHERE plotConfigName = ? ";
     private static final String SQL_GET_QUALITY_MODEL_NAME
@@ -263,6 +264,12 @@ public class DatabaseManager {
     //when it is wanted to create a new metric that isn't a leat attribute
     private static final String SQL_BASE_GET_NUMBER_OF_CHILD_METRICS
             = "SELECT parentMetric FROM CompositeAttribute ca WHERE (ca.childMetric = ?";
+    
+                                //++++++++ DELETE SQL COMMANDS ++++++++
+    private static final String SQL_DELETE_PLOT_CONFIG_BY_ID
+            = "DELETE FROM PlotConfig WHERE plotConfigId = ?";
+    
+    
     
     public Connection getConnection() {
         // This will load the MySQL driver, each DB has its own driver
@@ -2040,6 +2047,32 @@ public class DatabaseManager {
             close(conn);
         }
         return found;
+    }
+    
+    
+    
+    public boolean deletePlotConfig(int plotConfigId) {
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return false;
+        }
+        boolean successful = true;
+        try {
+            try(PreparedStatement ps = conn.prepareStatement(SQL_DELETE_PLOT_CONFIG_BY_ID)){
+                ps.setInt(1, plotConfigId);
+                ps.executeUpdate();
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            LOGGER.error("[ATMOSPHERE] Error when deleting a plot configuration in the database.", e);
+            successful = false;
+        } finally {
+            close(conn);
+        }
+        return successful;
     }
     
 }

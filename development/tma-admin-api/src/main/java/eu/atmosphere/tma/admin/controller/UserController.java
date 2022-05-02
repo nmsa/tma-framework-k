@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.util.Constants;
 import java.sql.SQLException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 /**
@@ -103,6 +105,17 @@ public class UserController {
         }
         
         return AdminController.genericResponseEntity(Constants.HTTPSUCESS, Constants.SUCCESS, "Plot configuration updated!");
+    }
+    
+    @DeleteMapping("/deletePlotConfig/{id}")
+    public ResponseEntity<Map> deletePlotConfig(@PathVariable(name= "id") int plotConfigId, HttpServletResponse response) {
+        //creates a new plot config in the database
+        DatabaseManager database = new DatabaseManager();
+        if(!database.deletePlotConfig(plotConfigId)){
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR, Constants.ERROR, "There was a problem with the connection to the database");
+        }
+        
+        return AdminController.genericResponseEntity(Constants.HTTPSUCESS, Constants.SUCCESS, "Plot configuration deleted!");
     }
     
 }
