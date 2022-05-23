@@ -125,13 +125,14 @@ public class ResourceAdminController {
     * Get list of currently active resources
     */
     @GetMapping("/getResources")
-    public ResponseEntity<Map> getResourcesMonitored(
+    public ResponseEntity<Map> getResourcesMonitored( 
+            @RequestParam(required = false, name = "createRule", defaultValue = "false") boolean createRule, 
             HttpServletResponse response) {
         
         DatabaseManager database = new DatabaseManager();
         ArrayList<Resource> monitoredResources;
         try {
-            monitoredResources = database.getMonitoredResources();
+            monitoredResources = database.getMonitoredResources(createRule);
         } catch (SQLException ex) {
             LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
             return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,

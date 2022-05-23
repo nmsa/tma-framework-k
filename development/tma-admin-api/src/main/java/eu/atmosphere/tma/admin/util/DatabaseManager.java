@@ -16,7 +16,9 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import eu.atmosphere.tma.admin.dto.Probe;
 import eu.atmosphere.tma.admin.dto.Configuration;
+import eu.atmosphere.tma.admin.dto.ConfigurationDashboard;
 import eu.atmosphere.tma.admin.dto.Action;
+import eu.atmosphere.tma.admin.dto.ActionDashboard;
 import eu.atmosphere.tma.admin.dto.Description;
 import eu.atmosphere.tma.admin.dto.Resource;
 import eu.atmosphere.tma.admin.dto.Actuator;
@@ -173,10 +175,15 @@ public class DatabaseManager {
             = "SELECT * FROM Metric m "
             + "LEFT JOIN QualityModel qm on m.metricId = qm.metricId "
             + "WHERE qm.qualityModelId is NULL";
+    private static final String SQL_GET_ACTIVE_RESOURCES_WHICH_HAVE_ACTIONS
+            = "SELECT r.* FROM Resource r join Action a on r.resourceId = a.resourceId WHERE active = true "
+            + "GROUP BY resourceId HAVING count(*) > 0";
     private static final String SQL_GET_ACTIVE_RESOURCES
             = "SELECT * FROM Resource WHERE active = true";
     private static final String SQL_GET_PLOTS_CONFIGS
             = "SELECT * FROM PlotConfig";
+    private static final String SQL_GET_ACTIONS_AND_CONFIGURATIONS
+            = "SELECT * FROM Action a LEFT JOIN Configuration c on a.actionId = c.actionId";
     
     
                                 //++++++++ GET BY SOME ATTRIBUTES (FILTERS) SQL COMMANDS ++++++++
@@ -222,6 +229,9 @@ public class DatabaseManager {
     private static final String SQL_GET_TIME_SLOT_PLANS_IDS_BY_RESOURCE_ID_AND_METRIC_ID
             = "SELECT planId, UNIX_TIMESTAMP(valueTime) as valueTime FROM Plan WHERE status = 2 AND resourceId = ? AND metricId = ? "
             + "AND valueTime >= FROM_UNIXTIME(?) AND valueTime <= FROM_UNIXTIME(?) ORDER BY valueTime ASC";
+    private static final String SQL_GET_ACTIONS_AND_CONFIGURATIONS_BY_RESOURCE_ID
+            = "SELECT * FROM Action a LEFT JOIN Configuration c on a.actionId = c.actionId WHERE resourceId = ?";
+    
     
     
                                 //++++++++ INSERT/CREATE SQL COMMANDS ++++++++
@@ -1396,7 +1406,7 @@ public class DatabaseManager {
         return listOfMetrics; 
     }
             
-    public ArrayList<Resource> getMonitoredResources() throws SQLException{
+    public ArrayList<Resource> getMonitoredResources(boolean createRule) throws SQLException{
         Connection conn;
         ArrayList<Resource> resources = new ArrayList();
         try {
@@ -1405,8 +1415,17 @@ public class DatabaseManager {
             LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
             return null;
         }
+        String sqlChosen;
+        
+        if(createRule){
+            sqlChosen = SQL_GET_ACTIVE_RESOURCES_WHICH_HAVE_ACTIONS;
+        }
+        else{
+            sqlChosen = SQL_GET_ACTIVE_RESOURCES;
+        }
+        
         try {
-            try(PreparedStatement ps = conn.prepareStatement(SQL_GET_ACTIVE_RESOURCES)){
+            try(PreparedStatement ps = conn.prepareStatement(sqlChosen)){
                 ResultSet resultSet = ps.executeQuery();
                 while(resultSet.next()){
                     resources.add(
@@ -1518,7 +1537,7 @@ public class DatabaseManager {
                     //using the function FROM_UNIXTIME()
                     ps.setLong(3, startDate);
                     ps.setLong(4, endDate);
-                    System.out.println(ps.toString());
+                    
                     ResultSet resultSet = ps.executeQuery();
                     ArrayList <DataSetElem> dataPoints = new ArrayList();
                     while(resultSet.next()){
@@ -1665,6 +1684,77 @@ public class DatabaseManager {
         }
         return plotsConfigs;
     }
+    
+    //Get Actions  - João Ribeiro <jdribeiro@student.dei.uc.pt>
+    public ArrayList<ActionDashboard> getActionsDashboard(int resourceId) throws SQLException {
+        
+        Connection conn;
+        try {
+            conn = DatabaseManager.getConnectionFromPool();
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Couldn't get database connection from pool", ex);
+            return null;
+        }
+        
+        PreparedStatement ps = null;
+        ArrayList<ActionDashboard> actions = new ArrayList<>();
+        try {
+            //if the request wants all the actions available, then resourceId will be 0
+            //otherwise the request wants the actions related to a resource which means resourceId > 0
+            if(resourceId == 0){
+                ps = conn.prepareStatement(SQL_GET_ACTIONS_AND_CONFIGURATIONS);
+            }
+            else{
+                ps = conn.prepareStatement(SQL_GET_ACTIONS_AND_CONFIGURATIONS_BY_RESOURCE_ID);
+                ps.setInt(1, resourceId);
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            int lastActionId = -1;
+            ActionDashboard lastAction = null;
+            
+            while (rs.next()) {
+                if(lastActionId != rs.getInt("actionId")){
+                    lastActionId = rs.getInt("actionId");
+                    lastAction = new ActionDashboard(
+                        rs.getInt("actionId"),
+                        rs.getInt("actuatorId"),
+                        rs.getInt("resourceId"),
+                        rs.getString("actionName"),
+                        null
+                    );
+                    actions.add(lastAction);
+                    if(rs.getInt("configurationId") != 0){
+                        lastAction.setConfigurations(new ArrayList());
+                        lastAction.addConfiguration(
+                                new ConfigurationDashboard(
+                                        rs.getInt("configurationId"),
+                                        rs.getString("keyName")
+                                )
+                        );
+                    }
+                }
+                else{
+                    lastAction.addConfiguration(
+                            new ConfigurationDashboard(
+                                    rs.getInt("configurationId"),
+                                    rs.getString("keyName")
+                            )
+                    );
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Error when reading the actions from the database.", ex);
+            actions = null;
+        } finally {
+            if(ps != null){
+                ps.close();
+            }
+            close(conn);
+        }
+        return actions;
+    }
+    
     
     
     

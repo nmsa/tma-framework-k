@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @CrossOrigin
 @RestController
 public class UserController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceAdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/addPlotConfig")
     public ResponseEntity<Map> addPlotConfig(@RequestBody PlotConfig plotConfig, HttpServletResponse response) {
