@@ -70,15 +70,6 @@ CREATE TABLE AdaptationRules (
  PRIMARY KEY (id)
 );
 
-CREATE TABLE ConfigurationProfile (
-    configurationProfileID INT NOT NULL AUTO_INCREMENT,
-    profileName VARCHAR(64) NOT NULL,
-    qualityModelId INT NOT NULL,
-    PRIMARY KEY (configurationProfileID),
-    FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
-);
-
-
 CREATE TABLE Metric (
     metricId INT NOT NULL AUTO_INCREMENT,
     metricName VARCHAR(64),
@@ -93,6 +84,23 @@ CREATE TABLE PlotConfig (
  PRIMARY KEY (plotConfigId)
 );
 
+CREATE TABLE QualityModel (
+    qualityModelId INT NOT NULL AUTO_INCREMENT,
+    metricId INT NOT NULL,
+    modelName VARCHAR(64),
+    modelDescriptionReference INT,
+    businessThreshold DOUBLE PRECISION,
+    PRIMARY KEY (qualityModelId),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+);
+
+CREATE TABLE ConfigurationProfile (
+    configurationProfileID INT NOT NULL AUTO_INCREMENT,
+    profileName VARCHAR(64) NOT NULL,
+    qualityModelId INT NOT NULL,
+    PRIMARY KEY (configurationProfileID),
+    FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
 
 CREATE TABLE Preference (
     configurationProfileID INT NOT NULL,
@@ -115,17 +123,6 @@ CREATE TABLE Probe (
     token VARCHAR(256),
     tokenExpiration TIMESTAMP(6),
     PRIMARY KEY (probeId)
-);
-
-
-CREATE TABLE QualityModel (
-    qualityModelId INT NOT NULL AUTO_INCREMENT,
-    metricId INT NOT NULL,
-    modelName VARCHAR(64),
-    modelDescriptionReference INT,
-    businessThreshold DOUBLE PRECISION,
-    PRIMARY KEY (qualityModelId),
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
 );
 
 
