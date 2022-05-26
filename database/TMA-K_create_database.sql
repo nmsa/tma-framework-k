@@ -134,8 +134,10 @@ CREATE TABLE Resource (
     resourceName VARCHAR(128),
     resourceType VARCHAR(16),
     resourceAddress VARCHAR(1024),
+    configurationProfileID INT NOT NULL,
     active TINYINT NOT NULL,
-    PRIMARY KEY (resourceId)
+    PRIMARY KEY (resourceId),
+    FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID)
 );
 
 
