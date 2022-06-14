@@ -44,7 +44,7 @@ public class AdaptationRulesController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdaptationRulesController.class);
     
     private PropertiesManager pm = PropertiesManager.getInstance();
-    private String planningAPI =  pm.getProperty("planningApiUrlHome");
+    private String planningAPI =  pm.getProperty("planningApiUrlProduction");
             
     @DeleteMapping("/removeRule/{ruleName}")
     public ResponseEntity<String> updateRules(
