@@ -78,7 +78,7 @@ CREATE TABLE Metric (
 );
 
 CREATE TABLE PlotConfig (
- plotConfigId INT NOT NULL,
+ plotConfigId INT NOT NULL AUTO_INCREMENT,
  configObject BLOB NOT NULL,
  plotConfigName VARCHAR(1024) NOT NULL,
  PRIMARY KEY (plotConfigId)
