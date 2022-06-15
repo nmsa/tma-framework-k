@@ -196,7 +196,7 @@ public class DatabaseManager {
     private static final String SQL_GET_QUALITY_MODEL_BY_ID
             = "SELECT * FROM QualityModel WHERE qualityModelId = ?";
     private static final String SQL_GET_CONFIGURATION_PROFILE_BY_ID
-            = "SELECT * FROM Configurationprofile WHERE configurationProfileId = ?";
+            = "SELECT * FROM ConfigurationProfile WHERE configurationProfileId = ?";
     private static final String SQL_GET_PREFERENCES_BY_CONFIGURATION_PROFILE_ID
             = "SELECT * FROM Preference WHERE configurationProfileId = ?";
     private static final String SQL_GET_LEAF_ATTRIBUTE_BY_METRIC_ID
