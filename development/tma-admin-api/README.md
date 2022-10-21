@@ -29,7 +29,7 @@ This tool allows you to:
 	*	[Actions](#Actions)
 		+	[Add a new Action](#Add-a-new-Action)
 		+	[Get Actions](#Get-Actions)
-		+	[Delete an Action](#Delete-an-Action)
+		+	[Delete Action](#Delete-Action)
 	*	[Actuators](#Actuators)
 		+	[Add a new Actuator](#Add-a-new-Actuator)
 		+	[Get Actuators](#Get-Actuators)
@@ -37,11 +37,11 @@ This tool allows you to:
 		+	[Add a new Rule](#Add-a-new-Rule)
 		+	[Get Rules](#Get-Rules)
 		+	[Get a Rule](#Get-Rule)
-		+	[Remove a Rule](#Remove-a-Rule)
+		+	[Delete Rule](#Delete-Rule)
 	*	[Configurations](#Configurations)
 		+	[Add a new Configuration](#Add-a-new-Configuration)
 		+	[Get Configurations](#Get-Configurations)
-		+	[Remove an Configuration](#Remove-an-Configuration)
+		+	[Delete Configuration](#Delete-Configuration)
 	*	[Descriptions](#Descriptions)
 		+	[Add a new Description](#Add-a-new-Description)
 		+	[Get Descriptions](#Get-Descriptions)
@@ -53,21 +53,22 @@ This tool allows you to:
 		+	[Add a new Plot Config](#Add-a-new-Plot-Config)
 		+	[Get Plot Configs](#Get-Plot-Configs)
 		+	[Replace a Plot Config](#Replace-a-Plot-Config)
-		+	[Delete a Plot Config](#Delete-a-Plot-Config)
+		+	[Delete Plot Config](#Delete-Plot-Config)
 	*	[Probes](#Probes)
 		+	[Add a new Probe](#Add-a-new-Probe)
 		+   [Get Probes](#Get-Probes)
-		+   [Delete a Probe](#Delete-a-Probe)
+		+   [Delete Probe](#Delete-Probe)
 	*	[Quality Models](#Quality-Models)
-		+	[Add a Quality Model](#Add-a-new-Quality-Model)
+		+	[Add a new Quality Model](#Add-a-new-Quality-Model)
 		+	[Add a new Configuration Profile](#Add-a-new-Configuration-Profile)
 		+	[Get Quality Models](#Get-Quality-Models)
 		+	[Get a Quality Model](#Get-a-Quality-Model)
-		+	[Get Configuration Profile](#Get-Configuration-Profile)
+		+	[Get a Configuration Profile](#Get-Configuration-Profile)
 		+	[Get Metrics from a Configuration Profile](#Get-Metrics-from-a-Configuration-Profile)
 	*	[Resources](#Resources)
 		+	[Add a new Resource](#Add-a-new-Resource)
 		+	[Get Resources](#Get-Resources)
+		+	[Get Resources by Actuator](#Get-Resources-by-Actuator)
 		+	[Get associated Quality Model and Configuration Profile](#Get-associated-Quality-Model-and-Configuration-Profile)
 		+	[Get Data](#Get-Data)
 		+	[Simulate Data](#Simulate-Data)
@@ -581,7 +582,7 @@ http://IP_MASTER:32026/getDescriptions
 
 Model:	
 
-*Query Parameters* - filter
+*Query Parameters* -> filter
 
 ```
 curl -X GET http://IP_MASTER:32026/getDescriptions?filter=filterText
@@ -594,7 +595,7 @@ curl -X GET http://IP_MASTER:32026/getDescriptions?filter=CPU&
 
 ### Input
 
-- *filter* -> String type. Optional parameter. When defined, returned descriptions must match it on their ids or names;
+- *filter* -> String type. Optional parameter. When defined, returned descriptions must match it on their ids or names.
 
 ### Success 200
 
@@ -676,7 +677,7 @@ http://IP_MASTER:32026/getMetrics
 
 Model:	
 
-*Query Parameters* - filter, createQualityModel
+*Query Parameters* -> filter, createQualityModel
 
 ```
 curl -X GET http://IP_MASTER:32026/getMetrics?filter=filterText&createQualityModel=booleanValue
@@ -713,7 +714,7 @@ http://IP_MASTER:32026/getMetrics/{id}
 
 Model:	
 
-*Path parameter* - id
+*Path parameter* -> id
 
 ```
 curl -X GET http://IP_MASTER:32026/getMetrics/{id}
@@ -726,7 +727,7 @@ curl -X GET http://IP_MASTER:32026/getMetrics/1
 
 ### Input
 
-*id* -> Int type. A metric’s database id.
+- *id* -> Int type. A metric’s database id.
 
 ### Success 200
 
@@ -942,7 +943,7 @@ http://IP_MASTER:32026/getQualityModels
 
 Model:	
 
-*Query Parameters* - qualityModelsFilter, metricsFilter
+*Query Parameters* -> qualityModelsFilter, metricsFilter
 
 ```
 curl -X GET http://IP_MASTER:32026/getQualityModels?qualityModelsFilter=qualityModelsFilterText&metricsFilter=metricsFilterText
@@ -979,7 +980,7 @@ http://IP_MASTER:32026/getQualityModels/{id}
 
 Model:	
 
-*Path parameter* - id
+*Path parameter* -> id
 
 ```
 curl -X GET http://IP_MASTER:32026/getQualityModels/{id}
@@ -992,7 +993,7 @@ curl -X GET http://IP_MASTER:32026/getQualityModels/1
 
 ### Input
 
-*id* -> Int type. A quality model’s database id.
+- *id* -> Int type. A quality model’s database id.
 
 ### Success 200
 
@@ -1015,7 +1016,7 @@ http://IP_MASTER:32026/getConfigurationProfile/{id}
 
 Model:	
 
-*Path parameter* - id
+*Path parameter* -> id
 
 ```
 curl -X GET http://IP_MASTER:32026/getConfigurationProfile/{id}
@@ -1028,7 +1029,7 @@ curl -X GET http://IP_MASTER:32026/getConfigurationProfile/1
 
 ### Input
 
-*id* -> Int type. A configuration profile’s database id.
+- *id* -> Int type. A configuration profile’s database id.
 
 ### Success 200
 
@@ -1050,7 +1051,7 @@ http://IP_MASTER:32026/getConfigurationProfile/{id}/listOfMetrics
 
 Model:	
 
-*Path parameter* - id
+*Path parameter* -> id
 
 ```
 curl -X GET http://IP_MASTER:32026/getConfigurationProfile/{id}/listOfMetrics
@@ -1063,7 +1064,7 @@ curl -X GET http://IP_MASTER:32026/getConfigurationProfile/1/listOfMetrics
 
 ### Input
 
-*id* -> Int type. A configuration profile’s database id.
+- *id* -> Int type. A configuration profile’s database id.
 
 ### Success 200
 
@@ -1120,8 +1121,43 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
-
 ### Get Resources
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getResources
+```
+
+Model:	
+
+*Query Parameters* -> createRule
+
+```
+curl -X GET http://IP_MASTER:32026/getResources?createRule=booleanValue
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getResources?createRule=true
+```
+
+### Input
+
+- *createRule* -> Boolean type. Optional parameter. When defined and as true, resources returned must have actions associated in the database.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|resources|Array|Array of currently monitored resources|
+
+
+### Get Resources by Actuator
 ---
 #### Method - GET
 
@@ -1132,6 +1168,9 @@ http://IP_MASTER:32026/getresources?actuatorIdString=
 ```
 
 Model:
+
+*Query Parameters* -> actuatorIdString
+
 ```
 curl -X GET http://IP_MASTER:32026/getresources?actuatorIdString=actuatorId
 ```
@@ -1142,6 +1181,9 @@ Example:
 curl -X GET http://IP_MASTER:32026/getresources?actuatorIdString=22
 ```
 
+### Input
+
+- *actuatorIdString* -> String type. An actuator id that will be used to find out the partner id and, consequently, used to find resources that share the same partner id.
 
 ### Success 200
 
@@ -1149,8 +1191,130 @@ If the call is sucessfull the status code will be 200.
 
 |Key|Type|Value description|
 |--|--|--|
-|resources|Array|Array of resources|
+|resources|Array|Array of resources that shares the same partnerId as the actuator|
 
+### Get associated Quality Model and Configuration Profile
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getResources/{id}/weightedTree
+```
+
+Model:	
+
+*Path parameter* -> id
+
+```
+curl -X GET http://IP_MASTER:32026/getResources/{id}/weightedTree
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getResources/1/weightedTree
+```
+
+### Input
+
+- *id* -> Int type. A resource’s database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|qualityModel|JSON object|List of metrics from the quality model associated to the resource|
+|configurationProfile|JSON object|List of metrics and their weights from the configuration profile associated to the resource|
+
+
+### Get Data
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getResources/{id}/data
+```
+
+Model:	
+
+*Path parameter* -> id
+
+*Query parameters* -> metricId, dataType, startDate, endDate, addPlansInfo
+
+```
+curl -X GET http://IP_MASTER:32026/getResources/{id}/data?metricId=int&dataType=string&startDate=epochDate&endDate=epochDate&addPlansInfo=boolean
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getResources/1/data?metricId=1&dataType=raw&startDate=1666356646&endDate=1666356946&addPlansInfo=false
+```
+
+### Input
+- *id* -> Int type. A resource's database id.
+- *metricId* -> Int type. A metric’s id to which there are values collected from or calculated for the given resource.
+- *dataType* -> String type. It can take "raw" and "metric" as values. The option "raw" requests data collected by probes and can only be applied if the metric to be consulted corresponds to a leaf metric. The other way the data will correspond to the values calculated by the TMA's Analyze component.
+- *startDate* -> Long type. A time slot beggining timestamp in epoch as seconds.
+- *endDate* -> Long type. A time slot ending in epoch as seconds.
+- *addPlansInfo* -> Boolean type. When true requests the ids of applied adaptation plans in the time slot requested.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|plotData|JSON object|List of values (raw or metric) and their timestamps, within the requested time slot. If the proper option was set, there will also be a list with the ids of executed adaptation plans|
+
+### Simulate Data
+---
+#### Method - PATCH
+
+URI:
+
+```
+http://IP_MASTER:32026/simulateData
+```
+
+Model:
+
+Body: json
+
+```
+curl -X POST http://IP_MASTER:32026/simulateData -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/simulateData -H 'Content-Type: application/json' -d '{"resourceId":"1","metricToSimulate":{"metricId":3,"childMetrics":[{"metricId":1,"childMetrics":[]},{"metricId":2,"childMetrics":[]}]},"preferences":{"1":0.5,"2":0.5,"3":1},"startDate":1656988688,"endDate":1656988751}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|resourceId|Int|Id of the resource to which the simulation will be applied|1|
+|metricToSimulate|JSON object|A metric's tree structure to which the simulation will be applied|{"metricId":3,"childMetrics":[{"metricId":1,"childMetrics":[]},...]}|
+|metricId|Int|Id of a metric|1|
+|childMetrics|Array|List of a parent's children metrics (and their subsequent children)|[{"metricId":1,"childMetrics":[]},{"metricId":2,"childMetrics":[]}]|
+|preferences|JSON object|Mappping between the ids from the simulation metrics and the corresponding simulation weights |{"1":0.5,"2":0.5,"3":1}|
+|startDate|Long|Time slot beggining timestamp in epoch as seconds|1656988688|
+|endDate|Long|Time slot ending timestamp in epoch as seconds|1656988751|
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|simulationData|Array|List of metric values and their timestamps, after aplying the simulation weights within the requested time slot|
 
 
 ## Configure Actions
