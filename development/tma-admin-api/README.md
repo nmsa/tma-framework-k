@@ -33,6 +33,11 @@ This tool allows you to:
 	*	[Actuators](#Actuators)
 		+	[Add a new Actuator](#Add-a-new-Actuator)
 		+	[Get Actuators](#Get-Actuators)
+	*	[Adaptation Rules](#Adaptation-Rules)
+		+	[Add a new Rule](#Add-a-new-Rule)
+		+	[Get Rules](#Get-Rules)
+		+	[Get a Rule](#Get-Rule)
+		+	[Remove a Rule](#Remove-a-Rule)
 	*	[Configurations](#Configurations)
 		+	[Add a new Configuration](#Add-a-new-Configuration)
 		+	[Get Configurations](#Get-Configurations)
@@ -45,11 +50,11 @@ This tool allows you to:
 		+	[Add a new Description](#Add-a-new-Description)
 		+	[Get Descriptions](#Get-Descriptions)
 	*	[Metrics](#Metrics)
-		+	[Add a Metric](#Add-a-new-Metric)
+		+	[Add a new Metric](#Add-a-new-Metric)
 		+	[Get Metrics](#Get-Metrics)
 		+	[Get a Metric](#Get-a-Metric)
 	*	[Plot Config](#Plot-Config)
-		+	[Add a Plot Config](#Add-a-new-Plot-Config)
+		+	[Add a new Plot Config](#Add-a-new-Plot-Config)
 		+	[Get Plot Configs](#Get-Plot-Configs)
 		+	[Replace a Plot Config](#Replace-a-Plot-Config)
 		+	[Remove a Plot Config](#Remove-a-Plot-Config)
@@ -66,14 +71,9 @@ This tool allows you to:
 		+	[Get Resources](#Get-Resources)
 		+	[Get associated Quality Model and Configuration Profile](#Get-associated-Quality-Model-and-Configuration-Profile)
 		+	[Get Data](#Get-Data)
-		+	[Configure Actions](#Configure-Actions)
-		+	[Get Scores](#Get-Scores)
 		+	[Simulate Data](#Simulate-Data)
-	*	[Rules](#Rules)
-		+	[Add a new Rule](#Add-a-new-Rule)
-		+	[Get Rules](#Get-Rules)
-		+	[Get a Rule](#Get-Rule)
-		+	[Remove a Rule](#Remove-a-Rule)
+	*	[Configure Actions](#Configure-Actions)
+	*	[Get Scores](#Get-Scores)
  -	[GUI](#GUI)
  -	[Implementation Details](#Implementation-Details)
 
@@ -568,6 +568,138 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |--|--|--|
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
+
+- - -
+## Metrics
+
+### Add a new Metric
+- - -
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/createMetric
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/createMetric -H 'Content-Type: application/json' -d 'json'
+```
+
+##### Note: The metric to be created can either be a leaf or parent metric. Depending on the case, the JSON formatting is different. Following, there is an example for each case.
+
+Example for the creation of a leaf metric:
+```
+curl -X POST http://IP_MASTER:32026/createMetric -H 'Content-Type: application/json' -d '{"metricName":"Leaf","leafAttribute":{"metricAggregationOperator":0,"numSamples":"10","normalizationMethod":"MIN-MAX","normalizationKind":1,"minimumThreshold":"0","maximumThreshold":"100","description":{"descriptionId":"1"}}}'
+```
+
+Example for the creation of a parent metric:
+```
+curl -X POST http://IP_MASTER:32026/createMetric -H 'Content-Type: application/json' -d '{"metricName":"Parent","childMetrics":[{"metricId":4},{"metricId":1}],"attributeAggregationOperator":0}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|metricName|String|Name of the metric to be created|CPU consumption|
+|leafAttribute|JSON object|Properties of the leaf metric|{"metricAggregationOperator":,"numSamples":, ...}|
+|metricAggregationOperator|Int|Id of the aggregation operator to apply on the probed data of the leaf metric|0|
+|numSamples|Int|Number of samples to consider when calculating the leaf metric value|10|
+|normalizationMethod|String|Identifier of the method to use on the normalization of leaf metric data |MIN-MAX|
+|normalizationKind|Int|Type of leaf metric (0 is BENEFIT and 1 is COST). If higher metric value the better, then it is a BENEFIT.|0|
+|minimumThreshold|Double|Minimum value to consider when applying normalization|0|
+|maximumThreshold|Double|Maximum value to consider when applying normalization|100|
+|description|JSON object|Description properties to associate the leaf metric to|{"descriptionId":""}|
+|descriptionId|Int|Id of the description the leaf metric is associated to|Desc|
+|childMetrics|Array|List of children metrics from a parent|[{"metricId":4},{"metricId":1}]|
+|metricId|Int|Id of a metric|30|
+|attributeAggregationOperator|Int|Id of the aggregation operator to apply on the children metrics values|0|
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Get Metrics
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getMetrics
+```
+
+Model:	
+
+*Query Parameters* - filter, createQualityModel
+
+```
+curl -X GET http://IP_MASTER:32026/getMetrics?filter=filterText&createQualityModel=booleanValue
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getMetrics?filter=CPU&createQualityModel=true
+```
+
+### Input
+
+- *filter* -> String type. Optional parameter. When defined, metrics returned must match it on their ids or names.
+
+- *createQualityModel* -> Boolean type. Optional parameter. When received, and defined as "true", metrics returned will be the ones not associated to quality models;
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|metrics|Array|Array of metrics|
+
+### Get a Metric
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getMetrics
+```
+
+Model:	
+
+*Path parameter* - id
+
+```
+curl -X GET http://IP_MASTER:32026/getMetrics/id
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getMetrics/1
+```
+
+### Input
+
+*id* -> Int type. A metric’s database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|metric|JSON object|Metric properties depending on being a leaf or parent metric. For both cases, the id and name are retrieved. Concerning a parent metric, additionally, the metrics tree and the children aggregation operator are returned. As for a leaf metric, information about associated raw data and how to process it are returned|
 
 ## Probes 
 
