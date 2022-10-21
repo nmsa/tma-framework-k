@@ -22,14 +22,14 @@ This tool allows you to:
 -	[Properties](#Properties)
 -	[API Calls](#API-Calls)
 	*	[Introduction](#Introduction)
-	*	[Partner](#Partner)
+	*	[Partners](#Partners)
 		+ 	[Get Partners](#Get-Partners)
 	*	[Keys](#Keys)
 		+ 	[Generate a new Public - Private key pair](#Generate-a-new-Public---Private-key-pair)
 	*	[Actions](#Actions)
 		+	[Add a new Action](#Add-a-new-Action)
 		+	[Get Actions](#Get-Actions)
-		+	[Remove an Action](#Remove-an-Action)
+		+	[Delete an Action](#Delete-an-Action)
 	*	[Actuators](#Actuators)
 		+	[Add a new Actuator](#Add-a-new-Actuator)
 		+	[Get Actuators](#Get-Actuators)
@@ -42,10 +42,6 @@ This tool allows you to:
 		+	[Add a new Configuration](#Add-a-new-Configuration)
 		+	[Get Configurations](#Get-Configurations)
 		+	[Remove an Configuration](#Remove-an-Configuration)
-	*	[Configuration Profiles](#Configuration-Profiles)
-		+	[Add a new Configuration Profile](#Add-a-new-Configuration-Profile)
-		+	[Get Configuration Profile](#Get-Configuration-Profile)
-		+	[Get Metrics from a Configuration Profile](#Get-Metrics-from-a-Configuration-Profile)
 	*	[Descriptions](#Descriptions)
 		+	[Add a new Description](#Add-a-new-Description)
 		+	[Get Descriptions](#Get-Descriptions)
@@ -57,15 +53,18 @@ This tool allows you to:
 		+	[Add a new Plot Config](#Add-a-new-Plot-Config)
 		+	[Get Plot Configs](#Get-Plot-Configs)
 		+	[Replace a Plot Config](#Replace-a-Plot-Config)
-		+	[Remove a Plot Config](#Remove-a-Plot-Config)
+		+	[Delete a Plot Config](#Delete-a-Plot-Config)
 	*	[Probes](#Probes)
 		+	[Add a new Probe](#Add-a-new-Probe)
 		+   [Get Probes](#Get-Probes)
-		+   [Remove a Probe](#Remove-a-Probe)
+		+   [Delete a Probe](#Delete-a-Probe)
 	*	[Quality Models](#Quality-Models)
 		+	[Add a Quality Model](#Add-a-new-Quality-Model)
+		+	[Add a new Configuration Profile](#Add-a-new-Configuration-Profile)
 		+	[Get Quality Models](#Get-Quality-Models)
 		+	[Get a Quality Model](#Get-a-Quality-Model)
+		+	[Get Configuration Profile](#Get-Configuration-Profile)
+		+	[Get Metrics from a Configuration Profile](#Get-Metrics-from-a-Configuration-Profile)
 	*	[Resources](#Resources)
 		+	[Add a new Resource](#Add-a-new-Resource)
 		+	[Get Resources](#Get-Resources)
@@ -569,6 +568,42 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
+
+### Get Descriptions
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getDescriptions
+```
+
+Model:	
+
+*Query Parameters* - filter
+
+```
+curl -X GET http://IP_MASTER:32026/getDescriptions?filter=filterText
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getDescriptions?filter=CPU&
+```
+
+### Input
+
+- *filter* -> String type. Optional parameter. When defined, returned descriptions must match it on their ids or names;
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|descriptions|Array|Array of descriptions|
+
 - - -
 ## Metrics
 
@@ -656,7 +691,7 @@ curl -X GET http://IP_MASTER:32026/getMetrics?filter=CPU&createQualityModel=true
 
 - *filter* -> String type. Optional parameter. When defined, metrics returned must match it on their ids or names.
 
-- *createQualityModel* -> Boolean type. Optional parameter. When received, and defined as "true", metrics returned will be the ones not associated to quality models;
+- *createQualityModel* -> Boolean type. Optional parameter. When received, and defined as "true", metrics returned will be the ones not associated to quality models.
 
 ### Success 200
 
@@ -673,7 +708,7 @@ If the call is sucessfull the status code will be 200.
 URI:
 
 ```
-http://IP_MASTER:32026/getMetrics
+http://IP_MASTER:32026/getMetrics/{id}
 ```
 
 Model:	
@@ -681,7 +716,7 @@ Model:
 *Path parameter* - id
 
 ```
-curl -X GET http://IP_MASTER:32026/getMetrics/id
+curl -X GET http://IP_MASTER:32026/getMetrics/{id}
 ```
 
 Example:
@@ -701,6 +736,7 @@ If the call is sucessfull the status code will be 200.
 |--|--|--|
 |metric|JSON object|Metric properties depending on being a leaf or parent metric. For both cases, the id and name are retrieved. Concerning a parent metric, additionally, the metrics tree and the children aggregation operator are returned. As for a leaf metric, information about associated raw data and how to process it are returned|
 
+- - -
 ## Probes 
 
 ### Add a new Probe 
@@ -809,8 +845,235 @@ curl -X DELETE http://IP_MASTER:32026/deleteprobe?probeIdString=22
 If the call is sucessfull the status code will be 200.
 
 
+- - -
+## Quality Models
+
+### Add a new Quality Model
+- - -
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/createQualityModel
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/createQualityModel -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/createQualityModel -H 'Content-Type: application/json' -d '{"modelName":"Availability","metric":{"metricId":"5"}}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|modelName|String|Name of the quality model to be created|Availability|
+|metric|JSON object|Properties of the metric associated as root to the quality model|{"metricId":"5"}|
+|metricId|Int|Id of a metric|1|
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Add a new Configuration Profile
+- - -
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/createConfigurationProfile
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/createConfigurationProfile -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/createConfigurationProfile -H 'Content-Type: application/json' -d '{"preferences":[{"metricId":"1","weight":"0.4"},{"metricId":"2","weight":"0.6"},{"metricId":"3","weight":"1"}],"qualityModelId":1,"profileName":"ConfgProfile"}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|preferences|Array|List of metrics and their weights|[{"metricId":"1","weight":"0.4"},{"metricId":"2","weight":"0.6"}]|
+|metricId|Int|Id of a metric from a quality model|1|
+|weight|Double|Metric weight to apply in the configuration profile|0.35|
+|qualityModelId|Int|Id of the quality model to associate the configuration profile|1|
+|profileName|String|Name of the configuration Profile|Unbalanced Availability|
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Get Quality Models
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getQualityModels
+```
+
+Model:	
+
+*Query Parameters* - qualityModelsFilter, metricsFilter
+
+```
+curl -X GET http://IP_MASTER:32026/getQualityModels?qualityModelsFilter=qualityModelsFilterText&metricsFilter=metricsFilterText
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getMetrics?filter=Availability&metricsFilter=1
+```
+
+### Input
+
+- *qualityModelsFilter* -> String type. Optional parameter. When defined, quality models returned must match it on their ids or names.
+
+- *metricsFilter* -> String type. Optional parameter. When defined, metrics returned must match it on their ids or names.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|qualityModels|Array|Array of quality models|
+
+### Get a Quality Model
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getQualityModels/{id}
+```
+
+Model:	
+
+*Path parameter* - id
+
+```
+curl -X GET http://IP_MASTER:32026/getQualityModels/{id}
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getQualityModels/1
+```
+
+### Input
+
+*id* -> Int type. A quality model’s database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|qualityModel|JSON object|Quality model's id, name, associated metrics tree, and list of the associated configuration profiles|
 
 
+### Get a Configuration Profile
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getConfigurationProfile/{id}
+```
+
+Model:	
+
+*Path parameter* - id
+
+```
+curl -X GET http://IP_MASTER:32026/getConfigurationProfile/{id}
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getConfigurationProfile/1
+```
+
+### Input
+
+*id* -> Int type. A configuration profile’s database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|configurationProfile|JSON object|Configuration profile's id, name, associated quality model’s id, and list of metrics ids and their weights|
+
+### Get Metrics from a Configuration Profile
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getConfigurationProfile/{id}/listOfMetrics
+```
+
+Model:	
+
+*Path parameter* - id
+
+```
+curl -X GET http://IP_MASTER:32026/getConfigurationProfile/{id}/listOfMetrics
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getConfigurationProfile/1/listOfMetrics
+```
+
+### Input
+
+*id* -> Int type. A configuration profile’s database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|listOfMetrics|Array|List of metrics from a configuration profile|
+
+- - -
 ## Resources
 
 ### Add a new Resource
