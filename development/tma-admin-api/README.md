@@ -37,7 +37,7 @@ This tool allows you to:
 	*	[Adaptation Rules](#Adaptation-Rules)
 		+	[Add a new Rule](#Add-a-new-Rule)
 		+	[Get Rules](#Get-Rules)
-		+	[Get a Rule](#Get-Rule)
+		+	[Get a Rule](#Get-a-Rule)
 		+	[Delete Rule](#Delete-Rule)
 	*	[Configurations](#Configurations)
 		+	[Add a new Configuration](#Add-a-new-Configuration)
@@ -64,7 +64,7 @@ This tool allows you to:
 		+	[Add a new Configuration Profile](#Add-a-new-Configuration-Profile)
 		+	[Get Quality Models](#Get-Quality-Models)
 		+	[Get a Quality Model](#Get-a-Quality-Model)
-		+	[Get a Configuration Profile](#Get-Configuration-Profile)
+		+	[Get a Configuration Profile](#Get-a-Configuration-Profile)
 		+	[Get Metrics from a Configuration Profile](#Get-Metrics-from-a-Configuration-Profile)
 	*	[Resources](#Resources)
 		+	[Add a new Resource](#Add-a-new-Resource)
@@ -331,7 +331,7 @@ If the call is sucessfull the status code will be 200.
 URI:
 
 ```
-http://IP_MASTER:32026/getactions
+http://IP_MASTER:32026/getactions?actuatorIdString=
 ```
 
 Model:
@@ -533,12 +533,12 @@ Model:
 *Query parameters* -> filter 
 
 ```
-curl -X GET http://IP_MASTER:32026/getRules
+curl -X GET http://IP_MASTER:32026/getRules?filter=filterText
 ```
 
 Example:
 ```
-curl -X GET http://IP_MASTER:32026/getRules
+curl -X GET http://IP_MASTER:32026/getRules?filter=myRule
 ```
 
 ### Input
@@ -1033,7 +1033,7 @@ If the call is sucessfull the status code will be 200.
 
 Each plot config in the array will contain its database id, name, and a byte array as configuration object that represents a JSON string. 
 
-### Replace a Plot Config Metric
+### Replace a Plot Config
 ---
 #### Method - PUT
 
