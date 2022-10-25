@@ -738,6 +738,189 @@ If the call is sucessfull the status code will be 200.
 |metric|JSON object|Metric properties depending on being a leaf or parent metric. For both cases, the id and name are retrieved. Concerning a parent metric, additionally, the metrics tree and the children aggregation operator are returned. As for a leaf metric, information about associated raw data and how to process it are returned|
 
 - - -
+## Plot Configs
+
+### Add a new Plot Config
+- - -
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/addPlotConfig
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/addPlotConfig -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/addPlotConfig -H 'Content-Type: application/json' -d '{"plotConfigName":"plot","configObject":[123,34,114,101,115,...]}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|plotConfigName|String|Name of the plot configuration to be created|CPU consumption myApp|
+|configObject|Array|Uint8 values of the BLOB representing a plot configuration's JSON string|[123,34, ...]|
+
+##### Note: Following it is shown how a plot configuration's JSON is composed and the meaning of its fields.
+
+Example of a plot configuration's JSON:
+```
+{"resourceId":"1","dataType":"raw","metricId":"1","startDate":1658226023,"endDate":1658226328,"livePlot":true,"addPlansInfo":false,"metricLabel":"CPU"}
+```
+
+Next, there is information about each field of the JSON:
+
+- *resourceId* -> Int type. A resource’s database id.
+- *dataType* -> String type. It can take "raw" and "metric" as values. The option "raw" is used when the need is to plot data collected by probes and thereby the corresponding metric id should match a leaf metric of the resource's applied quality model. The other way the data will correspond to the values calculated by the TMA's Analyze component.
+- *metricId* -> Int type. A metric’s id from the resource's applied quality model.
+- *startDate* -> Long type. A time slot beggining timestamp in epoch as seconds to use in the plot.
+- *endDate* -> Long type. A time slot ending timestamp in epoch as seconds to use in the plot.
+- *livePlot* -> Boolean type. Defines if the plot shows live values. If defined as true, there is no need for startDate and endDate.  
+- *addPlansInfo* -> Boolean type. Can only be defined as true if dataType was defined as "metric". In that case, the plot will also show the ids of adaptation plans at the time they were applied to the specified resource.  
+- *metricLabel* -> String type. Text that goes into the legend of the plot to identify the metric being visualized.
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|plotConfigId|Int|Database id associated to the plot configuration just created|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Get Plot Configs
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getPlotsConfigs
+```
+
+Model:
+
+```
+curl -X GET http://IP_MASTER:32026/getPlotsConfigs
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getPlotsConfigs
+```
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|plotsConfigs|Array|Array of plot configs|
+
+##### Note: Each plot config in the array will contain its database id, name, and a byte array as configuration object that represents a JSON string. 
+
+### Replace a Plot Config Metric
+---
+#### Method - PUT
+
+URI:
+
+```
+http://IP_MASTER:32026/replacePlotConfig
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/replacePlotConfig -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/replacePlotConfig -H 'Content-Type: application/json' -d '{"plotConfigName":"replacePlot","plotConfigId":178,"configObject":[123,34,125, ...]}'
+```
+
+### Input
+
+The following table shows some information about the json configuration.
+
+|Key|Type|Description|Example|
+|--|--|--|--|
+|plotConfigName|String|New name for the plot configuration|CPU consumption myApp|
+|plotConfigId|Int|Identifier of the plot configuration to replace|12|
+|configObject|Array|Uint8 values of the BLOB representing thew new plot configuration's JSON string|[123,34, ...]|
+
+##### Note: Following it is shown how a plot configuration's JSON is composed and the meaning of its fields.
+
+Example of a plot configuration's JSON:
+```
+{"resourceId":"1","dataType":"raw","metricId":"1","startDate":1658226023,"endDate":1658226328,"livePlot":true,"addPlansInfo":false,"metricLabel":"CPU"}
+```
+
+Next, there is information about each field of the JSON:
+
+- *resourceId* -> Int type. A resource’s database id.
+- *dataType* -> String type. It can take "raw" and "metric" as values. The option "raw" is used when the need is to plot data collected by probes and thereby the corresponding metric id should match a leaf metric of the resource's applied quality model. The other way the data will correspond to the values calculated by the TMA's Analyze component.
+- *metricId* -> Int type. A metric’s id from the resource's applied quality model.
+- *startDate* -> Long type. A time slot beggining timestamp in epoch as seconds to use in the plot.
+- *endDate* -> Long type. A time slot ending timestamp in epoch as seconds to use in the plot.
+- *livePlot* -> Boolean type. Defines if the plot shows live values. If defined as true, there is no need for startDate and endDate.  
+- *addPlansInfo* -> Boolean type. Can only be defined as true if dataType was defined as "metric". In that case, the plot will also show the ids of adaptation plans at the time they were applied to the specified resource.  
+- *metricLabel* -> String type. Text that goes into the legend of the plot to identify the metric being visualized.
+
+### Success 200 & Error 400, 500
+
+The 3 possible status are 200, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Delete Plot Config
+---
+#### Method - DELETE
+
+URI:
+
+```
+http://IP_MASTER:32026/deletePlotConfig/{id}
+```
+
+Model:
+
+*Path parameter* -> id
+
+```
+curl -X DELETE http://IP_MASTER:32026/deletePlotConfig/{id}
+```
+
+Example:
+
+```
+curl -X DELETE http://IP_MASTER:32026/deletePlotConfig/{id}
+```
+
+### Input
+
+- *id* -> Int type. A plot config's database id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+
+- - -
 ## Probes 
 
 ### Add a new Probe 
@@ -1260,7 +1443,7 @@ curl -X GET http://IP_MASTER:32026/getResources/1/data?metricId=1&dataType=raw&s
 - *metricId* -> Int type. A metric’s id to which there are values collected from or calculated for the given resource.
 - *dataType* -> String type. It can take "raw" and "metric" as values. The option "raw" requests data collected by probes and can only be applied if the metric to be consulted corresponds to a leaf metric. The other way the data will correspond to the values calculated by the TMA's Analyze component.
 - *startDate* -> Long type. A time slot beggining timestamp in epoch as seconds.
-- *endDate* -> Long type. A time slot ending in epoch as seconds.
+- *endDate* -> Long type. A time slot ending timestamp in epoch as seconds.
 - *addPlansInfo* -> Boolean type. When true requests the ids of applied adaptation plans in the time slot requested.
 
 ### Success 200
