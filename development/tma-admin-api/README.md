@@ -29,6 +29,7 @@ This tool allows you to:
 	*	[Actions](#Actions)
 		+	[Add a new Action](#Add-a-new-Action)
 		+	[Get Actions](#Get-Actions)
+		+	[Get Actions by Actuator](#Get-Actions-by-Actuator)
 		+	[Delete Action](#Delete-Action)
 	*	[Actuators](#Actuators)
 		+	[Add a new Actuator](#Add-a-new-Actuator)
@@ -49,7 +50,7 @@ This tool allows you to:
 		+	[Add a new Metric](#Add-a-new-Metric)
 		+	[Get Metrics](#Get-Metrics)
 		+	[Get a Metric](#Get-a-Metric)
-	*	[Plot Config](#Plot-Config)
+	*	[Plot Configs](#Plot-Configs)
 		+	[Add a new Plot Config](#Add-a-new-Plot-Config)
 		+	[Get Plot Configs](#Get-Plot-Configs)
 		+	[Replace a Plot Config](#Replace-a-Plot-Config)
@@ -285,7 +286,45 @@ The 3 possible status are 201, 400, and 500. In the table bellow there is some i
 |message|String|Message about the status of the call|
 |status|String|Status of the HTTP Request|
 
+
 ### Get Actions
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getActions
+```
+
+Model:
+
+*Query parameters* -> resourceId
+
+```
+curl -X GET http://IP_MASTER:32026/getActions?resourceId=resourceIdString
+```
+
+Example:
+
+```
+curl -X GET http://IP_MASTER:32026/getActions?resourceId=1
+```
+
+### Input
+
+- *resourceId* -> Int type. Optional parameter. If defined, actions retrieved must be associated with this id.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|actions|Array|List of actions and their configurations|
+
+
+### Get Actions by Actuator
 ---
 #### Method - GET
 
@@ -296,16 +335,22 @@ http://IP_MASTER:32026/getactions
 ```
 
 Model:
+
+*Query parameters* -> actuatorIdString
+
 ```
-curl -X GET http://IP_MASTER:32026/getactions
+curl -X GET http://IP_MASTER:32026/getactions?actuatorIdString=actuatorId
 ```
 
 Example:
 
 ```
-curl -X GET http://IP_MASTER:32026/getactions
+curl -X GET http://IP_MASTER:32026/getactions?actuatorIdString=22
 ```
 
+### Input
+
+- *actuatorIdString* -> String type. An actuator id that will be used to find out actions associated with it.
 
 ### Success 200
 
@@ -313,7 +358,7 @@ If the call is sucessfull the status code will be 200.
 
 |Key|Type|Value description|
 |--|--|--|
-|actions|Array|Array of actions|
+|actions|Array|List of actions|
 
 
 ### Delete Action
@@ -417,6 +462,165 @@ If the call is sucessfull the status code will be 200.
 |Key|Type|Value description|
 |--|--|--|
 |actuators|Array|Array of actuators|
+
+- - -
+## Adaptation Rules
+
+
+> #### Note: The endpoint descriptions presented here describe the TMA's Planning API. It is done this way so that all endpoints can be consulted in a centralized manner and the finding effort be decreased. Also it is structured this way because, internally, requests related to adaptation rules are received by the API of this folder and then redirected to the API of the Planning component. When the response is received it is redirected to the original request.
+
+
+### Add a new Rule
+- - -
+#### Method - POST
+
+URI:
+
+```
+http://IP_MASTER:32026/addRule
+```
+
+Model:
+Body: json
+```
+curl -X POST http://IP_MASTER:32026/addRule -H 'Content-Type: application/json' -d 'json'
+```
+
+Example:
+```
+curl -X POST http://IP_MASTER:32026/addRule -H 'Content-Type: application/json' -d '{"resourceId":"1","ruleName":"ARuleName","metricId":"3","operator":"<","activationThreshold":"0.7","actionList":[{"actionId":1,"actuatorId":2,"resourceId":1,"actionName":"Java Demo Actuator","configurations":[{"configurationId":2,"keyName":"confJavaDemo2","value":"conf2"},{"configurationId":1,"keyName":"confJavaDemo1","value":"conf1"}]}]}'
+```
+
+### Input
+
+Next, there is information about each field of the JSON:
+
+- *resourceId* -> Int type. A resource’s database id to which the rule will be applied and the adaptation actions to apply are associated with.
+- *ruleName* -> String type. A name for the rule.
+- *metricId* -> Int type. A metric’s id from the resource's applied quality model from which the values will be used to verify the rule condition.
+- *operator* -> String type. The operator (such as "<", "<=", "!=", ...) to use in the rule's condition to compare the metric value to a threshold.
+- *activationThreshold* -> Double type. A value to use in the rule's condition to compare to a metric's value.
+- *actionList* -> Array type. List of actions associated with the given resource that form the adaptation plan when the rule's condition is true.  
+- *actionId* -> Int type. An action's database id.  
+- *actuatorId* -> Int type. An actuator's database id that is associated with the action.  
+- *actionName* -> String type. The action’s name associate with its database id.
+- *configurations* -> Array type. List of configurations that are needed for and associated with an action.
+- *configurationId* -> Int type. A configuration’s database id.
+- *keyName* -> String type. Property associated with the given configuration id.
+- *value* -> String type. Value to use in the adaptation plan for a given configuration.
+
+### Success 201 & Error 400, 500
+
+The 3 possible status are 201, 400, and 500. In the table bellow there is some information about each key.
+
+|Field|Type|Description|
+|--|--|--|
+|message|String|Message about the status of the call|
+|status|String|Status of the HTTP Request|
+
+### Get Rules
+---
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getRules
+```
+
+Model:
+
+*Query parameters* -> filter 
+
+```
+curl -X GET http://IP_MASTER:32026/getRules
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getRules
+```
+
+### Input
+
+- *filter* -> String type. Optional parameter. When defined, returned rule names must match it.
+
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|rulesNames|Array of Strings|List of the existing adaptation rules names|
+
+### Get a Rule
+---
+
+#### Method - GET
+
+URI:
+
+```
+http://IP_MASTER:32026/getRules/{ruleName}
+```
+
+Model:	
+
+*Path parameter* -> ruleName
+
+```
+curl -X GET http://IP_MASTER:32026/getRules/{ruleName}
+```
+
+Example:
+```
+curl -X GET http://IP_MASTER:32026/getRules/MyRule
+```
+
+### Input
+
+- *ruleName* -> String type. An adaptation rule’s name.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
+
+|Key|Type|Value description|
+|--|--|--|
+|ruleDetail|String|Rule's definition code that includes the rule condition and composition of the adaptation plan when it is triggered|
+
+### Delete Rule
+---
+#### Method - DELETE
+
+URI:
+
+```
+http://IP_MASTER:32026/removeRule/{ruleName}
+```
+
+Model:
+
+*Path parameter* -> ruleName
+
+```
+curl -X DELETE http://IP_MASTER:32026/removeRule/{ruleName}
+```
+
+Example:
+
+```
+curl -X DELETE http://IP_MASTER:32026/removeRule/MyRule
+```
+
+### Input
+
+- *ruleName* -> String type. An adaptation rule’s name.
+
+### Success 200
+
+If the call is sucessfull the status code will be 200.
 
 
 ---
@@ -582,7 +786,7 @@ http://IP_MASTER:32026/getDescriptions
 
 Model:	
 
-*Query Parameters* -> filter
+*Query parameters* -> filter
 
 ```
 curl -X GET http://IP_MASTER:32026/getDescriptions?filter=filterText
@@ -677,7 +881,7 @@ http://IP_MASTER:32026/getMetrics
 
 Model:	
 
-*Query Parameters* -> filter, createQualityModel
+*Query parameters* -> filter, createQualityModel
 
 ```
 curl -X GET http://IP_MASTER:32026/getMetrics?filter=filterText&createQualityModel=booleanValue
@@ -827,7 +1031,7 @@ If the call is sucessfull the status code will be 200.
 |--|--|--|
 |plotsConfigs|Array|Array of plot configs|
 
-##### Note: Each plot config in the array will contain its database id, name, and a byte array as configuration object that represents a JSON string. 
+Each plot config in the array will contain its database id, name, and a byte array as configuration object that represents a JSON string. 
 
 ### Replace a Plot Config Metric
 ---
@@ -908,7 +1112,7 @@ curl -X DELETE http://IP_MASTER:32026/deletePlotConfig/{id}
 Example:
 
 ```
-curl -X DELETE http://IP_MASTER:32026/deletePlotConfig/{id}
+curl -X DELETE http://IP_MASTER:32026/deletePlotConfig/12
 ```
 
 ### Input
@@ -1126,7 +1330,7 @@ http://IP_MASTER:32026/getQualityModels
 
 Model:	
 
-*Query Parameters* -> qualityModelsFilter, metricsFilter
+*Query parameters* -> qualityModelsFilter, metricsFilter
 
 ```
 curl -X GET http://IP_MASTER:32026/getQualityModels?qualityModelsFilter=qualityModelsFilterText&metricsFilter=metricsFilterText
@@ -1316,7 +1520,7 @@ http://IP_MASTER:32026/getResources
 
 Model:	
 
-*Query Parameters* -> createRule
+*Query parameters* -> createRule
 
 ```
 curl -X GET http://IP_MASTER:32026/getResources?createRule=booleanValue
@@ -1352,7 +1556,7 @@ http://IP_MASTER:32026/getresources?actuatorIdString=
 
 Model:
 
-*Query Parameters* -> actuatorIdString
+*Query parameters* -> actuatorIdString
 
 ```
 curl -X GET http://IP_MASTER:32026/getresources?actuatorIdString=actuatorId
@@ -1420,7 +1624,7 @@ If the call is sucessfull the status code will be 200.
 URI:
 
 ```
-http://IP_MASTER:32026/getResources/{id}/data
+http://IP_MASTER:32026/getResources/{id}/data?metricId=&dataType=&startDate=&endDate=&addPlansInfo=
 ```
 
 Model:	
