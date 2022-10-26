@@ -49,6 +49,9 @@ DROP TABLE IF EXISTS Resource;
 DROP TABLE IF EXISTS ConfigurationProfile;
 DROP TABLE IF EXISTS Preference;
 
+DROP TABLE IF EXISTS AdaptationRules;
+DROP TABLE IF EXISTS PlotConfig;
+
 
 -- -- Table time was removed for normalization.
 -- DROP TABLE IF EXISTS Time;
@@ -61,13 +64,11 @@ CREATE TABLE Actuator (
     PRIMARY KEY (actuatorId)
 );
 
-
-CREATE TABLE ConfigurationProfile (
-    configurationProfileID INT NOT NULL AUTO_INCREMENT,
-    profileName VARCHAR(64) NOT NULL,
-    PRIMARY KEY (configurationProfileID)
+CREATE TABLE AdaptationRules (
+ id INT NOT NULL,
+ rulesFile BLOB NOT NULL,
+ PRIMARY KEY (id)
 );
-
 
 CREATE TABLE Metric (
     metricId INT NOT NULL AUTO_INCREMENT,
@@ -76,6 +77,30 @@ CREATE TABLE Metric (
     PRIMARY KEY (metricId)
 );
 
+CREATE TABLE PlotConfig (
+ plotConfigId INT NOT NULL AUTO_INCREMENT,
+ configObject BLOB NOT NULL,
+ plotConfigName VARCHAR(1024) NOT NULL,
+ PRIMARY KEY (plotConfigId)
+);
+
+CREATE TABLE QualityModel (
+    qualityModelId INT NOT NULL AUTO_INCREMENT,
+    metricId INT NOT NULL,
+    modelName VARCHAR(64),
+    modelDescriptionReference INT,
+    businessThreshold DOUBLE PRECISION,
+    PRIMARY KEY (qualityModelId),
+    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
+);
+
+CREATE TABLE ConfigurationProfile (
+    configurationProfileID INT NOT NULL AUTO_INCREMENT,
+    profileName VARCHAR(64) NOT NULL,
+    qualityModelId INT NOT NULL,
+    PRIMARY KEY (configurationProfileID),
+    FOREIGN KEY (qualityModelId) REFERENCES QualityModel (qualityModelId)
+);
 
 CREATE TABLE Preference (
     configurationProfileID INT NOT NULL,
@@ -101,23 +126,15 @@ CREATE TABLE Probe (
 );
 
 
-CREATE TABLE QualityModel (
-    qualityModelId INT NOT NULL AUTO_INCREMENT,
-    metricId INT NOT NULL,
-    modelName VARCHAR(64),
-    modelDescriptionReference INT,
-    businessThreshold DOUBLE PRECISION,
-    PRIMARY KEY (qualityModelId, metricId),
-    FOREIGN KEY (metricId) REFERENCES Metric (metricId)
-);
-
-
 CREATE TABLE Resource (
     resourceId INT NOT NULL AUTO_INCREMENT,
     resourceName VARCHAR(128),
     resourceType VARCHAR(16),
     resourceAddress VARCHAR(1024),
-    PRIMARY KEY (resourceId)
+    configurationProfileID INT NOT NULL,
+    active TINYINT NOT NULL,
+    PRIMARY KEY (resourceId),
+    FOREIGN KEY (configurationProfileID) REFERENCES ConfigurationProfile (configurationProfileID)
 );
 
 
@@ -195,7 +212,7 @@ CREATE TABLE MetricData (
     value DOUBLE PRECISION,
     resourceId INT,
 
-    PRIMARY KEY (metricId,valueTime),
+    PRIMARY KEY (metricId,valueTime,resourceId),
 
     FOREIGN KEY (metricId) REFERENCES Metric (metricId),
     FOREIGN KEY (resourceId) REFERENCES Resource (resourceId)
@@ -207,10 +224,11 @@ CREATE TABLE Plan (
     metricId INT NOT NULL,
     valueTime TIMESTAMP(6) NOT NULL,
     status INT,
+    resourceId INT,
 
     PRIMARY KEY (planId),
 
-    FOREIGN KEY (metricId,valueTime) REFERENCES MetricData (metricId,valueTime)
+    FOREIGN KEY (metricId,valueTime,resourceId) REFERENCES MetricData (metricId,valueTime,resourceId)
 );
 
 
