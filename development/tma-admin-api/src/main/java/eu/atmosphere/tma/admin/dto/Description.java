@@ -48,6 +48,15 @@ public class Description extends DataObject {
         this.descriptionName = descriptionName;
         this.unit = unit;
     }
+    
+    /**
+    * @author João Ribeiro <jdribeiro@student.dei.uc.pt>
+    */
+    public Description(int descriptionId, String descriptionName, String unit) {
+        this.descriptionId = descriptionId;
+        this.descriptionName = descriptionName;
+        this.unit = unit;
+    }
 
     public Description(String dataType, String descriptionName, String unit) {
         this(-1, dataType, descriptionName, unit);

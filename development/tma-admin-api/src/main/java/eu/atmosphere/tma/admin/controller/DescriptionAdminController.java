@@ -25,7 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Description;
+import eu.atmosphere.tma.admin.dto.MetricDashboard;
 import eu.atmosphere.tma.admin.util.Constants;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -62,5 +69,31 @@ public class DescriptionAdminController {
 
         return AdminController.genericResponseEntity(Constants.HTTPSUCESSCREATED, Constants.SUCCESS, "Description created");
     }
+    
+    /**
+    * @author João Ribeiro <jdribeiro@student.dei.uc.pt>
+    */
+    @GetMapping("/getDescriptions")
+    public ResponseEntity<Map> getDescriptions(@RequestParam(required = false, defaultValue="",name = "filter") String filter, HttpServletResponse response) {
+        DatabaseManager database = new DatabaseManager();
+        ArrayList<Description> descriptions;
+        try {
+            descriptions = database.getDescriptions(filter);
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
+        }
+
+        HashMap<String, ArrayList<Description>> descriptionsJson = new HashMap<>();
+        descriptionsJson.put("descriptions", descriptions);
+
+        return new ResponseEntity<>(
+                descriptionsJson,
+                HttpStatus.valueOf(response.getStatus())
+        );
+    }
+    
+    
 
 }

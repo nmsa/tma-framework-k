@@ -11,6 +11,12 @@
  */
 package eu.atmosphere.tma.admin.controller;
 
+import eu.atmosphere.tma.admin.dto.ConfigurationProfile;
+import eu.atmosphere.tma.admin.dto.DataObject;
+import eu.atmosphere.tma.admin.dto.DataSetElem;
+import eu.atmosphere.tma.admin.dto.DataSetPlot;
+import eu.atmosphere.tma.admin.dto.MetricDashboard;
+import eu.atmosphere.tma.admin.dto.QualityModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +36,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.atmosphere.tma.admin.util.DatabaseManager;
 import eu.atmosphere.tma.admin.dto.Resource;
+import eu.atmosphere.tma.admin.dto.SimulationData;
 import eu.atmosphere.tma.admin.util.Constants;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.logging.Level;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * This class is a Rest Controller. It handles every request made to the
@@ -102,5 +117,173 @@ public class ResourceAdminController {
                 resourcesJson,
                 HttpStatus.valueOf(response.getStatus())
         );
+    }
+    
+    /**
+    * @author João Ribeiro <jdribeiro@student.dei.uc.pt>
+    * 
+    * Get list of currently active resources
+    */
+    @GetMapping("/getResources")
+    public ResponseEntity<Map> getResourcesMonitored( 
+            @RequestParam(required = false, name = "createRule", defaultValue = "false") boolean createRule, 
+            HttpServletResponse response) {
+        
+        DatabaseManager database = new DatabaseManager();
+        ArrayList<Resource> monitoredResources;
+        try {
+            monitoredResources = database.getMonitoredResources(createRule);
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
+        }
+
+        HashMap<String, ArrayList<Resource>> monitoredResourcesJson = new HashMap<>();
+        monitoredResourcesJson.put("resources", monitoredResources);
+
+        return new ResponseEntity<>(
+                monitoredResourcesJson,
+                HttpStatus.valueOf(response.getStatus())
+        );
+    }
+    
+    /**
+    * @author João Ribeiro <jdribeiro@student.dei.uc.pt>
+    * 
+    * Gets the configuration profile and corresponding metrics tree associated to a resouce
+    */
+    @GetMapping("/getResources/{id}/weightedTree")
+    public ResponseEntity<Map> getResourceWeightedMetricsTree( @PathVariable(name= "id") int id,
+            HttpServletResponse response) {
+        
+        DatabaseManager database = new DatabaseManager();
+        
+        int configurationProfileID;
+        int qualityModelId;
+        QualityModel qualityModel;
+        ConfigurationProfile configurationProfile;
+        
+        try {
+            
+            //get conf profile Id
+            configurationProfileID = database.getConfigurationProfileIdByResourceId(id);
+            
+            //get quality Model Id
+            qualityModelId = database.getQualityModelIdByConfigurationProfileId(configurationProfileID);
+            
+            //get quality model metrics tree
+            qualityModel = database.getQualityModelById(qualityModelId);
+            
+            //get configuration profile weights
+            configurationProfile = database.getConfigurationProfileById(configurationProfileID);
+        
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
+        }
+
+        HashMap<String, DataObject> metricsTreeAndWeightsJson = new HashMap<>();
+        metricsTreeAndWeightsJson.put("qualityModel", (DataObject) qualityModel);
+        metricsTreeAndWeightsJson.put("configurationProfile", (DataObject) configurationProfile);
+
+        return new ResponseEntity<>(
+                metricsTreeAndWeightsJson,
+                HttpStatus.valueOf(response.getStatus())
+        );
+    }
+    
+    /**
+    * @author João Ribeiro <jdribeiro@student.dei.uc.pt>
+    * 
+    * Get resource's data (either metric data or raw data). Also, may add information about adaptation plans
+     * @param dataType it takes values "raw" or "metric". The value is sent from the webpage and it determines
+     * if the data to send in the response is data collected from probes or calculated by Analyze 
+     * @param startDate start timestamp for retrieving data. It is sent from webPage in UTC
+     * @param endDate end timestamp for retrieving data. It is sent from webPage in UTC
+     * @param addPlansInfo either true or false. If set to true, information about executed plans in the 
+     * time window is sent in the response.
+    */
+    @GetMapping("/getResources/{id}/data")
+    public ResponseEntity<Map> getResourceData ( @PathVariable(name= "id") int resourceId,
+            @RequestParam(required = true, name = "metricId") int metricId,
+            @RequestParam(required = true, name = "dataType") String dataType,
+            @RequestParam(required = true, name = "startDate") long startDate,
+            @RequestParam(required = true, name = "endDate") long endDate,
+            @RequestParam(required = true, name = "addPlansInfo") boolean addPlansInfo,
+            HttpServletResponse response) {
+        
+        DatabaseManager database = new DatabaseManager();
+        ArrayList<DataSetPlot> plotData;
+        
+        
+        try {
+            
+            plotData = database.getPlotData(resourceId, metricId, dataType, 
+                    startDate, endDate, addPlansInfo);
+        
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database");
+        } 
+        HashMap<String, ArrayList<DataSetPlot>> plotDataJson = new HashMap<>();
+        plotDataJson.put("plotData", plotData);
+
+        return new ResponseEntity<>(
+                plotDataJson,
+                HttpStatus.valueOf(response.getStatus())
+        );
+    }
+    
+    
+    //NOTE: This has been made just for metrics that use neutrality as aggregation operator
+    @PatchMapping("/simulateData")
+    public ResponseEntity<Map> simulateData ( @RequestBody SimulationData simulationRequestData,
+            HttpServletResponse response) {
+        
+        ArrayList<DataSetElem> simulationData = new ArrayList();
+        
+        try {
+            HashMap <Integer,Double> preferences = simulationRequestData.getPreferences();
+            MetricDashboard metricToSimulate = simulationRequestData.getMetricToSimulate();
+            metricsTreeTraverse(
+                    simulationData, simulationRequestData.getResourceId(), simulationRequestData.getStartDate(), 
+                    simulationRequestData.getEndDate(), metricToSimulate, preferences,
+                    preferences.get(metricToSimulate.getMetricId())
+            );
+        
+        } catch (SQLException ex) {
+            LOGGER.error("[ATMOSPHERE] Unable to connect to the database", ex);
+            return AdminController.genericResponseEntity(Constants.HTTPSERVERERROR,
+                    Constants.ERROR, "There was a problem with the connection to the database when trying to perform a simulation.");
+        }
+        HashMap<String, ArrayList<DataSetElem>> simulationDataJson = new HashMap<>();
+        simulationDataJson.put("simulationData", simulationData);
+
+        return new ResponseEntity<>(
+                simulationDataJson,
+                HttpStatus.valueOf(response.getStatus())
+        );
+    }
+    
+    //used by "/simulateData" endpoint to retrieve the array of data where weight simulation was applied
+    private void metricsTreeTraverse(ArrayList<DataSetElem> simulationData, int resourceId, long startDate, long endDate, 
+            MetricDashboard metric, HashMap <Integer,Double> preferences, double traversalWeight) throws SQLException{
+        //then, it is a leaf attribute
+        if(metric.getChildMetrics().isEmpty()){
+            DatabaseManager database = new DatabaseManager();
+            database.getSimulationData(simulationData, resourceId, startDate, endDate, 
+                    metric.getMetricId(), traversalWeight);
+            
+        }
+        else{
+            for( MetricDashboard child: metric.getChildMetrics()){
+                double newTraversalWeight = traversalWeight * preferences.get(child.getMetricId());
+                metricsTreeTraverse(simulationData, resourceId,startDate, endDate, child, preferences, 
+                        newTraversalWeight);
+            }
+        }
     }
 }
